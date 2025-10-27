@@ -5,9 +5,14 @@ import org.bukkit.plugin.java.JavaPlugin
 
 class ZorshDeltarune : JavaPlugin() {
 
+    companion object {
+        lateinit var instance: ZorshDeltarune
+    }
+
     private val battleManager = BattleManager()
 
     override fun onEnable() {
+        instance = this
         logger.info("[ZorshDeltarune] Plugin enabled!")
     }
 

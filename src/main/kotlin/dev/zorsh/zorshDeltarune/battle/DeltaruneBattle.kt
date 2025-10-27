@@ -15,6 +15,9 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
                 enemy.die()
             }
         }
+        for (pl in players) {
+            pl.freeFromBattle()
+        }
         destroyBattle()
         onEndedAction()
     }
