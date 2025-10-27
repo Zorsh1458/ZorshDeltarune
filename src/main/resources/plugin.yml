@@ -1,0 +1,7 @@
+name: ZorshDeltarune
+version: '1.0'
+main: dev.zorsh.zorshDeltarune.ZorshDeltarune
+api-version: '1.21'
+load: STARTUP
+authors: [ Zorsh ]
+description: Plugin for my storyline
