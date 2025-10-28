@@ -29,7 +29,7 @@ class TestEnemy(hitpoints: Int) : DeltaruneEnemy(hitpoints) {
 
     private suspend fun testSpawnNMS(i: Int) {
         val id = PacketManager.spawnNewEntity(
-            myBattle.battleCenterLocation + Vector3d((random.nextInt() % 10) * 0.5 - 2.5, 2.0 ,2.0),
+            myBattle.battleCenterLocation + Vector3d((i % 10) * 0.5 - 2.5, 2.0 ,2.0),
             EntityType.PIG,
             myBattle.players.map { it.player }
         )

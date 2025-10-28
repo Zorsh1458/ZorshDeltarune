@@ -40,7 +40,11 @@ class PacketManager {
         fun removeEntity(entityId: Int, players: List<Player>) {
             val packet = PacketContainer(PacketType.Play.Server.ENTITY_DESTROY)
             packet.modifier.writeDefaults()
-            packet.modifier.write(0, IntArrayList intArrayOf(entityId))
+            packet.modifier.write(0,
+                Class.forName("it.unimi.dsi.fastutil.ints.IntArrayList")
+                .getConstructor(IntArray::class.java)
+                .newInstance(intArrayOf(entityId))
+            )
 
             val manager = getProtocolManager()
             for (player in players) {
