@@ -1,13 +1,13 @@
 package dev.zorsh.zorshDeltarune.battle
 
-import com.comphenix.protocol.PacketType
-import com.comphenix.protocol.events.PacketContainer
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
+import dev.zorsh.zorshDeltarune.utils.*
+import dev.zorsh.zorshDeltarune.nms.PacketManager
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.bukkit.entity.EntityType
-import java.util.*
-import kotlin.math.cos
-import kotlin.math.sin
+import org.joml.Vector3d
 import kotlin.random.Random
 
 class TestEnemy(hitpoints: Int) : DeltaruneEnemy(hitpoints) {
@@ -17,33 +17,27 @@ class TestEnemy(hitpoints: Int) : DeltaruneEnemy(hitpoints) {
     private val random = Random(100)
 
     override suspend fun attack(onAttackEnds: () -> Unit) {
-        repeat(500) { index ->
-            testSpawnNMS(index)
-            delay(5)
+        coroutineScope {
+            repeat(500) { index ->
+                launch {
+                    testSpawnNMS(index)
+                }
+                delay(50)
+            }
         }
     }
 
-    private fun testSpawnNMS(i: Int) {
-        val packet = PacketContainer(PacketType.Play.Server.SPAWN_ENTITY)
-        val entityId = 10000 + random.nextInt() % 10000
-        packet.integers.write(0, entityId)
-        packet.uuiDs.write(0, UUID.randomUUID())
-        packet.entityTypeModifier.write(0, EntityType.PIG)
-
-        val location = myBattle.battleCenterLocation
-
-        val x = location.x
-        val z = location.z
-        val angle = i.toDouble() * 3.1415 / 180
-        val radius = 5
-
-        packet.doubles
-            .write(0, x + cos(angle) * radius)
-            .write(1, location.y)
-            .write(2, z + sin(angle) * radius)
-
-        for (dplayer in myBattle.players) {
-            manager.sendServerPacket(dplayer.player, packet)
-        }
+    private suspend fun testSpawnNMS(i: Int) {
+        val id = PacketManager.spawnNewEntity(
+            myBattle.battleCenterLocation + Vector3d((random.nextInt() % 10) * 0.5 - 2.5, 2.0 ,2.0),
+            EntityType.PIG,
+            myBattle.players.map { it.player }
+        )
+        ZorshDeltarune.instance.logger.info("[SPAWNING INDEX / ID]: $i / $id")
+        delay(75)
+        PacketManager.removeEntity(
+            id,
+            myBattle.players.map { it.player }
+        )
     }
 }
