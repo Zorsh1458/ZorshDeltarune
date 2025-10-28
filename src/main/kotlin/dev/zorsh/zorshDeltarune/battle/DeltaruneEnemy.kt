@@ -4,6 +4,8 @@ abstract class DeltaruneEnemy(
     val hitpoints: Int,
 ) {
 
+    lateinit var myBattle: DeltaruneBattle
+
     var isAlive = true
 
     abstract suspend fun attack(onAttackEnds: () -> Unit = {})

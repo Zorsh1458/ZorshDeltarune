@@ -5,3 +5,8 @@ api-version: '1.21'
 load: STARTUP
 authors: [ Zorsh ]
 description: Plugin for my storyline
+depend: [ ProtocolLib ]
+
+commands:
+  deltarunebattle:
+    permission: op

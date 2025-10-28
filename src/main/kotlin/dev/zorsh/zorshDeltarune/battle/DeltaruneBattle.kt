@@ -1,11 +1,19 @@
 package dev.zorsh.zorshDeltarune.battle
 
+import org.bukkit.Bukkit
+import org.bukkit.Location
+
 abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: List<DeltaruneEnemy>) {
+
+    val battleCenterLocation = Location(Bukkit.getWorld("world"), 0.0, 100.0, 0.0)
 
     private var onEndedAction = {}
 
     fun start(onEnded: () -> Unit) {
         onEndedAction = onEnded
+        for (enemy in enemies) {
+            enemy.myBattle = this
+        }
         startBattle()
     }
 

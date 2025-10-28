@@ -15,7 +15,7 @@ class DeltarunePlayer(val player: Player) {
     }
 
     fun lockInBattle(location: Location) {
-        val anchor = location.world.spawnEntity(location, EntityType.BLOCK_DISPLAY)
+        val anchor = location.world?.spawnEntity(location, EntityType.BLOCK_DISPLAY) ?: return
         anchor.isPersistent = false
 
         locked = true
@@ -26,6 +26,9 @@ class DeltarunePlayer(val player: Player) {
                 }
 
                 if (!locked) {
+                    if (anchor.isValid) {
+                        anchor.remove()
+                    }
                     cancel()
                 }
 
