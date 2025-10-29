@@ -3,22 +3,21 @@ package dev.zorsh.zorshDeltarune.battle
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.utils.*
 import dev.zorsh.zorshDeltarune.nms.PacketManager
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import org.bukkit.entity.EntityType
+import kotlinx.coroutines.*
 import org.joml.Vector3d
 import kotlin.random.Random
 
 class TestEnemy(hitpoints: Int) : DeltaruneEnemy(hitpoints) {
+
+    private val scope = CoroutineScope(Dispatchers.Default)
 
     private val manager = ZorshDeltarune.protocolManager
 
     private val random = Random(100)
 
     override suspend fun attack(onAttackEnds: () -> Unit) {
-        coroutineScope {
-            repeat(500) { index ->
+        scope.launch {
+            repeat(100) { index ->
                 launch {
                     testSpawnNMS(index)
                 }
@@ -27,17 +26,19 @@ class TestEnemy(hitpoints: Int) : DeltaruneEnemy(hitpoints) {
         }
     }
 
-    private suspend fun testSpawnNMS(i: Int) {
-        val id = PacketManager.spawnNewEntity(
+    private fun testSpawnNMS(i: Int) {
+        PacketManager.spawnTextDisplay(
             myBattle.battleCenterLocation + Vector3d((i % 10) * 0.5 - 2.5, 2.0 ,2.0),
-            EntityType.PIG,
+            "Test Text!",
             myBattle.players.map { it.player }
-        )
-        ZorshDeltarune.instance.logger.info("[SPAWNING INDEX / ID]: $i / $id")
-        delay(75)
-        PacketManager.removeEntity(
-            id,
-            myBattle.players.map { it.player }
-        )
+        ) { id ->
+            scope.launch {
+                delay(200)
+                PacketManager.removeEntity(
+                    id,
+                    myBattle.players.map { it.player }
+                )
+            }
+        }
     }
 }

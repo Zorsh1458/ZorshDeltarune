@@ -3,17 +3,46 @@ package dev.zorsh.zorshDeltarune.nms
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.events.PacketContainer
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
+import dev.zorsh.zorshDeltarune.utils.runLater
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
+import org.bukkit.entity.TextDisplay
 import java.util.*
 
 class PacketManager {
     companion object {
         private var counter = 0
 
+        var privateEntities = mutableMapOf<Int, Set<Player>>()
+
         @JvmStatic
         fun getProtocolManager() = ZorshDeltarune.protocolManager
+
+        @JvmStatic
+        fun spawnTextDisplay(
+            location: Location,
+            text: String,
+            players: List<Player>,
+            afterSpawned: (Int) -> Unit
+        ) {
+            val task = runLater(0L) {
+                val ent = (location.world?.spawnEntity(location, EntityType.TEXT_DISPLAY)) as TextDisplay
+                ent.text = text
+                val entityId = ent.entityId
+                privateEntities[entityId] = players.toSet()
+                runLater(1L) {
+                    ent.remove()
+                }
+                runLater(2L) {
+                    for (player in players) {
+                        privateEntities[entityId] = emptySet()
+                    }
+                }
+                afterSpawned(entityId)
+            }
+        }
 
         @JvmStatic
         fun spawnNewEntity(location: Location, type: EntityType, players: List<Player>): Int {
