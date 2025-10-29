@@ -4,7 +4,6 @@ import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.events.PacketContainer
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.utils.runLater
-import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
@@ -25,7 +24,7 @@ class PacketManager {
             location: Location,
             text: String,
             players: List<Player>,
-            afterSpawned: (Int) -> Unit
+            afterSpawned: (Int) -> Unit,
         ) {
             val task = runLater(0L) {
                 val ent = (location.world?.spawnEntity(location, EntityType.TEXT_DISPLAY)) as TextDisplay
@@ -35,7 +34,7 @@ class PacketManager {
                 runLater(1L) {
                     ent.remove()
                 }
-                runLater(2L) {
+                runLater(10L) {
                     for (player in players) {
                         privateEntities[entityId] = emptySet()
                     }
@@ -69,10 +68,11 @@ class PacketManager {
         fun removeEntity(entityId: Int, players: List<Player>) {
             val packet = PacketContainer(PacketType.Play.Server.ENTITY_DESTROY)
             packet.modifier.writeDefaults()
-            packet.modifier.write(0,
+            packet.modifier.write(
+                0,
                 Class.forName("it.unimi.dsi.fastutil.ints.IntArrayList")
-                .getConstructor(IntArray::class.java)
-                .newInstance(intArrayOf(entityId))
+                    .getConstructor(IntArray::class.java)
+                    .newInstance(intArrayOf(entityId))
             )
 
             val manager = getProtocolManager()

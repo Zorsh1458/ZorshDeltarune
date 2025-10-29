@@ -18,7 +18,7 @@ class PacketListenerSpawnEntity : PacketAdapter(
         if (
             !PacketManager.privateEntities[entityId].isNullOrEmpty() &&
             PacketManager.privateEntities[entityId]?.contains(player) == false
-            ) {
+        ) {
             event.isCancelled = true
         }
     }

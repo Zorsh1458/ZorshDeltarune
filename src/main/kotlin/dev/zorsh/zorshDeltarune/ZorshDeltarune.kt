@@ -4,6 +4,7 @@ import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
 import dev.zorsh.zorshDeltarune.battle.BattleManager
 import dev.zorsh.zorshDeltarune.commands.DeltaruneBattleCommand
+import dev.zorsh.zorshDeltarune.nms.PacketListenerEntityDestroy
 import dev.zorsh.zorshDeltarune.nms.PacketListenerSpawnEntity
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -18,6 +19,7 @@ class ZorshDeltarune : JavaPlugin() {
     override fun onEnable() {
         instance = this
         protocolManager.addPacketListener(PacketListenerSpawnEntity())
+        protocolManager.addPacketListener(PacketListenerEntityDestroy())
         getCommand("deltarunebattle")?.setExecutor(DeltaruneBattleCommand())
         getCommand("deltarunebattle")?.tabCompleter = DeltaruneBattleCommand()
         logger.info("[ZorshDeltarune] Plugin enabled!")

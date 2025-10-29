@@ -17,7 +17,7 @@ class TestEnemy(hitpoints: Int) : DeltaruneEnemy(hitpoints) {
 
     override suspend fun attack(onAttackEnds: () -> Unit) {
         scope.launch {
-            repeat(100) { index ->
+            repeat(1) { index ->
                 launch {
                     testSpawnNMS(index)
                 }
@@ -33,7 +33,7 @@ class TestEnemy(hitpoints: Int) : DeltaruneEnemy(hitpoints) {
             myBattle.players.map { it.player }
         ) { id ->
             scope.launch {
-                delay(200)
+                delay(2000)
                 PacketManager.removeEntity(
                     id,
                     myBattle.players.map { it.player }
