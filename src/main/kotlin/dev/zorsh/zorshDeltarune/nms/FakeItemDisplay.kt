@@ -3,7 +3,7 @@ package dev.zorsh.zorshDeltarune.nms
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
-class FakeTextDisplay(
+class FakeItemDisplay(
     entityId: Int,
     location: Location,
     players: List<Player>,

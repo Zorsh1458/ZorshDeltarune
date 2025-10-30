@@ -1,55 +1,50 @@
 package dev.zorsh.zorshDeltarune.battle
 
-import dev.zorsh.zorshDeltarune.ZorshDeltarune
-import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
 import dev.zorsh.zorshDeltarune.utils.*
-import dev.zorsh.zorshDeltarune.nms.PacketManager
 import kotlinx.coroutines.*
+import net.kyori.adventure.text.Component
+import org.bukkit.util.Transformation
+import org.joml.AxisAngle4f
+import org.joml.Quaternionf
 import org.joml.Vector3d
+import org.joml.Vector3f
+import kotlin.math.sin
 import kotlin.random.Random
 
 class TestEnemy(hitpoints: Int) : DeltaruneEnemy(hitpoints) {
 
-    private val manager = ZorshDeltarune.protocolManager
-
     private val random = Random(100)
 
-    private val spawnedEntities = mutableSetOf<FakeTextDisplay>()
-
     override suspend fun attack(onAttackEnds: () -> Unit) = coroutineScope {
-        repeat(100) { index ->
-            repeat(50) {
+        repeat(160) {
+            repeat(30) {
                 launch {
-                    testSpawnNMS(index)
+                    testSpawnNMS()
                 }
             }
             delay(50)
         }
     }
 
-    override fun die() {
-        try {
-            for (ent in spawnedEntities.toList()) {
-                ent.destroy()
-            }
-            spawnedEntities.clear()
-        } catch (ignored: Exception) {}
-    }
-
-    private fun testSpawnNMS(i: Int) {
-        val primary = Vector3d(random.nextDouble() * 0.4 - 0.2, random.nextDouble() * 0.4 - 0.2, 0.0)
-        val loc = myBattle.battleCenterLocation + Vector3d(0.0, 1.0 ,2.0) + primary
+    private fun testSpawnNMS() {
+        val primary = Vector3d(random.nextDouble() * 0.2 - 0.1, -0.2, 0.0)
+        val loc = myBattle.battleBoxCenterLocation + Vector3d(random.nextDouble() * 5.0 - 2.5, 5.0 ,0.0)
         loc.yaw = 180f
-        PacketManager.spawnTextDisplay(
+        myBattle.newTextDisplay(
             loc,
-            "⏺",
-            myBattle.players.map { it.player }
+            Component.text("⏺"),
         ) { entity ->
-            spawnedEntities += entity
-            entity.holder = spawnedEntities
             CoroutineScope(Dispatchers.IO).launch {
+                var i = 0
                 repeat(20) {
-                    entity.teleport(entity.location + primary + Vector3d(random.nextDouble() * 0.2 - 0.1, random.nextDouble() * 0.2 - 0.1, 0.0))
+                    i++
+                    entity.teleport(entity.location + primary)
+                    entity.changeTransformation(Transformation(
+                        Vector3f(0f, 0f, 0f),
+                        Quaternionf(AxisAngle4f()),
+                        Vector3f(2f + sin(i * 0.7f)),
+                        Quaternionf(AxisAngle4f())
+                    ))
                     delay(50)
                 }
                 entity.destroy()

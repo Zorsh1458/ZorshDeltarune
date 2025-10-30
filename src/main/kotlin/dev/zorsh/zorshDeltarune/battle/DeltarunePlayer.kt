@@ -17,6 +17,7 @@ class DeltarunePlayer(val player: Player) {
 
     fun freeFromBattle() {
         locked = false
+        player.stopAllSounds()
     }
 
     fun lockInBattle(location: Location) {
@@ -39,9 +40,9 @@ class DeltarunePlayer(val player: Player) {
 
                 if (player.vehicle == null || player.vehicle != anchor) {
                     anchor.addPassenger(player)
+                    player.sendActionBar(Component.text(""))
                 }
 
-//                player.sendActionBar(Component.text("TPS: ${Bukkit.getTPS()[0]} | MSPT: -1"))
                 PacketManager.playerLookAt(player.location + Vector3d(0.0, 0.0, 3.0), listOf(player))
             }
         }.runTaskTimer(ZorshDeltarune.instance, 1L, 1L)
