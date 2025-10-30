@@ -20,18 +20,21 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun startBattle() {
         for (pl in players) {
             pl.lockInBattle(battleCenterLocation)
         }
 
-        battleJob = GlobalScope.launch {
+        battleJob = scope.launch {
+            val jobs = mutableListOf<Job>()
             for (enemy in enemies) {
-                launch {
+                jobs += launch {
                     enemy.attack()
                 }
             }
+            jobs.joinAll()
+            delay(200L)
+            end()
         }
 
         loopTask = object : BukkitRunnable() {

@@ -1,9 +1,14 @@
 package dev.zorsh.zorshDeltarune.battle
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import org.bukkit.Bukkit
 import org.bukkit.Location
 
 abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: List<DeltaruneEnemy>) {
+
+    val scope = CoroutineScope(Dispatchers.IO)
 
     val battleCenterLocation = Location(Bukkit.getWorld("world"), 0.0, 100.0, 0.0)
 
@@ -26,6 +31,7 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
         for (pl in players) {
             pl.freeFromBattle()
         }
+        scope.cancel()
         destroyBattle()
         onEndedAction()
     }

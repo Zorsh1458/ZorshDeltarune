@@ -1,13 +1,19 @@
 package dev.zorsh.zorshDeltarune.nms
 
 import com.comphenix.protocol.PacketType
+import com.comphenix.protocol.events.InternalStructure
 import com.comphenix.protocol.events.PacketContainer
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.utils.runLater
+import it.unimi.dsi.fastutil.ints.IntArrayList
+import net.kyori.adventure.text.Component
+import net.minecraft.world.entity.PositionMoveRotation
+import net.minecraft.world.phys.Vec3
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.entity.TextDisplay
+import java.awt.TextComponent
 import java.util.*
 
 class PacketManager {
@@ -20,26 +26,83 @@ class PacketManager {
         fun getProtocolManager() = ZorshDeltarune.protocolManager
 
         @JvmStatic
+        fun packetInfo(packetType: PacketType): String {
+            val packet = PacketContainer(packetType)
+            var res = "== FIELDS OF $packetType ==\n"
+            res += "integers: [\n${packet.integers.fields.map { it.field.toGenericString() + "\n" }}\n"
+            res += "strings: [\n${packet.strings.fields.map { it.field.toGenericString() + "\n" }}\n"
+            res += "structures: [\n${packet.structures.fields.map { it.field.toGenericString() + "\n" }}\n"
+            res += "doubles: [\n${packet.doubles.fields.map { it.field.toGenericString() + "\n" }}\n"
+            res += "bytes: [\n${packet.bytes.fields.map { it.field.toGenericString() + "\n" }}\n"
+            res += "modifier: [\n${packet.modifier.fields.map { it.field.toGenericString() + "\n" }}\n"
+            res += "uuiDs: [\n${packet.uuiDs.fields.map { it.field.toGenericString() + "\n" }}\n"
+            return res
+        }
+
+        @JvmStatic
+        fun playerLookAt(location: Location, players: List<Player>) {
+            val packet = PacketContainer(PacketType.Play.Server.LOOK_AT)
+
+            packet.doubles
+                .write(0, location.x)
+                .write(1, location.y)
+                .write(2, location.z)
+
+            val manager = getProtocolManager()
+            for (player in players) {
+                manager.sendServerPacket(player, packet)
+            }
+        }
+
+        @JvmStatic
+        fun teleportEntity(
+            entityId: Int,
+            location: Location,
+            delta: Vec3,
+            players: List<Player>,
+        ) {
+            val packet = PacketContainer(PacketType.Play.Server.ENTITY_POSITION_SYNC)
+            packet.integers.write(0, entityId)
+
+            packet.modifier.writeDefaults()
+            packet.modifier
+                .write(0, entityId)
+                .write(
+                    1,
+                    PositionMoveRotation(
+                        Vec3(location.x, location.y, location.z),
+                        delta,
+                        location.yaw,
+                        location.pitch
+                    )
+                )
+
+            val manager = getProtocolManager()
+            for (player in players) {
+                manager.sendServerPacket(player, packet)
+            }
+        }
+
+        @JvmStatic
         fun spawnTextDisplay(
             location: Location,
             text: String,
             players: List<Player>,
-            afterSpawned: (Int) -> Unit,
+            afterSpawned: (FakeTextDisplay) -> Unit,
         ) {
-            val task = runLater(0L) {
+            runLater(0L) {
                 val ent = (location.world?.spawnEntity(location, EntityType.TEXT_DISPLAY)) as TextDisplay
-                ent.text = text
+                ent.text(Component.text(text))
+                ent.teleportDuration = 1
                 val entityId = ent.entityId
                 privateEntities[entityId] = players.toSet()
                 runLater(1L) {
                     ent.remove()
                 }
-                runLater(10L) {
-                    for (player in players) {
-                        privateEntities[entityId] = emptySet()
-                    }
+                runLater(2L) {
+                    privateEntities.remove(entityId)
                 }
-                afterSpawned(entityId)
+                afterSpawned(FakeTextDisplay(entityId, location, players))
             }
         }
 
@@ -70,9 +133,7 @@ class PacketManager {
             packet.modifier.writeDefaults()
             packet.modifier.write(
                 0,
-                Class.forName("it.unimi.dsi.fastutil.ints.IntArrayList")
-                    .getConstructor(IntArray::class.java)
-                    .newInstance(intArrayOf(entityId))
+                IntArrayList(intArrayOf(entityId))
             )
 
             val manager = getProtocolManager()

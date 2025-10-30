@@ -24,13 +24,14 @@ class PacketListenerEntityDestroy : PacketAdapter(
                 newList += entityId
             }
         }
-        player.sendMessage(newList.toString())
-        player.sendMessage(listToRemove.toString())
-        player.sendMessage(PacketManager.privateEntities.toString())
+//        player.sendMessage(newList.toString())
+//        player.sendMessage(listToRemove.toString())
+//        player.sendMessage(PacketManager.privateEntities.toString())
         if (newList != listToRemove) {
-            event.isCancelled = true
+//            event.isCancelled = true
+//            packet.intLists.write(0, newList.toList())
+//            event.packet = packet
+            event.packet.intLists.write(0, newList.toList())
         }
-//        packet.intLists.write(0, newList.toList())
-//        event.packet = packet
     }
 }
