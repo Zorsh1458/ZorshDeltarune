@@ -1,7 +1,7 @@
 package dev.zorsh.zorshDeltarune.battle
 
 import dev.zorsh.zorshDeltarune.utils.*
-import org.joml.Vector3d
+import org.joml.Vector3f
 
 abstract class DeltaruneEnemy(
     val hitpoints: Int,
@@ -9,7 +9,7 @@ abstract class DeltaruneEnemy(
 
     lateinit var myBattle: DeltaruneBattle
 
-    val projectileCenterLocation by lazy { myBattle.battleBoxCenterLocation + Vector3d(0.0, 0.0, 0.00096) }
+    val projectileCenterLocation by lazy { myBattle.battleBoxCenterLocation - Vector3f(0.0f, 0.0f, 0.0001f) }
 
     var isAlive = true
 

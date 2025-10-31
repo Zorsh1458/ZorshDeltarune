@@ -2,27 +2,28 @@ package dev.zorsh.zorshDeltarune.listeners
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.DeltarunePlayer
+import org.bukkit.entity.BlockDisplay
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityDismountEvent
 import org.bukkit.event.player.PlayerInputEvent
 import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.vehicle.VehicleExitEvent
 
 class DeltaruneListener : Listener {
 
     @EventHandler
-    fun onVehicleExitEvent(e: VehicleExitEvent) {
-        val player = e.exited
-        if (player is Player) {
-            player.sendMessage("Exit! || ${ZorshDeltarune.getDPlayer(player).locked}")
+    fun onVehicleExitEvent(e: EntityDismountEvent) {
+        val player = e.entity
+        if (player is Player && e.dismounted is BlockDisplay && ZorshDeltarune.getDPlayer(player).locked) {
+            e.isCancelled = true
         }
     }
 
     @EventHandler
     fun onPlayerInputEvent(e: PlayerInputEvent) {
         val player = e.player
-        player.sendMessage("W: ${e.input.isForward} | A: ${e.input.isLeft} | S: ${e.input.isBackward} | D: ${e.input.isRight}")
+        ZorshDeltarune.getDPlayer(player).updateInputs(e.input)
     }
 
     @EventHandler

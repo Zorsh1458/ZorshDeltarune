@@ -10,3 +10,20 @@ fun runLater(delay: Long, action: () -> Unit) {
         }
     }.runTaskLater(ZorshDeltarune.instance, delay)
 }
+
+fun runRepeating(count: Int, action: (Int) -> Unit) {
+    object : BukkitRunnable() {
+        var counter = 0
+
+        override fun run() {
+            if (counter >= count) {
+                cancel()
+            }
+
+            try {
+                action(counter)
+            } catch (ignored: Exception) {}
+            counter++
+        }
+    }.runTaskTimer(ZorshDeltarune.instance, 1L, 1L)
+}

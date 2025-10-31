@@ -16,14 +16,15 @@ class TestEnemy(hitpoints: Int) : DeltaruneEnemy(hitpoints) {
     private val random = Random(100)
 
     override suspend fun attack(onAttackEnds: () -> Unit) = coroutineScope {
-        repeat(16) {
+        repeat(80) {
             repeat(2) {
                 launch {
                     testSpawnNMS()
                 }
             }
-            delay(500)
+            delay(100)
         }
+        delay(1500)
     }
 
     private fun testSpawnNMS() {
@@ -32,22 +33,28 @@ class TestEnemy(hitpoints: Int) : DeltaruneEnemy(hitpoints) {
         loc.yaw = 180f
         myBattle.newTextDisplay(
             loc,
-            Component.text("⏺")
+            Component.text("⏺"),
+            data = FakeDisplayData(Transformation(
+                Vector3f(0f),
+                AxisAngle4f(),
+                Vector3f(0f),
+                AxisAngle4f()
+            )
+            )
         ) { entity ->
-            CoroutineScope(Dispatchers.IO).launch {
-                var i = 0
-                repeat(35) {
-                    i++
-                    entity.teleport(entity.location + primary)
-                    entity.changeTransformation(Transformation(
+            runRepeating(30) { i ->
+                entity.teleport(entity.location + primary)
+                entity.changeTransformation(
+                    Transformation(
                         entity.transformation.translation,
                         Quaternionf(AxisAngle4f()),
                         Vector3f(2f + sin(i * 0.7f)),
                         Quaternionf(AxisAngle4f())
-                    ))
-                    delay(50)
+                    )
+                )
+                if (i == 29) {
+                    entity.destroy()
                 }
-                entity.destroy()
             }
         }
     }

@@ -1,6 +1,8 @@
 package dev.zorsh.zorshDeltarune.nms
 
 import com.comphenix.protocol.PacketType
+import com.comphenix.protocol.ProtocolLibrary
+import com.comphenix.protocol.ProtocolManager
 import com.comphenix.protocol.events.PacketContainer
 import com.comphenix.protocol.wrappers.WrappedDataValue
 import com.comphenix.protocol.wrappers.WrappedDataWatcher
@@ -29,8 +31,7 @@ class PacketManager {
         @Volatile
         var privateEntities = mutableMapOf<Int, Set<Player>>()
 
-        @JvmStatic
-        fun getProtocolManager() = ZorshDeltarune.protocolManager
+        val protocolManager: ProtocolManager by lazy { ProtocolLibrary.getProtocolManager() }
 
         @JvmStatic
         fun packetInfo(packetType: PacketType): String {
@@ -53,9 +54,8 @@ class PacketManager {
                 newTransformation
             )
 
-            val manager = getProtocolManager()
             for (player in players) {
-                manager.sendServerPacket(player, packet)
+                protocolManager.sendServerPacket(player, packet)
             }
         }
 
@@ -231,9 +231,8 @@ class PacketManager {
                 .write(1, location.y)
                 .write(2, location.z)
 
-            val manager = getProtocolManager()
             for (player in players) {
-                manager.sendServerPacket(player, packet)
+                protocolManager.sendServerPacket(player, packet)
             }
         }
 
@@ -260,9 +259,8 @@ class PacketManager {
                     )
                 )
 
-            val manager = getProtocolManager()
             for (player in players) {
-                manager.sendServerPacket(player, packet)
+                protocolManager.sendServerPacket(player, packet)
             }
         }
 
@@ -304,9 +302,9 @@ class PacketManager {
             runLater(0L) {
                 val ent = (location.world?.spawnEntity(location, EntityType.TEXT_DISPLAY)) as TextDisplay
                 ent.text(text)
-                ent.teleportDuration = 1
+                ent.teleportDuration = 2
                 ent.transformation = data.transformation
-                ent.interpolationDuration = 1
+                ent.interpolationDuration = 2
                 ent.backgroundColor = Color.fromARGB(0)
                 ent.brightness = Display.Brightness(15, 15)
                 ent.lineWidth = 10000
@@ -336,9 +334,8 @@ class PacketManager {
                 .write(1, location.y)
                 .write(2, location.z)
 
-            val manager = getProtocolManager()
             for (player in players) {
-                manager.sendServerPacket(player, packet)
+                protocolManager.sendServerPacket(player, packet)
             }
             return entityId
         }
@@ -356,9 +353,8 @@ class PacketManager {
                 e.printStackTrace()
             }
 
-            val manager = getProtocolManager()
             for (player in players) {
-                manager.sendServerPacket(player, packet)
+                protocolManager.sendServerPacket(player, packet)
             }
         }
     }

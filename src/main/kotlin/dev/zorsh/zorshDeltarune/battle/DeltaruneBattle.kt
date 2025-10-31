@@ -22,7 +22,7 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
     val scope = CoroutineScope(Dispatchers.IO)
 
     val battleCenterLocation = Location(Bukkit.getWorld("world"), 8.0, 100.0, 8.1)
-    val battleBoxCenterLocation = battleCenterLocation + Vector3f(0f, 0f, 5f)
+    val battleBoxCenterLocation = battleCenterLocation + Vector3f(0f, 0f, 5f) + Vector3f(0.0f, 0.0f, 0.002f)
 
     private var onEndedAction = {}
 
@@ -46,14 +46,6 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
             pl.freeFromBattle()
         }
         scope.cancel()
-        try {
-            var i = 0
-            for (ent in spawnedEntities.toList()) {
-                i++
-                ent.destroy()
-            }
-            spawnedEntities.clear()
-        } catch (ignored: Exception) {}
         destroyBattle()
         onEndedAction()
     }
@@ -108,7 +100,15 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
         }
     }
 
-    abstract fun destroyBattle()
+    open fun destroyBattle() {
+        val toDestroy = spawnedEntities.toList()
+        for (ent in toDestroy) {
+            try {
+                ent.destroy()
+            } catch (ignored: Exception) {}
+        }
+        spawnedEntities.clear()
+    }
 
     protected abstract fun startBattle()
 }

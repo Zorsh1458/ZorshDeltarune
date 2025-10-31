@@ -1,9 +1,12 @@
 package dev.zorsh.zorshDeltarune.nms
 
+import dev.zorsh.zorshDeltarune.utils.runLater
 import net.minecraft.world.phys.Vec3
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.util.Transformation
+import org.joml.AxisAngle4f
+import org.joml.Vector3f
 
 abstract class FakeDisplay(
     val entityId: Int,
@@ -16,9 +19,26 @@ abstract class FakeDisplay(
     private var exists = true
 
     open fun destroy() {
-        PacketManager.removeEntity(entityId, players)
-        exists = false
-        holder?.remove(this)
+        if (exists) {
+            exists = false
+            holder?.remove(this)
+            val trans = Transformation(
+                Vector3f(0f),
+                AxisAngle4f(),
+                Vector3f(0f),
+                AxisAngle4f(),
+            )
+            changeTransformation(trans)
+            repeat(20) { i ->
+                runLater(i * 20L) {
+                    changeTransformation(trans)
+                    PacketManager.removeEntity(entityId, players)
+                }
+            }
+            runLater(800L) {
+                PacketManager.removeEntity(entityId, players)
+            }
+        }
     }
 
     open fun teleport(newLocation: Location) {

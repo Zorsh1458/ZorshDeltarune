@@ -1,6 +1,7 @@
 package dev.zorsh.zorshDeltarune.battle
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
+import dev.zorsh.zorshDeltarune.animations.BattleBox
 import dev.zorsh.zorshDeltarune.nms.FakeDisplay
 import dev.zorsh.zorshDeltarune.utils.*
 import kotlinx.coroutines.*
@@ -26,7 +27,18 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
 
     private var perPlayerEntities = mutableMapOf<DeltarunePlayer, MutableList<FakeDisplay>>()
 
+    private var playerButtons = mutableMapOf<DeltarunePlayer, FakeDisplay>()
+
+    private var playerSelectedButton = mutableMapOf<DeltarunePlayer, Int>()
+
+    private var playerButtonTexts = mutableMapOf<DeltarunePlayer, MutableList<FakeDisplay>>()
+
+    private val battleBox = BattleBox()
+
+    private var playersTurn = false
+
     override fun destroyBattle() {
+        super.destroyBattle()
         if (loopTask?.isCancelled == false) {
             loopTask?.cancel()
         }
@@ -45,16 +57,23 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
 
         scope.launch {
             val job = launch {
-                val jobs = mutableListOf<Job>()
-                for (enemy in enemies) {
-                    jobs += launch {
-                        enemy.attack()
+                repeat(2) {
+                    playersTurn = false
+                    battleBoxOpen()
+                    val jobs = mutableListOf<Job>()
+                    for (enemy in enemies) {
+                        jobs += launch {
+                            enemy.attack()
+                        }
                     }
+                    jobs.joinAll()
+                    delay(200L)
+                    battleBoxClose()
+                    delay(200L)
+                    showPlayersOptions()
+                    delay(5000L)
+                    hidePlayersOptions()
                 }
-                jobs.joinAll()
-                delay(200L)
-                showPlayersOptions()
-                delay(200L)
             }
             battleJob = job
             job.join()
@@ -78,6 +97,16 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
         super.end()
     }
 
+    private suspend fun battleBoxOpen() {
+        battleBox.openAnimation()
+        delay(1500)
+    }
+
+    private suspend fun battleBoxClose() {
+        battleBox.closeAnimation()
+        delay(1500)
+    }
+
     private suspend fun showPlayersOptions() {
         repeat(2) {
             for (dPlayer in players) {
@@ -85,7 +114,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     val transform = entity.transformation
                     entity.changeTransformation(
                         Transformation(
-                            transform.translation + Vector3f(0f, 0.45f, 0f),
+                            transform.translation + Vector3f(0f, 0.44f, 0f),
                             transform.leftRotation,
                             transform.scale,
                             transform.rightRotation
@@ -95,18 +124,69 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             }
             delay(50)
         }
-        delay(5000)
+        playersTurn = true
+    }
+
+    private suspend fun hidePlayersOptions() {
+        repeat(2) {
+            for (dPlayer in players) {
+                for (entity in perPlayerEntities[dPlayer] ?: mutableListOf()) {
+                    val transform = entity.transformation
+                    entity.changeTransformation(
+                        Transformation(
+                            transform.translation + Vector3f(0f, -0.44f, 0f),
+                            transform.leftRotation,
+                            transform.scale,
+                            transform.rightRotation
+                        )
+                    )
+                }
+            }
+            delay(50)
+        }
+        playersTurn = false
     }
 
     private fun prepareSprites() {
         val loc = battleBoxCenterLocation
         loc.yaw = 180f
+
+        newTextDisplay(
+            battleBoxCenterLocation + Vector3f(0f, 1.5f, 0f),
+            Component.text("\uE201-").font("space:dsprites").color("#00ff00"),
+            data = FakeDisplayData(
+                Transformation(
+                    Vector3f(0f),
+                    Quaternionf(0f, 0f, 0f, 1f),
+                    Vector3f(0f),
+                    Quaternionf(0f, 0f, 0f, 1f)
+                )
+            )
+        ) { entity ->
+            battleBox.outerPart = entity
+        }
+
+        newTextDisplay(
+            battleBoxCenterLocation + Vector3f(0f, 1.5f, 0f),
+            Component.text("\uE201-").font("space:dsprites").color("#000000"),
+            data = FakeDisplayData(
+                Transformation(
+                    Vector3f(0f),
+                    Quaternionf(0f, 0f, 0f, 1f),
+                    Vector3f(0f),
+                    Quaternionf(0f, 0f, 0f, 1f)
+                )
+            )
+        ) { entity ->
+            battleBox.innerPart = entity
+        }
+
         //- spawn text_display[brightness=<map[block=15;sky=15]>;text=<&color[#ff770a]>⬛;background_color=<color[#ffffff].with_alpha[0]>;scale=140,100,1;translation=-2,-10,-0.001;force_no_persist=true] <[pos].forward[5].face[<[pos]>]> save:main_bg
         newTextDisplay(
             loc,
             coloredText("⬛", "#ff770a"),
             data = FakeDisplayData(Transformation(
-                Vector3f(-2f, -10f, -0.001f),
+                Vector3f(-2f, -10f, -0.202f),
                 Quaternionf(0f, 0f, 0f, 1f),
                 Vector3f(140f, 100f, 1f),
                 Quaternionf(0f, 0f, 0f, 1f)
@@ -163,6 +243,48 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
 
         for (dPlayer in players) {
             perPlayerEntities[dPlayer] = mutableListOf()
+            playerButtonTexts[dPlayer] = mutableListOf()
+            playerSelectedButton[dPlayer] = 0
+            dPlayer.onLeftPressed {
+                if ((playerSelectedButton[dPlayer] ?: 0) > 0) {
+                    val newIndex = playerSelectedButton[dPlayer]!! - 1
+                    val buttonEntity1 = playerButtonTexts[dPlayer]?.get(newIndex+1)
+                    buttonEntity1?.changeTransformation(Transformation(
+                        buttonEntity1.transformation.translation,
+                        AxisAngle4f(),
+                        Vector3f(0f, 1f, 1f),
+                        AxisAngle4f()
+                    ))
+                    val buttonEntity2 = playerButtonTexts[dPlayer]?.get(newIndex)
+                    buttonEntity2?.changeTransformation(Transformation(
+                        buttonEntity2.transformation.translation,
+                        AxisAngle4f(),
+                        Vector3f(1f, 1f, 1f),
+                        AxisAngle4f()
+                    ))
+                    playerSelectedButton[dPlayer] = newIndex
+                }
+            }
+            dPlayer.onRightPressed {
+                if ((playerSelectedButton[dPlayer] ?: 4) < 4) {
+                    val newIndex = playerSelectedButton[dPlayer]!! + 1
+                    val buttonEntity1 = playerButtonTexts[dPlayer]?.get(newIndex-1)
+                    buttonEntity1?.changeTransformation(Transformation(
+                        buttonEntity1.transformation.translation,
+                        AxisAngle4f(),
+                        Vector3f(0f, 1f, 1f),
+                        AxisAngle4f()
+                    ))
+                    val buttonEntity2 = playerButtonTexts[dPlayer]?.get(newIndex)
+                    buttonEntity2?.changeTransformation(Transformation(
+                        buttonEntity2.transformation.translation,
+                        AxisAngle4f(),
+                        Vector3f(1f, 1f, 1f),
+                        AxisAngle4f()
+                    ))
+                    playerSelectedButton[dPlayer] = newIndex
+                }
+            }
 
             val mcPlayer = dPlayer.player
 
@@ -174,7 +296,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             val rightRotation = Quaternionf(AxisAngle4f(0.5f, 1f, 0f, 0f)) *
                     Quaternionf(AxisAngle4f(225f / 180f * 3.1415f, 0f, 1f, 0f))
             val name = mcPlayer.name
-            val textWidth = name.length * 0.125f
+            val actualWidth = name.length * 0.14f
+            val textWidth = 0.7f
             val width = textWidth * 0.9f
             val leftOffset = -width - 1.95f
             newItemDisplay(
@@ -200,7 +323,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 data = FakeDisplayData(Transformation(
                     Vector3f(width + leftOffset + 1.15f, -2.15f, 0.00015f),
                     AxisAngle4f(),
-                    Vector3f(1.8f, 2.5f, 1f),
+                    Vector3f(1.8f / actualWidth * 0.7f, 2.5f, 1f),
                     AxisAngle4f()
                 ))
             ) { entity ->
@@ -227,14 +350,72 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 loc - Vector3d(0.0, 0.0, 0.001),
                 buttons,
                 data = FakeDisplayData(Transformation(
-                    //TODO("REMOVE 0.1 FROM TRANSLATION.Z")
-                    Vector3f(width + leftOffset + 1.9f, -3.02f, 0.00021f),
+                    Vector3f(width + leftOffset + 1.9f, -3f, 0.00021f),
                     AxisAngle4f(),
                     Vector3f(1f, 1f, 1f),
                     AxisAngle4f()
                 ))
             ) { entity ->
                 perPlayerEntities[dPlayer]!!.add(entity)
+                playerButtons[dPlayer] = entity
+            }
+
+            //TODO("BUTTON TEXTS")
+            val separator = Component.text("\uF801").font("space:default")
+            val buttonTexts = listOf(
+                Component.text("Б").append(separator)
+                    .append(Component.text("и").append(separator))
+                    .append(Component.text("т").append(separator))
+                    .append(Component.text("в").append(separator))
+                    .append(Component.text("а").append(separator))
+                    .color("#ff7701"),
+                Component.text("Д").append(separator)
+                    .append(Component.text("е").append(separator))
+                    .append(Component.text("и").append(separator))
+                    .append(Component.text("с").append(separator))
+                    .append(Component.text("т").append(separator))
+                    .append(Component.text(".").append(separator))
+                    .color("#ff7701"),
+                Component.text("П").append(separator)
+                    .append(Component.text("р").append(separator))
+                    .append(Component.text("е").append(separator))
+                    .append(Component.text("д").append(separator))
+                    .append(Component.text("м").append(separator))
+                    .append(Component.text(".").append(separator))
+                    .color("#ff7701"),
+                Component.text("П").append(separator)
+                    .append(Component.text("о").append(separator))
+                    .append(Component.text("щ").append(separator))
+                    .append(Component.text("а").append(separator))
+                    .append(Component.text("д").append(separator))
+                    .append(Component.text("а").append(separator))
+                    .color("#ff7701"),
+                Component.text("З").append(separator)
+                    .append(Component.text("а").append(separator))
+                    .append(Component.text("щ").append(separator))
+                    .append(Component.text("и").append(separator))
+                    .append(Component.text("т").append(separator))
+                    .append(Component.text("а").append(separator))
+                    .color("#ff7701")
+            )
+            var ind = -3
+            for (buttonText in buttonTexts) {
+                ind++
+                newTextDisplay(
+                    loc - Vector3d(0.0, 0.0, 0.001),
+                    buttonText,
+                    data = FakeDisplayData(
+                        Transformation(
+                            Vector3f(width + leftOffset + 1.9f + ind * 0.9f, -3.12f, 0.00025f),
+                            AxisAngle4f(),
+                            Vector3f(0f, 1f, 1f),
+                            AxisAngle4f()
+                        )
+                    )
+                ) { entity ->
+                    perPlayerEntities[dPlayer]!!.add(entity)
+                    playerButtonTexts[dPlayer]!!.add(entity)
+                }
             }
 
             //        - spawn text_display[teleport_duration=<[tp_dur]>;brightness=<map[block=15;sky=15]>;text=<[text]>;background_color=<color[#ffffff].with_alpha[0]>;scale=2,4.7,1;translation=<[left_offset].sub[0.05]>,-3.3,0.00015;force_no_persist=true] <[pos].forward[5].face[<[pos]>].forward[0.001]> save:bg
@@ -243,7 +424,6 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 loc - Vector3d(0.0, 0.0, 0.001),
                 text,
                 data = FakeDisplayData(Transformation(
-                    //TODO("REMOVE 0.1 FROM TRANSLATION.Z")
                     Vector3f(leftOffset - 0.05f, -3.3f, 0.00015f),
                     AxisAngle4f(),
                     Vector3f(2f, 4.7f, 1f),
@@ -259,7 +439,6 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 loc - Vector3d(0.0, 0.0, 0.001),
                 text,
                 data = FakeDisplayData(Transformation(
-                    //TODO("REMOVE 0.1 FROM TRANSLATION.Z")
                     Vector3f((leftOffset + 0.075f) * -0.95f, -3.3f, 0.00015f),
                     AxisAngle4f(),
                     Vector3f(2f, 4.69f, 1f),
@@ -270,15 +449,14 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             }
 
             //        - spawn text_display[teleport_duration=<[tp_dur]>;brightness=<map[block=15;sky=15]>;text=<&color[#00ffff]>⬛;background_color=<color[#ffffff].with_alpha[0]>;scale=<[sx1]>,<[sy1]>,1;translation=<location[<element[<[sx1]>].mul[0.075]>,<element[<[sy1]>].mul[-0.0365]>,0].add[<[left_offset]>,-3.2,0.00005]>;force_no_persist=true] <[pos].forward[5].face[<[pos]>].forward[0.001]> save:bg
-            val sx1 = textWidth + 27.55f
+            val sx1 = textWidth + 28.2f
             val sy1 = 6f
-            val sx2 = textWidth + 26.95f
+            val sx2 = textWidth + 27.6f
             val sy2 = 5.4f
             newTextDisplay(
                 loc - Vector3d(0.0, 0.0, 0.001),
                 coloredText("⬛", "#00ffff"),
                 data = FakeDisplayData(Transformation(
-                    //TODO("REMOVE 0.1 FROM TRANSLATION.Z")
                     Vector3f(sx1 * 0.075f + leftOffset, sy1 * -0.0365f - 2.25f, 0.00005f),
                     AxisAngle4f(),
                     Vector3f(sx1, sy1, 1f),
@@ -291,7 +469,6 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 loc - Vector3d(0.0, 0.0, 0.001),
                 coloredText("⬛", "#000000"),
                 data = FakeDisplayData(Transformation(
-                    //TODO("REMOVE 0.1 FROM TRANSLATION.Z")
                     Vector3f(sx1 * 0.0753f + leftOffset, sy2 * -0.0365f - 2.2f, 0.0001f),
                     AxisAngle4f(),
                     Vector3f(sx2, sy2, 1f),
@@ -307,7 +484,6 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 loc - Vector3d(0.0, 0.0, 0.001),
                 Component.text(" ".repeat(dPlayer.maxhp)).style(Style.style(TextDecoration.UNDERLINED)).color("#00ff00"),
                 data = FakeDisplayData(Transformation(
-                    //TODO("REMOVE 0.1 FROM TRANSLATION.Z")
                     Vector3f(textWidth * 1.8f + leftOffset + 2.6f, -2f, 0.00015f),
                     AxisAngle4f(),
                     Vector3f(0.16f, 10f, 1f),
@@ -322,7 +498,6 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 loc - Vector3d(0.0, 0.0, 0.001),
                 Component.text("${dPlayer.hp} / ${dPlayer.maxhp}"),
                 data = FakeDisplayData(Transformation(
-                    //TODO("REMOVE 0.1 FROM TRANSLATION.Z")
                     Vector3f(textWidth * 1.8f + leftOffset + 2.6f, -1.7f, 0.00015f),
                     AxisAngle4f(),
                     Vector3f(1.2f, 1.2f, 1f),
