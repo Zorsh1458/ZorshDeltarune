@@ -36,7 +36,7 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
         startBattle()
     }
 
-    fun end() {
+    open fun end() {
         for (enemy in enemies) {
             if (enemy.isAlive) {
                 enemy.die()
@@ -47,7 +47,9 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
         }
         scope.cancel()
         try {
+            var i = 0
             for (ent in spawnedEntities.toList()) {
+                i++
                 ent.destroy()
             }
             spawnedEntities.clear()

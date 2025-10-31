@@ -2,8 +2,6 @@ package dev.zorsh.zorshDeltarune.nms
 
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.events.PacketContainer
-import com.comphenix.protocol.wrappers.Vector3F
-import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.comphenix.protocol.wrappers.WrappedDataValue
 import com.comphenix.protocol.wrappers.WrappedDataWatcher
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
@@ -11,7 +9,6 @@ import dev.zorsh.zorshDeltarune.utils.FakeDisplayData
 import dev.zorsh.zorshDeltarune.utils.runLater
 import it.unimi.dsi.fastutil.ints.IntArrayList
 import net.kyori.adventure.text.Component
-import net.minecraft.core.Rotations
 import net.minecraft.world.entity.PositionMoveRotation
 import net.minecraft.world.phys.Vec3
 import org.bukkit.Color
@@ -22,14 +19,14 @@ import org.bukkit.util.Transformation
 import org.joml.Quaternionf
 import org.joml.Vector3f
 import java.util.*
-import kotlin.reflect.javaType
-import kotlin.reflect.typeOf
 import java.lang.reflect.Type
 
 class PacketManager {
     companion object {
+        @Volatile
         private var counter = 0
 
+        @Volatile
         var privateEntities = mutableMapOf<Int, Set<Player>>()
 
         @JvmStatic
@@ -94,33 +91,31 @@ class PacketManager {
                     WrappedDataWatcher.Registry.get(Integer::class.java as Type),
                     interpolationDuration
                 )
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
 
-            metadataList += WrappedDataValue(
-                11,
-                WrappedDataWatcher.Registry.get(Vector3f::class.java as Type),
-                newTransformation.translation
-            )
+                metadataList += WrappedDataValue(
+                    11,
+                    WrappedDataWatcher.Registry.get(Vector3f::class.java as Type),
+                    newTransformation.translation
+                )
 
-            metadataList += WrappedDataValue(
-                12,
-                WrappedDataWatcher.Registry.get(Vector3f::class.java as Type),
-                newTransformation.scale
-            )
+                metadataList += WrappedDataValue(
+                    12,
+                    WrappedDataWatcher.Registry.get(Vector3f::class.java as Type),
+                    newTransformation.scale
+                )
 
-            metadataList += WrappedDataValue(
-                13,
-                WrappedDataWatcher.Registry.get(Quaternionf::class.java as Type),
-                newTransformation.leftRotation
-            )
+                metadataList += WrappedDataValue(
+                    13,
+                    WrappedDataWatcher.Registry.get(Quaternionf::class.java as Type),
+                    newTransformation.leftRotation
+                )
 
-            metadataList += WrappedDataValue(
-                14,
-                WrappedDataWatcher.Registry.get(Quaternionf::class.java as Type),
-                newTransformation.rightRotation
-            )
+                metadataList += WrappedDataValue(
+                    14,
+                    WrappedDataWatcher.Registry.get(Quaternionf::class.java as Type),
+                    newTransformation.rightRotation
+                )
+            } catch (ignored: Exception) {}
 
             metadata.dataValueCollectionModifier.write(0, metadataList)
 
@@ -294,7 +289,7 @@ class PacketManager {
                 runLater(2L) {
                     privateEntities.remove(entityId)
                 }
-                afterSpawned(FakeItemDisplay(entityId, location, players))
+                afterSpawned(FakeItemDisplay(entityId, location, data.transformation, players))
             }
         }
 
@@ -314,6 +309,7 @@ class PacketManager {
                 ent.interpolationDuration = 1
                 ent.backgroundColor = Color.fromARGB(0)
                 ent.brightness = Display.Brightness(15, 15)
+                ent.lineWidth = 10000
                 val entityId = ent.entityId
                 privateEntities[entityId] = players.toSet()
                 runLater(1L) {
@@ -322,7 +318,7 @@ class PacketManager {
                 runLater(2L) {
                     privateEntities.remove(entityId)
                 }
-                afterSpawned(FakeTextDisplay(entityId, location, players))
+                afterSpawned(FakeTextDisplay(entityId, location, data.transformation, players))
             }
         }
 
@@ -350,11 +346,15 @@ class PacketManager {
         @JvmStatic
         fun removeEntity(entityId: Int, players: List<Player>) {
             val packet = PacketContainer(PacketType.Play.Server.ENTITY_DESTROY)
-            packet.modifier.writeDefaults()
-            packet.modifier.write(
-                0,
-                IntArrayList(intArrayOf(entityId))
-            )
+            try {
+                packet.modifier.writeDefaults()
+                packet.modifier.write(
+                    0,
+                    IntArrayList(intArrayOf(entityId))
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
 
             val manager = getProtocolManager()
             for (player in players) {

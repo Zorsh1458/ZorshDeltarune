@@ -1,12 +1,12 @@
 package dev.zorsh.zorshDeltarune.battle
 
-import com.comphenix.protocol.PacketType
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
-import dev.zorsh.zorshDeltarune.nms.PacketManager
+import dev.zorsh.zorshDeltarune.nms.FakeDisplay
 import dev.zorsh.zorshDeltarune.utils.*
 import kotlinx.coroutines.*
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.Style
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
@@ -23,6 +23,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
     private var loopTask: BukkitTask? = null
 
     private var battleJob: Job? = null
+
+    private var perPlayerEntities = mutableMapOf<DeltarunePlayer, MutableList<FakeDisplay>>()
 
     override fun destroyBattle() {
         if (loopTask?.isCancelled == false) {
@@ -41,15 +43,21 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
 
         prepareSprites()
 
-        battleJob = scope.launch {
-            val jobs = mutableListOf<Job>()
-            for (enemy in enemies) {
-                jobs += launch {
-                    enemy.attack()
+        scope.launch {
+            val job = launch {
+                val jobs = mutableListOf<Job>()
+                for (enemy in enemies) {
+                    jobs += launch {
+                        enemy.attack()
+                    }
                 }
+                jobs.joinAll()
+                delay(200L)
+                showPlayersOptions()
+                delay(200L)
             }
-            jobs.joinAll()
-            delay(200L)
+            battleJob = job
+            job.join()
             end()
         }
 
@@ -63,6 +71,31 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 }
             }
         }.runTaskTimer(ZorshDeltarune.instance, 1L, 1L)
+    }
+
+    override fun end() {
+        perPlayerEntities.clear()
+        super.end()
+    }
+
+    private suspend fun showPlayersOptions() {
+        repeat(2) {
+            for (dPlayer in players) {
+                for (entity in perPlayerEntities[dPlayer] ?: mutableListOf()) {
+                    val transform = entity.transformation
+                    entity.changeTransformation(
+                        Transformation(
+                            transform.translation + Vector3f(0f, 0.45f, 0f),
+                            transform.leftRotation,
+                            transform.scale,
+                            transform.rightRotation
+                        )
+                    )
+                }
+            }
+            delay(50)
+        }
+        delay(5000)
     }
 
     private fun prepareSprites() {
@@ -129,6 +162,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
         )
 
         for (dPlayer in players) {
+            perPlayerEntities[dPlayer] = mutableListOf()
+
             val mcPlayer = dPlayer.player
 
             //- spawn item_display[teleport_duration=<[tp_dur]>;brightness=<map[block=15;sky=15]>;item=<[pl].skull_item>;right_rotation=<[rr]>;scale=1,1,0.005;translation=<[left_offset].add[0.65]>,-1.5,0.003;force_no_persist=true] <[pos].forward[5].face[<[pos]>].forward[0.001]> save:bg
@@ -139,10 +174,11 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             val rightRotation = Quaternionf(AxisAngle4f(0.5f, 1f, 0f, 0f)) *
                     Quaternionf(AxisAngle4f(225f / 180f * 3.1415f, 0f, 1f, 0f))
             val name = mcPlayer.name
-            val width = name.length * 0.125f * 0.9f
+            val textWidth = name.length * 0.125f
+            val width = textWidth * 0.9f
             val leftOffset = -width - 1.95f
             newItemDisplay(
-                loc - Vector3d(0.0, 0.0, 0.00095),
+                loc - Vector3d(0.0, 0.0, 0.001),
                 item,
                 playerToShow = listOf(mcPlayer),
                 data = FakeDisplayData(
@@ -153,11 +189,13 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                         rightRotation
                     )
                 )
-            )
+            ) { entity ->
+                perPlayerEntities[dPlayer]!!.add(entity)
+            }
 
             //        - spawn text_display[teleport_duration=<[tp_dur]>;brightness=<map[block=15;sky=15]>;text=<&color[#e3e3e3]><[n].font[space:smooth2]>;background_color=<color[#ffffff].with_alpha[0]>;scale=1.8,2.5,1;translation=<[n].font[space:smooth2].text_width.mul[0.025].mul[0.9].add[<[left_offset].add[1.15]>]>,-2.15,0.00015;force_no_persist=true] <[pos].forward[5].face[<[pos]>].forward[0.001]> save:bg
             newTextDisplay(
-                loc - Vector3d(0.0, 0.0, 0.00095),
+                loc - Vector3d(0.0, 0.0, 0.001),
                 fontText(name, "#e3e3e3", "space:smooth2"),
                 data = FakeDisplayData(Transformation(
                     Vector3f(width + leftOffset + 1.15f, -2.15f, 0.00015f),
@@ -165,11 +203,13 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     Vector3f(1.8f, 2.5f, 1f),
                     AxisAngle4f()
                 ))
-            )
+            ) { entity ->
+                perPlayerEntities[dPlayer]!!.add(entity)
+            }
 
             //        - spawn text_display[teleport_duration=<[tp_dur]>;brightness=<map[block=15;sky=15]>;text=<&color[#e3e3e3]>HP;background_color=<color[#ffffff].with_alpha[0]>;scale=1,1.1,1;translation=<[n].font[space:smooth2].text_width.mul[0.025].mul[1.8].add[<[left_offset].add[1.55]>]>,-2.1,0.00015;force_no_persist=true] <[pos].forward[5].face[<[pos]>].forward[0.001]> save:bg
             newTextDisplay(
-                loc - Vector3d(0.0, 0.0, 0.00095),
+                loc - Vector3d(0.0, 0.0, 0.001),
                 coloredText("HP", "#e3e3e3"),
                 data = FakeDisplayData(Transformation(
                     Vector3f(width * 2f + leftOffset + 1.55f, -2.1f, 0.00015f),
@@ -177,37 +217,120 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     Vector3f(1f, 1.1f, 1f),
                     AxisAngle4f()
                 ))
-            )
+            ) { entity ->
+                perPlayerEntities[dPlayer]!!.add(entity)
+            }
 
             //        - spawn text_display[teleport_duration=<[tp_dur]>;brightness=<map[block=15;sky=15]>;text=<element[<&color[#fc8403]><element[f].font[space:dbuttons]> <element[a].font[space:dbuttons]> <element[i].font[space:dbuttons]> <element[m].font[space:dbuttons]> <element[d].font[space:dbuttons]>]>;background_color=<color[#ffffff].with_alpha[0]>;scale=1,1,1;translation=<[n].font[space:smooth2].text_width.mul[0.025].mul[0.9].add[<[left_offset].add[1.9]>]>,-3.02,0.00021;force_no_persist=true] <[pos].forward[5].face[<[pos]>].forward[0.001]> save:bg
-            val buttons =
-                fontText("f", "#fe0001", "space:dbuttons").append(
-                    Component.text(" ")
-                ).append(
-                    fontText("a", "#fe0001", "space:dbuttons").append(
-                        Component.text(" ")
-                    ).append(
-                        fontText("i", "#fe0001", "space:dbuttons").append(
-                            Component.text(" ")
-                        ).append(
-                            fontText("m", "#fe0001", "space:dbuttons").append(
-                                Component.text(" ")
-                            ).append(
-                                fontText("d", "#fe0001", "space:dbuttons")
-                            )
-                        )
-                    )
-                )
+            val buttons = fontText("f a i m d", "#fe0001", "space:dbuttons")
             newTextDisplay(
-                loc - Vector3d(0.0, 0.0, 0.00095),
+                loc - Vector3d(0.0, 0.0, 0.001),
                 buttons,
                 data = FakeDisplayData(Transformation(
-                    Vector3f(width + leftOffset + 1.9f, -3.02f, 0.10021f),
+                    //TODO("REMOVE 0.1 FROM TRANSLATION.Z")
+                    Vector3f(width + leftOffset + 1.9f, -3.02f, 0.00021f),
                     AxisAngle4f(),
                     Vector3f(1f, 1f, 1f),
                     AxisAngle4f()
                 ))
-            )
+            ) { entity ->
+                perPlayerEntities[dPlayer]!!.add(entity)
+            }
+
+            //        - spawn text_display[teleport_duration=<[tp_dur]>;brightness=<map[block=15;sky=15]>;text=<[text]>;background_color=<color[#ffffff].with_alpha[0]>;scale=2,4.7,1;translation=<[left_offset].sub[0.05]>,-3.3,0.00015;force_no_persist=true] <[pos].forward[5].face[<[pos]>].forward[0.001]> save:bg
+            var text = ghostEffect(Component.text(",").font("space:default"), 5, "80")
+            newTextDisplay(
+                loc - Vector3d(0.0, 0.0, 0.001),
+                text,
+                data = FakeDisplayData(Transformation(
+                    //TODO("REMOVE 0.1 FROM TRANSLATION.Z")
+                    Vector3f(leftOffset - 0.05f, -3.3f, 0.00015f),
+                    AxisAngle4f(),
+                    Vector3f(2f, 4.7f, 1f),
+                    AxisAngle4f()
+                ))
+            ) { entity ->
+                perPlayerEntities[dPlayer]!!.add(entity)
+            }
+
+            //        - spawn text_display[teleport_duration=<[tp_dur]>;brightness=<map[block=15;sky=15]>;text=<[text]>;background_color=<color[#ffffff].with_alpha[0]>;scale=2,4.69,1;translation=<[left_offset].add[0.075].mul[-0.95]>,-3.3,0.00015;force_no_persist=true] <[pos].forward[5].face[<[pos]>].forward[0.001]> save:bg
+            text = ghostEffect(Component.text(",").font("space:default"), 5, "00")
+            newTextDisplay(
+                loc - Vector3d(0.0, 0.0, 0.001),
+                text,
+                data = FakeDisplayData(Transformation(
+                    //TODO("REMOVE 0.1 FROM TRANSLATION.Z")
+                    Vector3f((leftOffset + 0.075f) * -0.95f, -3.3f, 0.00015f),
+                    AxisAngle4f(),
+                    Vector3f(2f, 4.69f, 1f),
+                    AxisAngle4f()
+                ))
+            ) { entity ->
+                perPlayerEntities[dPlayer]!!.add(entity)
+            }
+
+            //        - spawn text_display[teleport_duration=<[tp_dur]>;brightness=<map[block=15;sky=15]>;text=<&color[#00ffff]>⬛;background_color=<color[#ffffff].with_alpha[0]>;scale=<[sx1]>,<[sy1]>,1;translation=<location[<element[<[sx1]>].mul[0.075]>,<element[<[sy1]>].mul[-0.0365]>,0].add[<[left_offset]>,-3.2,0.00005]>;force_no_persist=true] <[pos].forward[5].face[<[pos]>].forward[0.001]> save:bg
+            val sx1 = textWidth + 27.55f
+            val sy1 = 6f
+            val sx2 = textWidth + 26.95f
+            val sy2 = 5.4f
+            newTextDisplay(
+                loc - Vector3d(0.0, 0.0, 0.001),
+                coloredText("⬛", "#00ffff"),
+                data = FakeDisplayData(Transformation(
+                    //TODO("REMOVE 0.1 FROM TRANSLATION.Z")
+                    Vector3f(sx1 * 0.075f + leftOffset, sy1 * -0.0365f - 2.25f, 0.00005f),
+                    AxisAngle4f(),
+                    Vector3f(sx1, sy1, 1f),
+                    AxisAngle4f()
+                ))
+            ) { entity ->
+                perPlayerEntities[dPlayer]!!.add(entity)
+            }
+            newTextDisplay(
+                loc - Vector3d(0.0, 0.0, 0.001),
+                coloredText("⬛", "#000000"),
+                data = FakeDisplayData(Transformation(
+                    //TODO("REMOVE 0.1 FROM TRANSLATION.Z")
+                    Vector3f(sx1 * 0.0753f + leftOffset, sy2 * -0.0365f - 2.2f, 0.0001f),
+                    AxisAngle4f(),
+                    Vector3f(sx2, sy2, 1f),
+                    AxisAngle4f()
+                ))
+            ) { entity ->
+                perPlayerEntities[dPlayer]!!.add(entity)
+            }
+
+            //TODO("HEALTHBAR")
+            //        - spawn text_display[teleport_duration=<[tp_dur]>;brightness=<map[block=15;sky=15]>;text=<element[<&color[<[pl_col]>]><&n><element[ ].repeat[<[hp_max]>]>]>;background_color=<color[#ffffff].with_alpha[0]>;scale=<element[16].div[<[hp_max]>]>,10,1;line_width=10000;translation=<[n].font[space:smooth2].text_width.mul[0.025].mul[1.8].add[<[left_offset].add[2.6]>]>,-2.07,0.00015;force_no_persist=true] <[pos].forward[5].face[<[pos]>].forward[0.001]> save:bg
+            newTextDisplay(
+                loc - Vector3d(0.0, 0.0, 0.001),
+                Component.text(" ".repeat(dPlayer.maxhp)).style(Style.style(TextDecoration.UNDERLINED)).color("#00ff00"),
+                data = FakeDisplayData(Transformation(
+                    //TODO("REMOVE 0.1 FROM TRANSLATION.Z")
+                    Vector3f(textWidth * 1.8f + leftOffset + 2.6f, -2f, 0.00015f),
+                    AxisAngle4f(),
+                    Vector3f(0.16f, 10f, 1f),
+                    AxisAngle4f()
+                ))
+            ) { entity ->
+                perPlayerEntities[dPlayer]!!.add(entity)
+            }
+
+            //        - spawn text_display[teleport_duration=<[tp_dur]>;brightness=<map[block=15;sky=15]>;text=<element[<[hp]> / <[hp_max]>]>;background_color=<color[#ffffff].with_alpha[0]>;scale=1.2,1.2,1;line_width=10000;translation=<[n].font[space:smooth2].text_width.mul[0.025].mul[1.8].add[<[left_offset].add[2.6]>]>,-1.7,0.00015;force_no_persist=true] <[pos].forward[5].face[<[pos]>].forward[0.001]> save:bg
+            newTextDisplay(
+                loc - Vector3d(0.0, 0.0, 0.001),
+                Component.text("${dPlayer.hp} / ${dPlayer.maxhp}"),
+                data = FakeDisplayData(Transformation(
+                    //TODO("REMOVE 0.1 FROM TRANSLATION.Z")
+                    Vector3f(textWidth * 1.8f + leftOffset + 2.6f, -1.7f, 0.00015f),
+                    AxisAngle4f(),
+                    Vector3f(1.2f, 1.2f, 1f),
+                    AxisAngle4f()
+                ))
+            ) { entity ->
+                perPlayerEntities[dPlayer]!!.add(entity)
+            }
         }
     }
 }

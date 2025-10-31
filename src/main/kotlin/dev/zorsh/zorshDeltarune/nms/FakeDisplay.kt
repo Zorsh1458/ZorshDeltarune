@@ -1,14 +1,14 @@
 package dev.zorsh.zorshDeltarune.nms
 
-import net.minecraft.server.packs.repository.Pack
 import net.minecraft.world.phys.Vec3
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.util.Transformation
 
 abstract class FakeDisplay(
-    private val entityId: Int,
+    val entityId: Int,
     var location: Location,
+    var transformation: Transformation,
     private val players: List<Player>,
     var holder: MutableSet<FakeDisplay>? = null,
 ) {
@@ -16,11 +16,9 @@ abstract class FakeDisplay(
     private var exists = true
 
     open fun destroy() {
-        if (exists) {
-            PacketManager.removeEntity(entityId, players)
-            exists = false
-            holder?.remove(this)
-        }
+        PacketManager.removeEntity(entityId, players)
+        exists = false
+        holder?.remove(this)
     }
 
     open fun teleport(newLocation: Location) {
@@ -30,5 +28,6 @@ abstract class FakeDisplay(
 
     open fun changeTransformation(newTransformation: Transformation) {
         PacketManager.setTransformation(entityId, newTransformation, players)
+        transformation = newTransformation
     }
 }
