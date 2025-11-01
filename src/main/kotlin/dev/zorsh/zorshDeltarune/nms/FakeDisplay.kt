@@ -9,9 +9,10 @@ import org.joml.AxisAngle4f
 import org.joml.Vector3f
 
 abstract class FakeDisplay(
-    val entityId: Int,
-    var location: Location,
+    private val entityId: Int,
+    private var location: Location,
     var transformation: Transformation,
+    val teleportDuration: Int,
     private val players: List<Player>,
     var holder: MutableSet<FakeDisplay>? = null,
 ) {
@@ -47,7 +48,7 @@ abstract class FakeDisplay(
     }
 
     open fun changeTransformation(newTransformation: Transformation) {
-        PacketManager.setTransformation(entityId, newTransformation, players)
+        PacketManager.setTransformation(entityId, newTransformation, players, 2, teleportDuration)
         transformation = newTransformation
     }
 }

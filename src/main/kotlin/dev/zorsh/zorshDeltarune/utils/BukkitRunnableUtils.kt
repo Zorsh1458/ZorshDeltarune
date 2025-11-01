@@ -18,12 +18,12 @@ fun runRepeating(count: Int, action: (Int) -> Unit) {
         override fun run() {
             if (counter >= count) {
                 cancel()
+            } else {
+                try {
+                    action(counter)
+                } catch (ignored: Exception) {}
+                counter++
             }
-
-            try {
-                action(counter)
-            } catch (ignored: Exception) {}
-            counter++
         }
     }.runTaskTimer(ZorshDeltarune.instance, 1L, 1L)
 }

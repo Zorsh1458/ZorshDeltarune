@@ -17,14 +17,14 @@ class BattleBox(
                 Vector3f(0f, 0f, 0.00003f),
                 AxisAngle4f(),
                 Vector3f(i * 3f),
-                AxisAngle4f((15f - i) * 0.3f, 0f, 0f, 1f)
+                AxisAngle4f((42f - i*3) * 0.3f, 0f, 0f, 1f)
             )
             innerPart?.changeTransformation(innerTransform)
             val outerTransform = Transformation(
                 Vector3f(0f),
                 AxisAngle4f(),
                 Vector3f(i * 3.1f),
-                AxisAngle4f((15f - i) * 0.3f, 0f, 0f, 1f)
+                AxisAngle4f((42f - i*3) * 0.3f, 0f, 0f, 1f)
             )
             outerPart?.changeTransformation(outerTransform)
         }
@@ -32,19 +32,19 @@ class BattleBox(
 
     fun closeAnimation() {
         runRepeating(15) { t ->
-            val i = 15-t
+            val i = 14-t
             val innerTransform = Transformation(
                 Vector3f(0f, 0f, 0.00003f),
                 AxisAngle4f(),
                 Vector3f(i * 3f),
-                AxisAngle4f((15f - i) * -0.3f, 0f, 0f, 1f)
+                AxisAngle4f((14f - i) * -0.3f, 0f, 0f, 1f)
             )
             innerPart?.changeTransformation(innerTransform)
             val outerTransform = Transformation(
                 Vector3f(0f),
                 AxisAngle4f(),
                 Vector3f(i * 3.1f),
-                AxisAngle4f((15f - i) * -0.3f, 0f, 0f, 1f)
+                AxisAngle4f((14f - i) * -0.3f, 0f, 0f, 1f)
             )
             outerPart?.changeTransformation(outerTransform)
         }

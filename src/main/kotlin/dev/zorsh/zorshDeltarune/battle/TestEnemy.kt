@@ -39,16 +39,23 @@ class TestEnemy(hitpoints: Int) : DeltaruneEnemy(hitpoints) {
                 AxisAngle4f(),
                 Vector3f(0f),
                 AxisAngle4f()
-            )
+            ), teleportDuration = 30
             )
         ) { entity ->
+            val dest = loc + primary * 30.0
             runRepeating(30) { i ->
-                entity.teleport(entity.location + primary)
+                if (i < 2) {
+                    entity.teleport(dest)
+                }
+                var scale = 2f + sin(i * 0.7f)
+                if (i >= 25) {
+                    scale = 0f
+                }
                 entity.changeTransformation(
                     Transformation(
                         entity.transformation.translation,
                         Quaternionf(AxisAngle4f()),
-                        Vector3f(2f + sin(i * 0.7f)),
+                        Vector3f(scale),
                         Quaternionf(AxisAngle4f())
                     )
                 )

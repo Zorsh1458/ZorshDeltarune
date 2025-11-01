@@ -4,4 +4,6 @@ import org.bukkit.util.Transformation
 
 data class FakeDisplayData(
     val transformation: Transformation,
+    val opacity: Byte = 255.toByte(),
+    val teleportDuration: Int = 2
 )

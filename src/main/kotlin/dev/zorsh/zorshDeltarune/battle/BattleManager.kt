@@ -4,7 +4,7 @@ import java.util.UUID
 
 class BattleManager {
     companion object {
-        private var battlesList = mutableMapOf<UUID, DeltaruneBattle>()
+        var battlesList = mutableMapOf<UUID, DeltaruneBattle>()
 
         @JvmStatic
         fun destroyAllBattles() {

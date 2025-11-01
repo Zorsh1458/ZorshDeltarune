@@ -10,6 +10,7 @@ import dev.zorsh.zorshDeltarune.nms.PacketListenerEntityDestroy
 import dev.zorsh.zorshDeltarune.nms.PacketListenerSpawnEntity
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
+import java.util.UUID
 
 
 class ZorshDeltarune : JavaPlugin() {
@@ -18,15 +19,11 @@ class ZorshDeltarune : JavaPlugin() {
         lateinit var instance: ZorshDeltarune
         val protocolManager: ProtocolManager by lazy { ProtocolLibrary.getProtocolManager() }
 
-        var deltarunePlayer = mutableMapOf<Player, DeltarunePlayer>()
+        var deltarunePlayer = mutableMapOf<UUID, DeltarunePlayer>()
 
         @JvmStatic
-        fun getDPlayer(player: Player): DeltarunePlayer {
-            val dPlayer = deltarunePlayer[player] ?: DeltarunePlayer(player)
-            if (deltarunePlayer[player] == null) {
-                deltarunePlayer[player] = dPlayer
-            }
-            return dPlayer
+        fun getDPlayer(uuid: UUID): DeltarunePlayer? {
+            return deltarunePlayer[uuid]
         }
     }
 

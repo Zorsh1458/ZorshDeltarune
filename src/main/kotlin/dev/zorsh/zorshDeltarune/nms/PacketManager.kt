@@ -31,7 +31,7 @@ class PacketManager {
         @Volatile
         var privateEntities = mutableMapOf<Int, Set<Player>>()
 
-        val protocolManager: ProtocolManager by lazy { ProtocolLibrary.getProtocolManager() }
+        private val protocolManager: ProtocolManager by lazy { ProtocolLibrary.getProtocolManager() }
 
         @JvmStatic
         fun packetInfo(packetType: PacketType): String {
@@ -48,13 +48,21 @@ class PacketManager {
         }
 
         @JvmStatic
-        fun setTransformation(entityId: Int, newTransformation: Transformation, players: List<Player>) {
+        fun setTransformation(
+            entityId: Int,
+            newTransformation: Transformation,
+            players: List<Player>,
+            interpolationDuration: Int = 1,
+            teleportDuration: Int = 2
+        ) {
             val packet = getDisplayMetadataPacket(
                 entityId,
-                newTransformation
+                newTransformation,
+                interpolationDuration,
+                teleportDuration
             )
 
-            for (player in players) {
+            for (player in players.filter { it.isOnline }) {
                 protocolManager.sendServerPacket(player, packet)
             }
         }
@@ -63,7 +71,8 @@ class PacketManager {
         fun getDisplayMetadataPacket(
             entityId: Int,
             newTransformation: Transformation,
-            interpolationDuration: Int = 1,
+            interpolationDuration: Int,
+            teleportDuration: Int
         ): PacketContainer {
             // Le packet: https://minecraft.wiki/w/Java_Edition_protocol#Set_Entity_Metadata
             // Les index: https://minecraft.wiki/w/Minecraft_Wiki:Projects/wiki.vg_merge/Entity_metadata#Text_Display
@@ -89,7 +98,7 @@ class PacketManager {
                 metadataList += WrappedDataValue(
                     10,
                     WrappedDataWatcher.Registry.get(Integer::class.java as Type),
-                    interpolationDuration
+                    teleportDuration
                 )
 
                 metadataList += WrappedDataValue(
@@ -231,7 +240,7 @@ class PacketManager {
                 .write(1, location.y)
                 .write(2, location.z)
 
-            for (player in players) {
+            for (player in players.filter { it.isOnline }) {
                 protocolManager.sendServerPacket(player, packet)
             }
         }
@@ -241,7 +250,7 @@ class PacketManager {
             entityId: Int,
             location: Location,
             delta: Vec3,
-            players: List<Player>,
+            players: List<Player>
         ) {
             val packet = PacketContainer(PacketType.Play.Server.ENTITY_POSITION_SYNC)
             packet.integers.write(0, entityId)
@@ -259,7 +268,7 @@ class PacketManager {
                     )
                 )
 
-            for (player in players) {
+            for (player in players.filter { it.isOnline }) {
                 protocolManager.sendServerPacket(player, packet)
             }
         }
@@ -287,7 +296,7 @@ class PacketManager {
                 runLater(2L) {
                     privateEntities.remove(entityId)
                 }
-                afterSpawned(FakeItemDisplay(entityId, location, data.transformation, players))
+                afterSpawned(FakeItemDisplay(entityId, location, data.transformation, data.teleportDuration, players))
             }
         }
 
@@ -302,12 +311,13 @@ class PacketManager {
             runLater(0L) {
                 val ent = (location.world?.spawnEntity(location, EntityType.TEXT_DISPLAY)) as TextDisplay
                 ent.text(text)
-                ent.teleportDuration = 2
+                ent.teleportDuration = data.teleportDuration
                 ent.transformation = data.transformation
-                ent.interpolationDuration = 2
+//                ent.interpolationDuration = 2
                 ent.backgroundColor = Color.fromARGB(0)
                 ent.brightness = Display.Brightness(15, 15)
                 ent.lineWidth = 10000
+                ent.textOpacity = data.opacity
                 val entityId = ent.entityId
                 privateEntities[entityId] = players.toSet()
                 runLater(1L) {
@@ -316,7 +326,7 @@ class PacketManager {
                 runLater(2L) {
                     privateEntities.remove(entityId)
                 }
-                afterSpawned(FakeTextDisplay(entityId, location, data.transformation, players))
+                afterSpawned(FakeTextDisplay(entityId, location, data.transformation, data.teleportDuration, players))
             }
         }
 
@@ -334,7 +344,7 @@ class PacketManager {
                 .write(1, location.y)
                 .write(2, location.z)
 
-            for (player in players) {
+            for (player in players.filter { it.isOnline }) {
                 protocolManager.sendServerPacket(player, packet)
             }
             return entityId
@@ -353,7 +363,7 @@ class PacketManager {
                 e.printStackTrace()
             }
 
-            for (player in players) {
+            for (player in players.filter { it.isOnline }) {
                 protocolManager.sendServerPacket(player, packet)
             }
         }

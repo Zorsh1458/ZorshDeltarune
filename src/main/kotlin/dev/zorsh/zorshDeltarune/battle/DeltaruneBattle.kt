@@ -45,15 +45,15 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
         for (pl in players) {
             pl.freeFromBattle()
         }
-        scope.cancel()
         destroyBattle()
         onEndedAction()
+//        scope.cancel()
     }
 
     fun newItemDisplay(
         loc: Location,
         item: ItemStack,
-        playerToShow: List<Player> = players.map { it.player },
+        playerToShow: List<Player> = players.mapNotNull { it.player },
         data: FakeDisplayData = FakeDisplayData(
             Transformation(
                 Vector3f(0f),
@@ -78,7 +78,7 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
     fun newTextDisplay(
         loc: Location,
         text: Component,
-        playerToShow: List<Player> = players.map { it.player },
+        playerToShow: List<Player> = players.mapNotNull { it.player },
         data: FakeDisplayData = FakeDisplayData(
             Transformation(
             Vector3f(0f),

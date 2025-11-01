@@ -1,17 +1,18 @@
 package dev.zorsh.zorshDeltarune.battle
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
-import dev.zorsh.zorshDeltarune.nms.PacketManager
+import dev.zorsh.zorshDeltarune.nms.FakeDisplay
+import net.kyori.adventure.text.Component
+import org.bukkit.Bukkit
 import org.bukkit.Location
-import org.bukkit.entity.EntityType
-import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
-import org.joml.Vector3d
-import dev.zorsh.zorshDeltarune.utils.*
 import org.bukkit.Input
+import org.bukkit.craftbukkit.entity.CraftPlayer
 import java.util.UUID
 
-class DeltarunePlayer(val player: Player) {
+class DeltarunePlayer(private val uuid: UUID) {
+
+    val player by lazy {  Bukkit.getPlayer(uuid) }
 
     var myBattleUUID: UUID? = null
 
@@ -20,11 +21,19 @@ class DeltarunePlayer(val player: Player) {
     var hp = 100
     var maxhp = 100
 
+    var perPlayerEntities = mutableListOf<FakeDisplay>()
+
+    var playerButtons: FakeDisplay? = null
+
+    var playerSelectedButton = 1
+
+    var playerButtonTexts = mutableListOf<FakeDisplay>()
+
     private var prevInput = InputHolder()
 
     fun freeFromBattle() {
         locked = false
-        player.stopAllSounds()
+        player?.stopAllSounds()
         inputCallbacksLeft.clear()
         inputCallbacksRight.clear()
         inputCallbacksForward.clear()
@@ -32,35 +41,40 @@ class DeltarunePlayer(val player: Player) {
         inputCallbacksJump.clear()
         inputCallbacksSneak.clear()
         inputCallbacksSprint.clear()
+        playerButtons?.destroy()
+        playerButtons = null
+        perPlayerEntities.map { it.destroy() }
+        playerButtonTexts.map { it.destroy() }
+        perPlayerEntities.clear()
+        playerButtonTexts.clear()
+        playerSelectedButton = 1
+        //player?.flySpeed = 0.1f
     }
 
     fun lockInBattle(location: Location) {
-        val anchor = location.world?.spawnEntity(location, EntityType.BLOCK_DISPLAY) ?: return
-        anchor.isPersistent = false
-
-        locked = true
-        anchor.addPassenger(player)
-        object : BukkitRunnable() {
-            override fun run() {
-                if (!player.isOnline) {
-                    locked = false
-                }
-
-                if (myBattleUUID == null || !BattleManager.hasBattle(myBattleUUID!!)) {
-                    locked = false
-                }
-
-                if (!locked) {
-                    if (anchor.isValid) {
-                        anchor.removePassenger(player)
-                        anchor.remove()
+        if (player != null) {
+            val myPlayer = player!!
+            locked = true
+            object : BukkitRunnable() {
+                override fun run() {
+                    if (!myPlayer.isOnline) {
+                        locked = false
                     }
-                    cancel()
-                }
 
-                PacketManager.playerLookAt(player.location + Vector3d(0.0, 0.0, 3.0), listOf(player))
-            }
-        }.runTaskTimer(ZorshDeltarune.instance, 1L, 1L)
+                    if (myBattleUUID == null || !BattleManager.hasBattle(myBattleUUID!!)) {
+                        locked = false
+                    }
+
+                    if (!locked) {
+                        cancel()
+                        freeFromBattle()
+                    } else {
+                        //myPlayer.flySpeed = 0.1f
+                        myPlayer.teleport(location)
+                    }
+                }
+            }.runTaskTimer(ZorshDeltarune.instance, 1L, 1L)
+        }
     }
 
     private var inputCallbacksLeft = mutableListOf<() -> Unit>()
