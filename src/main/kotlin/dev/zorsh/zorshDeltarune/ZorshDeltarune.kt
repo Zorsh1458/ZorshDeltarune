@@ -8,9 +8,9 @@ import dev.zorsh.zorshDeltarune.commands.DeltaruneBattleCommand
 import dev.zorsh.zorshDeltarune.listeners.DeltaruneListener
 import dev.zorsh.zorshDeltarune.nms.PacketListenerEntityDestroy
 import dev.zorsh.zorshDeltarune.nms.PacketListenerSpawnEntity
-import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.UUID
+import kotlin.random.Random
 
 
 class ZorshDeltarune : JavaPlugin() {
@@ -18,6 +18,8 @@ class ZorshDeltarune : JavaPlugin() {
     companion object {
         lateinit var instance: ZorshDeltarune
         val protocolManager: ProtocolManager by lazy { ProtocolLibrary.getProtocolManager() }
+
+        val random = Random(1488)
 
         var deltarunePlayer = mutableMapOf<UUID, DeltarunePlayer>()
 
@@ -38,6 +40,7 @@ class ZorshDeltarune : JavaPlugin() {
     }
 
     override fun onDisable() {
+        logger.info("[ZorshDeltarune] Battles: ${BattleManager.getAllBattles()}")
         BattleManager.destroyAllBattles()
         protocolManager.removePacketListeners(instance)
         logger.info("[ZorshDeltarune] Plugin disabled!")

@@ -9,6 +9,7 @@ class FakeItemDisplay(
     location: Location,
     transformation: Transformation,
     teleportDuration: Int,
+    interpolationDuration: Int,
     players: List<Player>,
     holder: MutableSet<FakeDisplay>? = null,
 ) : FakeDisplay(
@@ -16,6 +17,7 @@ class FakeItemDisplay(
     location,
     transformation,
     teleportDuration,
+    interpolationDuration,
     players,
     holder
 ) {}

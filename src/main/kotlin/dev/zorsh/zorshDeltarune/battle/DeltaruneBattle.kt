@@ -1,5 +1,6 @@
 package dev.zorsh.zorshDeltarune.battle
 
+import dev.zorsh.zorshDeltarune.animations.BattleBox
 import dev.zorsh.zorshDeltarune.nms.FakeDisplay
 import dev.zorsh.zorshDeltarune.nms.FakeItemDisplay
 import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
@@ -7,7 +8,6 @@ import dev.zorsh.zorshDeltarune.nms.PacketManager
 import dev.zorsh.zorshDeltarune.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -27,6 +27,10 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
     private var onEndedAction = {}
 
     private val spawnedEntities = mutableSetOf<FakeDisplay>()
+
+    val battleBox = BattleBox()
+
+    var playersTurn = false
 
     fun start(onEnded: () -> Unit) {
         onEndedAction = onEnded

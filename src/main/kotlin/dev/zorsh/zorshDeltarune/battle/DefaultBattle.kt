@@ -8,7 +8,6 @@ import kotlinx.coroutines.*
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextDecoration
-import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.Title.Times
 import net.kyori.adventure.title.Title.title
 import org.bukkit.Material
@@ -29,10 +28,6 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
     private var loopTask: BukkitTask? = null
 
     private var battleJob: Job? = null
-
-    private val battleBox = BattleBox()
-
-    private var playersTurn = false
 
     private lateinit var background: FakeTextDisplay
 
@@ -66,14 +61,16 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
         prepareSprites()
 
         CoroutineScope(Dispatchers.IO).launch {
+            delay(250)
             val job = scope.launch {
-                repeat(2) {
-                    delay(100)
+                repeat(5) {
+                    delay(100L)
                     showPlayersOptions()
                     delay(5000L)
                     playersTurn = false
                     hidePlayersOptions()
                     battleBoxOpen()
+                    unlockSouls()
                     val jobs = mutableListOf<Job>()
                     for (enemy in enemies) {
                         jobs += launch {
@@ -82,8 +79,9 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     }
                     jobs.joinAll()
                     delay(200L)
+                    lockSouls()
                     battleBoxClose()
-                    delay(200L)
+                    delay(100L)
                 }
             }
             battleJob = job
@@ -107,19 +105,62 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
         super.end()
     }
 
+    private fun unlockSouls() {
+        for (dPlayer in players) {
+            dPlayer.canMoveSoul = true
+            dPlayer.soul?.teleport(battleBoxCenterLocation + Vector3f(0f, 1.5f, -0.0001f))
+            dPlayer.soul?.changeTransformation(Transformation(
+                Vector3f(0f),
+                AxisAngle4f(),
+                Vector3f(1f),
+                AxisAngle4f()
+            ))
+        }
+    }
+
+    private fun lockSouls() {
+        for (dPlayer in players) {
+            dPlayer.canMoveSoul = false
+            dPlayer.soul?.teleport(battleBoxCenterLocation + Vector3f(0f, -1.5f, 0f))
+            dPlayer.soul?.changeTransformation(Transformation(
+                Vector3f(0f),
+                AxisAngle4f(),
+                Vector3f(0f),
+                AxisAngle4f()
+            ))
+        }
+    }
+
     private suspend fun battleBoxOpen() {
+        battleBox.sizeX = ZorshDeltarune.random.nextFloat() * 20f + 20f
+        battleBox.sizeY = ZorshDeltarune.random.nextFloat() * 20f + 20f
         battleBox.openAnimation()
-        delay(1500)
+        delay(900)
     }
 
     private suspend fun battleBoxClose() {
         battleBox.closeAnimation()
-        delay(1500)
+        delay(900)
     }
 
     private suspend fun showPlayersOptions() {
         repeat(2) {
             for (dPlayer in players) {
+                val buttonEntity1 = dPlayer.playerButtonTexts[dPlayer.playerSelectedButton]
+                buttonEntity1.changeTransformation(Transformation(
+                    buttonEntity1.transformation.translation,
+                    AxisAngle4f(),
+                    Vector3f(0f, 1f, 1f),
+                    AxisAngle4f()
+                ))
+                dPlayer.playerSelectedButton = 0
+                val buttonEntity2 = dPlayer.playerButtonTexts[0]
+                buttonEntity2.changeTransformation(Transformation(
+                    buttonEntity2.transformation.translation,
+                    AxisAngle4f(),
+                    Vector3f(1f, 1f, 1f),
+                    AxisAngle4f()
+                ))
                 for (entity in dPlayer.perPlayerEntities) {
                     val transform = entity.transformation
                     entity.changeTransformation(
@@ -161,6 +202,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
         val loc = battleBoxCenterLocation
         loc.yaw = 180f
 
+        battleBox.location = battleBoxCenterLocation + Vector3f(0f, 1.5f, 0f)
+
         newTextDisplay(
             battleBoxCenterLocation + Vector3f(0f, 1.5f, 0f),
             Component.text("\uE201-").font("space:dsprites").color("#00aa00"),
@@ -178,7 +221,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
 
         newTextDisplay(
             battleBoxCenterLocation + Vector3f(0f, 1.5f, 0f),
-            Component.text("\uE201-").font("space:dsprites").color("#000000"),
+            Component.text("\uE201-").font("space:dsprites").color("#050505"),
             data = FakeDisplayData(
                 Transformation(
                     Vector3f(0f),
@@ -194,13 +237,26 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
         //- spawn text_display[brightness=<map[block=15;sky=15]>;text=<&color[#ff770a]>⬛;background_color=<color[#ffffff].with_alpha[0]>;scale=140,100,1;translation=-2,-10,-0.001;force_no_persist=true] <[pos].forward[5].face[<[pos]>]> save:main_bg
         newTextDisplay(
             loc,
-            coloredText("⬛", "#ff4f80"),
+            coloredText("⬛", "#ff4f00"),
             data = FakeDisplayData(Transformation(
                 Vector3f(-2f, -10f, -0.202f),
                 Quaternionf(0f, 0f, 0f, 1f),
                 Vector3f(140f, 100f, 1f),
                 Quaternionf(0f, 0f, 0f, 1f)
             ))
+        ) { entity ->
+            background = entity
+        }
+
+        newTextDisplay(
+            loc - Vector3d(0.0, 0.0, 0.0001),
+            coloredText("⬛", "#000000"),
+            data = FakeDisplayData(Transformation(
+                Vector3f(-2f, -10f, -0.202f),
+                Quaternionf(0f, 0f, 0f, 1f),
+                Vector3f(140f, 100f, 1f),
+                Quaternionf(0f, 0f, 0f, 1f)
+            ), opacity = 128.toByte())
         ) { entity ->
             background = entity
         }
@@ -257,45 +313,19 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             dPlayer.perPlayerEntities = mutableListOf()
             dPlayer.playerButtonTexts = mutableListOf()
             dPlayer.playerSelectedButton = 0
-            dPlayer.onLeftPressed {
-                if (dPlayer.playerSelectedButton > 0) {
-                    val newIndex = dPlayer.playerSelectedButton - 1
-                    val buttonEntity1 = dPlayer.playerButtonTexts[newIndex+1]
-                    buttonEntity1.changeTransformation(Transformation(
-                        buttonEntity1.transformation.translation,
-                        AxisAngle4f(),
-                        Vector3f(0f, 1f, 1f),
-                        AxisAngle4f()
-                    ))
-                    val buttonEntity2 = dPlayer.playerButtonTexts[newIndex]
-                    buttonEntity2.changeTransformation(Transformation(
-                        buttonEntity2.transformation.translation,
-                        AxisAngle4f(),
-                        Vector3f(1f, 1f, 1f),
-                        AxisAngle4f()
-                    ))
-                    dPlayer.playerSelectedButton = newIndex
-                }
-            }
-            dPlayer.onRightPressed {
-                if (dPlayer.playerSelectedButton < 4) {
-                    val newIndex = dPlayer.playerSelectedButton + 1
-                    val buttonEntity1 = dPlayer.playerButtonTexts[newIndex-1]
-                    buttonEntity1.changeTransformation(Transformation(
-                        buttonEntity1.transformation.translation,
-                        AxisAngle4f(),
-                        Vector3f(0f, 1f, 1f),
-                        AxisAngle4f()
-                    ))
-                    val buttonEntity2 = dPlayer.playerButtonTexts[newIndex]
-                    buttonEntity2.changeTransformation(Transformation(
-                        buttonEntity2.transformation.translation,
-                        AxisAngle4f(),
-                        Vector3f(1f, 1f, 1f),
-                        AxisAngle4f()
-                    ))
-                    dPlayer.playerSelectedButton = newIndex
-                }
+
+            // SOUL ====++++++++++++====
+            newTextDisplay(
+                loc - Vector3d(0.0, 0.0, 0.0003),
+                fontText("❤", "#ff2222", "space:default"),
+                data = FakeDisplayData(Transformation(
+                    Vector3f(0f, 0f, 0f),
+                    AxisAngle4f(),
+                    Vector3f(0f, 0f, 0f),
+                    AxisAngle4f()
+                ), teleportDuration = 1)
+            ) { entity ->
+                dPlayer.soul = entity
             }
 
             val mcPlayer = dPlayer.player
@@ -421,11 +451,52 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                             AxisAngle4f(),
                             Vector3f(0f, 1f, 1f),
                             AxisAngle4f()
-                        )
+                        ),
+                        interpolationDuration = 1
                     )
                 ) { entity ->
                     dPlayer.perPlayerEntities.add(entity)
                     dPlayer.playerButtonTexts.add(entity)
+                }
+            }
+            dPlayer.onLeftPressed {
+                if (dPlayer.playerSelectedButton > 0) {
+                    val newIndex = dPlayer.playerSelectedButton - 1
+                    val buttonEntity1 = dPlayer.playerButtonTexts[newIndex+1]
+                    buttonEntity1.changeTransformation(Transformation(
+                        buttonEntity1.transformation.translation,
+                        AxisAngle4f(),
+                        Vector3f(0f, 1f, 1f),
+                        AxisAngle4f()
+                    ))
+                    val buttonEntity2 = dPlayer.playerButtonTexts[newIndex]
+                    buttonEntity2.changeTransformation(Transformation(
+                        buttonEntity2.transformation.translation,
+                        AxisAngle4f(),
+                        Vector3f(1f, 1f, 1f),
+                        AxisAngle4f()
+                    ))
+                    dPlayer.playerSelectedButton = newIndex
+                }
+            }
+            dPlayer.onRightPressed {
+                if (dPlayer.playerSelectedButton < 4) {
+                    val newIndex = dPlayer.playerSelectedButton + 1
+                    val buttonEntity1 = dPlayer.playerButtonTexts[newIndex-1]
+                    buttonEntity1.changeTransformation(Transformation(
+                        buttonEntity1.transformation.translation,
+                        AxisAngle4f(),
+                        Vector3f(0f, 1f, 1f),
+                        AxisAngle4f()
+                    ))
+                    val buttonEntity2 = dPlayer.playerButtonTexts[newIndex]
+                    buttonEntity2.changeTransformation(Transformation(
+                        buttonEntity2.transformation.translation,
+                        AxisAngle4f(),
+                        Vector3f(1f, 1f, 1f),
+                        AxisAngle4f()
+                    ))
+                    dPlayer.playerSelectedButton = newIndex
                 }
             }
 

@@ -9,7 +9,7 @@ abstract class DeltaruneEnemy(
 
     lateinit var myBattle: DeltaruneBattle
 
-    val projectileCenterLocation by lazy { myBattle.battleBoxCenterLocation - Vector3f(0.0f, 0.0f, 0.0001f) }
+    val projectileCenterLocation by lazy { myBattle.battleBoxCenterLocation + Vector3f(0.0f, 1.5f, -0.0001f) }
 
     var isAlive = true
 

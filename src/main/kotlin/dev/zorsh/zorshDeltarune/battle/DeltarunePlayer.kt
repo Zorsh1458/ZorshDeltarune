@@ -2,12 +2,16 @@ package dev.zorsh.zorshDeltarune.battle
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.nms.FakeDisplay
-import net.kyori.adventure.text.Component
+import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
+import dev.zorsh.zorshDeltarune.nms.PacketManager
+import dev.zorsh.zorshDeltarune.utils.*
 import org.bukkit.Bukkit
+import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.Input
-import org.bukkit.craftbukkit.entity.CraftPlayer
+import org.bukkit.entity.EntityType
+import org.joml.Vector3d
 import java.util.UUID
 
 class DeltarunePlayer(private val uuid: UUID) {
@@ -31,6 +35,14 @@ class DeltarunePlayer(private val uuid: UUID) {
 
     private var prevInput = InputHolder()
 
+    var soul: FakeTextDisplay? = null
+
+    var canMoveSoul = false
+
+    private var gameMode = GameMode.SURVIVAL
+
+    private val soulSpeed = 0.12
+
     fun freeFromBattle() {
         locked = false
         player?.stopAllSounds()
@@ -43,17 +55,28 @@ class DeltarunePlayer(private val uuid: UUID) {
         inputCallbacksSprint.clear()
         playerButtons?.destroy()
         playerButtons = null
+        soul?.destroy()
+        soul = null
         perPlayerEntities.map { it.destroy() }
         playerButtonTexts.map { it.destroy() }
         perPlayerEntities.clear()
         playerButtonTexts.clear()
         playerSelectedButton = 1
         //player?.flySpeed = 0.1f
+        runLater(10) {
+            player?.gameMode = gameMode
+        }
     }
 
     fun lockInBattle(location: Location) {
+        val battle = BattleManager.getBattle(myBattleUUID ?: return) ?: return
         if (player != null) {
             val myPlayer = player!!
+            gameMode = myPlayer.gameMode
+            myPlayer.gameMode = GameMode.SPECTATOR
+            val anchor = location.world.spawnEntity(location, EntityType.BLOCK_DISPLAY)
+            anchor.isPersistent = false
+            anchor.addPassenger(myPlayer)
             locked = true
             object : BukkitRunnable() {
                 override fun run() {
@@ -66,11 +89,45 @@ class DeltarunePlayer(private val uuid: UUID) {
                     }
 
                     if (!locked) {
+                        anchor.remove()
                         cancel()
                         freeFromBattle()
                     } else {
-                        //myPlayer.flySpeed = 0.1f
-                        myPlayer.teleport(location)
+                        val box = battle.battleBox
+//                        myPlayer.teleport(location)
+                        PacketManager.playerLookAt(myPlayer.location + Vector3d(0.0, 0.0, 5.0), listOf(myPlayer))
+                        val inputs = InputHolder(myPlayer.currentInput)
+                        if (canMoveSoul && soul != null) {
+                            val soulWidth = soul!!.transformation.scale.x * 0.18f
+                            val soulHeight = soul!!.transformation.scale.y * 0.17f
+
+                            var speed = soulSpeed
+                            if (inputs.sneak) {
+                                speed /= 1.5
+                            }
+
+                            if (inputs.left && !inputs.right) {
+                                val new = soul!!.location + Vector3d(speed, 0.0, 0.0)
+                                soul?.teleport(box.isInside(new, soulWidth, soulHeight).second)
+                            }
+                            if (inputs.right && !inputs.left) {
+                                val new = soul!!.location + Vector3d(-speed, 0.0, 0.0)
+                                soul?.teleport(box.isInside(new, soulWidth, soulHeight).second)
+                            }
+                            if (inputs.forward && !inputs.backward) {
+                                val new = soul!!.location + Vector3d(0.0, speed, 0.0)
+                                soul?.teleport(box.isInside(new, soulWidth, soulHeight).second)
+                            }
+                            if (inputs.backward && !inputs.forward) {
+                                val new = soul!!.location + Vector3d(0.0, -speed, 0.0)
+                                soul?.teleport(box.isInside(new, soulWidth, soulHeight).second)
+                            }
+
+                            val check = box.isInside(soul!!.location, soulWidth, soulHeight)
+                            if (!check.first) {
+                                soul?.teleport(check.second)
+                            }
+                        }
                     }
                 }
             }.runTaskTimer(ZorshDeltarune.instance, 1L, 1L)

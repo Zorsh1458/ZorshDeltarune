@@ -6,7 +6,6 @@ import com.comphenix.protocol.ProtocolManager
 import com.comphenix.protocol.events.PacketContainer
 import com.comphenix.protocol.wrappers.WrappedDataValue
 import com.comphenix.protocol.wrappers.WrappedDataWatcher
-import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.utils.FakeDisplayData
 import dev.zorsh.zorshDeltarune.utils.runLater
 import it.unimi.dsi.fastutil.ints.IntArrayList
@@ -65,6 +64,100 @@ class PacketManager {
             for (player in players.filter { it.isOnline }) {
                 protocolManager.sendServerPacket(player, packet)
             }
+        }
+
+        @JvmStatic
+        fun setTextDisplayMetadata(
+            entityId: Int,
+            newTransformation: Transformation,
+            players: List<Player>,
+            interpolationDuration: Int = 1,
+            teleportDuration: Int = 2,
+            opacity: Byte
+        ) {
+            val packet = getTextDisplayMetadataPacket(
+                entityId,
+                newTransformation,
+                interpolationDuration,
+                teleportDuration,
+                opacity
+            )
+
+            for (player in players.filter { it.isOnline }) {
+                player.sendMessage("Changing opac to $opacity")
+                protocolManager.sendServerPacket(player, packet)
+            }
+        }
+
+        @JvmStatic
+        fun getTextDisplayMetadataPacket(
+            entityId: Int,
+            newTransformation: Transformation,
+            interpolationDuration: Int,
+            teleportDuration: Int,
+            opacity: Byte
+        ): PacketContainer {
+            // Le packet: https://minecraft.wiki/w/Java_Edition_protocol#Set_Entity_Metadata
+            // Les index: https://minecraft.wiki/w/Minecraft_Wiki:Projects/wiki.vg_merge/Entity_metadata#Text_Display
+
+            val metadata = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
+            metadata.integers.write(0, entityId)
+
+            val metadataList: MutableList<WrappedDataValue> = mutableListOf()
+
+            try {
+                metadataList += WrappedDataValue(
+                    8,
+                    WrappedDataWatcher.Registry.get(Integer::class.java as Type),
+                    0
+                )
+
+                metadataList += WrappedDataValue(
+                    9,
+                    WrappedDataWatcher.Registry.get(Integer::class.java as Type),
+                    interpolationDuration
+                )
+
+                metadataList += WrappedDataValue(
+                    10,
+                    WrappedDataWatcher.Registry.get(Integer::class.java as Type),
+                    teleportDuration
+                )
+
+                metadataList += WrappedDataValue(
+                    11,
+                    WrappedDataWatcher.Registry.get(Vector3f::class.java as Type),
+                    newTransformation.translation
+                )
+
+                metadataList += WrappedDataValue(
+                    12,
+                    WrappedDataWatcher.Registry.get(Vector3f::class.java as Type),
+                    newTransformation.scale
+                )
+
+                metadataList += WrappedDataValue(
+                    13,
+                    WrappedDataWatcher.Registry.get(Quaternionf::class.java as Type),
+                    newTransformation.leftRotation
+                )
+
+                metadataList += WrappedDataValue(
+                    14,
+                    WrappedDataWatcher.Registry.get(Quaternionf::class.java as Type),
+                    newTransformation.rightRotation
+                )
+
+                metadataList += WrappedDataValue(
+                    26,
+                    WrappedDataWatcher.Registry.get(Byte::class.java as Type),
+                    opacity
+                )
+            } catch (ignored: Exception) {}
+
+            metadata.dataValueCollectionModifier.write(0, metadataList)
+
+            return metadata
         }
 
         @JvmStatic
@@ -284,9 +377,9 @@ class PacketManager {
             runLater(0L) {
                 val ent = (location.world?.spawnEntity(location, EntityType.ITEM_DISPLAY)) as ItemDisplay
                 ent.setItemStack(item)
-                ent.teleportDuration = 1
+                ent.teleportDuration = data.teleportDuration
                 ent.transformation = data.transformation
-                ent.interpolationDuration = 1
+                ent.interpolationDuration = data.interpolationDuration
                 ent.brightness = Display.Brightness(15, 15)
                 val entityId = ent.entityId
                 privateEntities[entityId] = players.toSet()
@@ -296,7 +389,7 @@ class PacketManager {
                 runLater(2L) {
                     privateEntities.remove(entityId)
                 }
-                afterSpawned(FakeItemDisplay(entityId, location, data.transformation, data.teleportDuration, players))
+                afterSpawned(FakeItemDisplay(entityId, location, data.transformation, data.teleportDuration, data.interpolationDuration, players))
             }
         }
 
@@ -313,7 +406,7 @@ class PacketManager {
                 ent.text(text)
                 ent.teleportDuration = data.teleportDuration
                 ent.transformation = data.transformation
-//                ent.interpolationDuration = 2
+                ent.interpolationDuration = data.interpolationDuration
                 ent.backgroundColor = Color.fromARGB(0)
                 ent.brightness = Display.Brightness(15, 15)
                 ent.lineWidth = 10000
@@ -326,7 +419,7 @@ class PacketManager {
                 runLater(2L) {
                     privateEntities.remove(entityId)
                 }
-                afterSpawned(FakeTextDisplay(entityId, location, data.transformation, data.teleportDuration, players))
+                afterSpawned(FakeTextDisplay(entityId, location, data.transformation, data.teleportDuration, data.interpolationDuration, players, opacity = data.opacity))
             }
         }
 

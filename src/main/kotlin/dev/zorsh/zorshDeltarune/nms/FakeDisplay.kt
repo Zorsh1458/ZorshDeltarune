@@ -1,7 +1,9 @@
 package dev.zorsh.zorshDeltarune.nms
 
 import dev.zorsh.zorshDeltarune.utils.runLater
+import net.kyori.adventure.text.Component
 import net.minecraft.world.phys.Vec3
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.util.Transformation
@@ -9,11 +11,12 @@ import org.joml.AxisAngle4f
 import org.joml.Vector3f
 
 abstract class FakeDisplay(
-    private val entityId: Int,
-    private var location: Location,
+    protected val entityId: Int,
+    var location: Location,
     var transformation: Transformation,
-    val teleportDuration: Int,
-    private val players: List<Player>,
+    protected val teleportDuration: Int,
+    protected val interpolationDuration: Int,
+    protected val players: List<Player>,
     var holder: MutableSet<FakeDisplay>? = null,
 ) {
 
@@ -47,8 +50,8 @@ abstract class FakeDisplay(
         location = newLocation
     }
 
-    open fun changeTransformation(newTransformation: Transformation) {
-        PacketManager.setTransformation(entityId, newTransformation, players, 2, teleportDuration)
+    open fun changeTransformation(newTransformation: Transformation, newOpacity: Byte = 255.toByte()) {
+        PacketManager.setTransformation(entityId, newTransformation, players, interpolationDuration, teleportDuration)
         transformation = newTransformation
     }
 }
