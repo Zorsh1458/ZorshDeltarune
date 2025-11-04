@@ -1,7 +1,6 @@
 package dev.zorsh.zorshDeltarune.battle
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
-import dev.zorsh.zorshDeltarune.animations.BattleBox
 import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
 import dev.zorsh.zorshDeltarune.utils.*
 import kotlinx.coroutines.*
@@ -99,10 +98,6 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 }
             }
         }.runTaskTimer(ZorshDeltarune.instance, 1L, 1L)
-    }
-
-    override fun end() {
-        super.end()
     }
 
     private fun unlockSouls() {

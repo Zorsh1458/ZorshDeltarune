@@ -20,4 +20,4 @@ class FakeItemDisplay(
     interpolationDuration,
     players,
     holder
-) {}
+)

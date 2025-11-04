@@ -30,6 +30,9 @@ class PacketManager {
         @Volatile
         var privateEntities = mutableMapOf<Int, Set<Player>>()
 
+        @Volatile
+        var savedEntities = mutableMapOf<Int, TextDisplay>()
+
         private val protocolManager: ProtocolManager by lazy { ProtocolLibrary.getProtocolManager() }
 
         @JvmStatic
@@ -75,18 +78,35 @@ class PacketManager {
             teleportDuration: Int = 2,
             opacity: Byte
         ) {
-            val packet = getTextDisplayMetadataPacket(
+            var packet = getTextDisplayMetadataPacket(
                 entityId,
                 newTransformation,
                 interpolationDuration,
                 teleportDuration,
                 opacity
             )
+            if (savedEntities[entityId] != null) {
+
+                savedEntities[entityId]?.transformation = newTransformation
+                savedEntities[entityId]?.interpolationDuration = interpolationDuration
+                savedEntities[entityId]?.teleportDuration = teleportDuration
+                savedEntities[entityId]?.textOpacity = opacity
+
+                val ent = savedEntities[entityId]!!
+                packet = getTextDisplayMetadataPacketNew(entityId, WrappedDataWatcher.getEntityWatcher(ent))
+            }
 
             for (player in players.filter { it.isOnline }) {
-                player.sendMessage("Changing opac to $opacity")
                 protocolManager.sendServerPacket(player, packet)
             }
+        }
+
+        @JvmStatic
+        fun getTextDisplayMetadataPacketNew(entityId:Int, entityWatcher: WrappedDataWatcher): PacketContainer {
+            val metadata = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
+            metadata.integers.write(0, entityId)
+            metadata.dataValueCollectionModifier.write(0, entityWatcher.toDataValueCollection())
+            return metadata
         }
 
         @JvmStatic
@@ -412,6 +432,7 @@ class PacketManager {
                 ent.lineWidth = 10000
                 ent.textOpacity = data.opacity
                 val entityId = ent.entityId
+                savedEntities[entityId] = ent
                 privateEntities[entityId] = players.toSet()
                 runLater(1L) {
                     ent.remove()
@@ -459,6 +480,8 @@ class PacketManager {
             for (player in players.filter { it.isOnline }) {
                 protocolManager.sendServerPacket(player, packet)
             }
+
+            savedEntities.remove(entityId)
         }
     }
 }
