@@ -11,10 +11,12 @@ import kotlinx.coroutines.Dispatchers
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.Particle
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Transformation
 import org.joml.Quaternionf
+import org.joml.Vector2d
 import org.joml.Vector3f
 
 abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: List<DeltaruneEnemy>) {
@@ -31,6 +33,17 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
     val battleBox = BattleBox()
 
     var playersTurn = false
+
+    fun damageHitbox(amount: Int, center: Vector2d, radius: Double): Boolean {
+        var damagedAnyone = false
+        for (dPlayer in players) {
+            if (dPlayer.noDamageTicks <= 0 && dPlayer.soul?.location?.let { Vector2d(it.x - center.x, it.y - center.y).length() <= radius } == true) {
+                dPlayer.damage(amount)
+                damagedAnyone = true
+            }
+        }
+        return damagedAnyone
+    }
 
     fun start(onEnded: () -> Unit) {
         onEndedAction = onEnded

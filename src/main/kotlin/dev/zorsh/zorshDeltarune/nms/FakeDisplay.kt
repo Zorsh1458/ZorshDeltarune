@@ -1,6 +1,7 @@
 package dev.zorsh.zorshDeltarune.nms
 
 import dev.zorsh.zorshDeltarune.utils.runLater
+import net.kyori.adventure.text.Component
 import net.minecraft.world.phys.Vec3
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -48,7 +49,7 @@ abstract class FakeDisplay(
         location = newLocation
     }
 
-    open fun changeTransformation(newTransformation: Transformation, newOpacity: Byte = 255.toByte()) {
+    open fun changeTransformation(newTransformation: Transformation, newText: Component = Component.text("___DEFAULT_TEXT___"), newOpacity: Byte = 255.toByte()) {
         PacketManager.setTransformation(entityId, newTransformation, players, interpolationDuration, teleportDuration)
         transformation = newTransformation
     }

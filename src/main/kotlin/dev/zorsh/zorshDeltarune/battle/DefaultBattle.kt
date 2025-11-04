@@ -9,6 +9,7 @@ import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title.Times
 import net.kyori.adventure.title.Title.title
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
@@ -231,12 +232,12 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
 
         //- spawn text_display[brightness=<map[block=15;sky=15]>;text=<&color[#ff770a]>⬛;background_color=<color[#ffffff].with_alpha[0]>;scale=140,100,1;translation=-2,-10,-0.001;force_no_persist=true] <[pos].forward[5].face[<[pos]>]> save:main_bg
         newTextDisplay(
-            loc,
+            loc + Vector3d(0.0, 0.0, 1.0),
             coloredText("⬛", "#ff4f00"),
             data = FakeDisplayData(Transformation(
                 Vector3f(-2f, -10f, -0.202f),
                 Quaternionf(0f, 0f, 0f, 1f),
-                Vector3f(140f, 100f, 1f),
+                Vector3f(168f, 120f, 1f),
                 Quaternionf(0f, 0f, 0f, 1f)
             ))
         ) { entity ->
@@ -244,12 +245,12 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
         }
 
         newTextDisplay(
-            loc - Vector3d(0.0, 0.0, 0.0001),
+            loc + Vector3d(0.0, 0.0, 0.995),
             coloredText("⬛", "#000000"),
             data = FakeDisplayData(Transformation(
                 Vector3f(-2f, -10f, -0.202f),
                 Quaternionf(0f, 0f, 0f, 1f),
-                Vector3f(140f, 100f, 1f),
+                Vector3f(168f, 120f, 1f),
                 Quaternionf(0f, 0f, 0f, 1f)
             ), opacity = 128.toByte())
         ) { entity ->
@@ -324,6 +325,9 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             }
 
             val mcPlayer = dPlayer.player
+
+//            dPlayer.onHpUpdated = { newHp ->
+//            }
 
             //- spawn item_display[teleport_duration=<[tp_dur]>;brightness=<map[block=15;sky=15]>;item=<[pl].skull_item>;right_rotation=<[rr]>;scale=1,1,0.005;translation=<[left_offset].add[0.65]>,-1.5,0.003;force_no_persist=true] <[pos].forward[5].face[<[pos]>].forward[0.001]> save:bg
             val item = ItemStack.of(Material.PLAYER_HEAD)
@@ -568,6 +572,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 ))
             ) { entity ->
                 dPlayer.perPlayerEntities.add(entity)
+                dPlayer.healthBar = entity
             }
 
             //        - spawn text_display[teleport_duration=<[tp_dur]>;brightness=<map[block=15;sky=15]>;text=<element[<[hp]> / <[hp_max]>]>;background_color=<color[#ffffff].with_alpha[0]>;scale=1.2,1.2,1;line_width=10000;translation=<[n].font[space:smooth2].text_width.mul[0.025].mul[1.8].add[<[left_offset].add[2.6]>]>,-1.7,0.00015;force_no_persist=true] <[pos].forward[5].face[<[pos]>].forward[0.001]> save:bg
@@ -582,6 +587,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 ))
             ) { entity ->
                 dPlayer.perPlayerEntities.add(entity)
+                dPlayer.healthCounter = entity
             }
         }
     }

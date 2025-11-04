@@ -5,11 +5,9 @@ import dev.zorsh.zorshDeltarune.utils.*
 import kotlinx.coroutines.*
 import net.kyori.adventure.text.Component
 import org.bukkit.util.Transformation
-import org.joml.AxisAngle4f
-import org.joml.Quaternionf
-import org.joml.Vector3d
-import org.joml.Vector3f
+import org.joml.*
 import kotlin.math.cos
+import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.random.Random
@@ -40,7 +38,7 @@ class TestEnemy(hitpoints: Int) : DeltaruneEnemy(hitpoints) {
                 AxisAngle4f(),
                 Vector3f(0f),
                 AxisAngle4f()
-            ), teleportDuration = 40
+            ), teleportDuration = 2, opacity = 0
             )
         ) { entity ->
             runLater(1) {
@@ -53,36 +51,49 @@ class TestEnemy(hitpoints: Int) : DeltaruneEnemy(hitpoints) {
                     )
                 )
             }
-            var speed = 0.5
+            var speed = 0.15
             var dest = loc
+            var projectileHit = false
             runRepeating(42) { i ->
-                dest += primary * speed
-                entity.teleport(dest)
-                speed -= 0.06
-                if (i < 38) {
-                    entity.changeTransformation(
-                        Transformation(
-                            entity.transformation.translation,
-                            entity.transformation.leftRotation,
-                            Vector3f(2f + i * 0.17f, 1.5f - i * 0.03f, 1f),
-                            Quaternionf(AxisAngle4f())
-                        ), 64.toByte()
+                if (!projectileHit) {
+                    dest += primary * speed
+                    entity.teleport(dest)
+                    if (myBattle.damageHitbox(ZorshDeltarune.random.nextInt(10) + 20, Vector2d(dest.x, dest.y), 0.2)) {
+                        runLater(1) {
+                            projectileHit = true
+                            entity.destroy()
+                        }
+                    }
+                    speed -= 0.02
+                    if (i < 38) {
+                        entity.changeTransformation(
+                            Transformation(
+                                entity.transformation.translation,
+                                entity.transformation.leftRotation,
+                                Vector3f(2f + i * 0.17f, 1.5f - i * 0.03f, 1f),
+                                Quaternionf(AxisAngle4f())
+                            ), newOpacity = min(i * 20, 255).toByte()
 //                        ), ((sin(i.toDouble() * 0.6) + 1) * 127).toInt().toByte()
-                    )
+                        )
+                    }
                 }
             }
             runLater(39) {
-                entity.changeTransformation(
-                    Transformation(
-                        entity.transformation.translation,
-                        AxisAngle4f(),
-                        Vector3f(0f),
-                        AxisAngle4f()
+                if (!projectileHit) {
+                    entity.changeTransformation(
+                        Transformation(
+                            entity.transformation.translation,
+                            AxisAngle4f(),
+                            Vector3f(0f),
+                            AxisAngle4f()
+                        )
                     )
-                )
+                }
             }
             runLater(42) {
-                entity.destroy()
+                if (!projectileHit) {
+                    entity.destroy()
+                }
             }
 //            runRepeating(30) { i ->
 //                var scale = 2f + sin(i * 0.7f)

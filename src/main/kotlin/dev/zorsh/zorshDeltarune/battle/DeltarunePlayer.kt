@@ -5,6 +5,9 @@ import dev.zorsh.zorshDeltarune.nms.FakeDisplay
 import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
 import dev.zorsh.zorshDeltarune.nms.PacketManager
 import dev.zorsh.zorshDeltarune.utils.*
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.Style
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -13,6 +16,7 @@ import org.bukkit.Input
 import org.bukkit.entity.EntityType
 import org.joml.Vector3d
 import java.util.UUID
+import kotlin.math.max
 
 class DeltarunePlayer(private val uuid: UUID) {
 
@@ -29,6 +33,10 @@ class DeltarunePlayer(private val uuid: UUID) {
 
     var playerButtons: FakeDisplay? = null
 
+    var healthCounter: FakeDisplay? = null
+    var healthBar: FakeDisplay? = null
+    var noDamageTicks = 0
+
     var playerSelectedButton = 1
 
     var playerButtonTexts = mutableListOf<FakeDisplay>()
@@ -42,6 +50,33 @@ class DeltarunePlayer(private val uuid: UUID) {
     private var gameMode = GameMode.SURVIVAL
 
     private val soulSpeed = 0.12
+
+    var onHpUpdated: (Int) -> Unit = {}
+
+    fun damage(amount: Int) {
+        hp = max(hp - amount, 0)
+        onHpUpdated(hp)
+        healthCounter?.changeTransformation(healthCounter!!.transformation, Component.text("$hp / $maxhp"))
+        healthBar?.changeTransformation(healthBar!!.transformation,
+            Component.text(" ".repeat(hp)).style(Style.style(TextDecoration.UNDERLINED)).color("#00ff00")
+                .append(Component.text(" ".repeat(maxhp-hp)).style(Style.style(TextDecoration.UNDERLINED)).color("#aa0000"))
+        )
+        if (hp == 0) {
+            freeFromBattle()
+        }
+        noDamageTicks = 40
+        runRepeating(40) { i ->
+            noDamageTicks--
+            if ((i / 4) % 2 == 0) {
+                soul?.changeTransformation(soul!!.transformation, fontText("❤", "#992222", "space:default"))
+            } else {
+                soul?.changeTransformation(soul!!.transformation, fontText("❤", "#ff2222", "space:default"))
+            }
+        }
+        runLater(41) {
+            soul?.changeTransformation(soul!!.transformation, fontText("❤", "#ff2222", "space:default"))
+        }
+    }
 
     fun freeFromBattle() {
         locked = false

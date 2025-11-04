@@ -4,12 +4,14 @@ import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
 import com.comphenix.protocol.events.PacketContainer
+import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.comphenix.protocol.wrappers.WrappedDataValue
 import com.comphenix.protocol.wrappers.WrappedDataWatcher
 import dev.zorsh.zorshDeltarune.utils.FakeDisplayData
 import dev.zorsh.zorshDeltarune.utils.runLater
 import it.unimi.dsi.fastutil.ints.IntArrayList
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.minecraft.world.entity.PositionMoveRotation
 import net.minecraft.world.phys.Vec3
 import org.bukkit.Color
@@ -19,8 +21,9 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Transformation
 import org.joml.Quaternionf
 import org.joml.Vector3f
-import java.util.*
 import java.lang.reflect.Type
+import java.util.*
+
 
 class PacketManager {
     companion object {
@@ -55,7 +58,7 @@ class PacketManager {
             newTransformation: Transformation,
             players: List<Player>,
             interpolationDuration: Int = 1,
-            teleportDuration: Int = 2
+            teleportDuration: Int = 2,
         ) {
             val packet = getDisplayMetadataPacket(
                 entityId,
@@ -72,14 +75,16 @@ class PacketManager {
         @JvmStatic
         fun setTextDisplayMetadata(
             entityId: Int,
+            newText: Component,
             newTransformation: Transformation,
             players: List<Player>,
             interpolationDuration: Int = 1,
             teleportDuration: Int = 2,
-            opacity: Byte
+            opacity: Byte,
         ) {
             var packet = getTextDisplayMetadataPacket(
                 entityId,
+                newText,
                 newTransformation,
                 interpolationDuration,
                 teleportDuration,
@@ -91,6 +96,7 @@ class PacketManager {
                 savedEntities[entityId]?.interpolationDuration = interpolationDuration
                 savedEntities[entityId]?.teleportDuration = teleportDuration
                 savedEntities[entityId]?.textOpacity = opacity
+                savedEntities[entityId]?.text(newText)
 
                 val ent = savedEntities[entityId]!!
                 packet = getTextDisplayMetadataPacketNew(entityId, WrappedDataWatcher.getEntityWatcher(ent))
@@ -112,10 +118,11 @@ class PacketManager {
         @JvmStatic
         fun getTextDisplayMetadataPacket(
             entityId: Int,
+            newText: Component,
             newTransformation: Transformation,
             interpolationDuration: Int,
             teleportDuration: Int,
-            opacity: Byte
+            opacity: Byte,
         ): PacketContainer {
             // Le packet: https://minecraft.wiki/w/Java_Edition_protocol#Set_Entity_Metadata
             // Les index: https://minecraft.wiki/w/Minecraft_Wiki:Projects/wiki.vg_merge/Entity_metadata#Text_Display
@@ -168,6 +175,14 @@ class PacketManager {
                     newTransformation.rightRotation
                 )
 
+                val serializer = GsonComponentSerializer.gson()
+
+                metadataList += WrappedDataValue(
+                    23,
+                    WrappedDataWatcher.Registry.getChatComponentSerializer(),
+                    WrappedChatComponent.fromJson(serializer.serialize(newText)).handle
+                )
+
                 metadataList += WrappedDataValue(
                     26,
                     WrappedDataWatcher.Registry.get(Byte::class.java as Type),
@@ -185,7 +200,7 @@ class PacketManager {
             entityId: Int,
             newTransformation: Transformation,
             interpolationDuration: Int,
-            teleportDuration: Int
+            teleportDuration: Int,
         ): PacketContainer {
             // Le packet: https://minecraft.wiki/w/Java_Edition_protocol#Set_Entity_Metadata
             // Les index: https://minecraft.wiki/w/Minecraft_Wiki:Projects/wiki.vg_merge/Entity_metadata#Text_Display
@@ -363,7 +378,7 @@ class PacketManager {
             entityId: Int,
             location: Location,
             delta: Vec3,
-            players: List<Player>
+            players: List<Player>,
         ) {
             val packet = PacketContainer(PacketType.Play.Server.ENTITY_POSITION_SYNC)
             packet.integers.write(0, entityId)
@@ -440,7 +455,7 @@ class PacketManager {
                 runLater(2L) {
                     privateEntities.remove(entityId)
                 }
-                afterSpawned(FakeTextDisplay(entityId, location, data.transformation, data.teleportDuration, data.interpolationDuration, players, opacity = data.opacity))
+                afterSpawned(FakeTextDisplay(entityId, text, location, data.transformation, data.teleportDuration, data.interpolationDuration, players, opacity = data.opacity))
             }
         }
 
