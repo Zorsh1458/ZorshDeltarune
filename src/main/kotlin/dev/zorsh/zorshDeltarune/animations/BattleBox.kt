@@ -15,6 +15,12 @@ class BattleBox(
     var sizeY: Float = 10000f
 ) {
 
+    fun teleport(newLoc: Location) {
+        location = newLoc
+        outerPart?.teleport(newLoc)
+        innerPart?.teleport(newLoc)
+    }
+
     fun isInside(loc: Location, width: Float = 0f, height: Float = 0f): Pair<Boolean, Location> {
         val scaling = 0.05f
         val result = Location(loc.world, loc.x, loc.y, loc.z, loc.yaw, loc.pitch)

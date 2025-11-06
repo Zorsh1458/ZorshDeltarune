@@ -21,7 +21,9 @@ import org.joml.Quaternionf
 import org.joml.Vector3d
 import org.joml.Vector3f
 import java.time.Duration
+import kotlin.math.cos
 import kotlin.math.pow
+import kotlin.math.sin
 
 class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy>) : DeltaruneBattle(players, enemies) {
 
@@ -128,10 +130,18 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
     }
 
     private suspend fun battleBoxOpen() {
-        battleBox.sizeX = ZorshDeltarune.random.nextFloat() * 20f + 20f
-        battleBox.sizeY = ZorshDeltarune.random.nextFloat() * 20f + 20f
+        battleBox.sizeX = ZorshDeltarune.random.nextFloat() * 35f + 5f
+        battleBox.sizeY = ZorshDeltarune.random.nextFloat() * 35f + 5f
         battleBox.openAnimation()
         delay(900)
+        scope.launch {
+            var i = 0.0f
+            while (!playersTurn) {
+                i += 0.03f
+                battleBox.teleport(battleBoxCenterLocation + Vector3f(0f, 1.5f, 0f) + Vector3f(cos(i) * 2, sin(i * 2.7215f) * 1, 0f))
+                delay(50)
+            }
+        }
     }
 
     private suspend fun battleBoxClose() {
@@ -304,6 +314,17 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 AxisAngle4f()
             ))
         )
+
+//        newTextDisplay(
+//            loc - Vector3d(0.0, 0.0, 0.00095),
+//            coloredText("-", "#2e1e25"),
+//            data = FakeDisplayData(Transformation(
+//                Vector3f(-2f, -2.525f, 0.001f),
+//                AxisAngle4f(),
+//                Vector3f(200f, 2.2f, 1f),
+//                AxisAngle4f()
+//            ))
+//        )
 
         for (dPlayer in players.filter { it.player != null }) {
             dPlayer.perPlayerEntities = mutableListOf()
@@ -590,7 +611,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 data = FakeDisplayData(Transformation(
                     Vector3f(textWidth * 1.8f + leftOffset + 2.6f, -2f, 0.00015f),
                     AxisAngle4f(),
-                    Vector3f(0.16f, 10f, 1f),
+                    Vector3f(16f / dPlayer.maxhp, 10f, 1f),
                     AxisAngle4f()
                 ))
             ) { entity ->
@@ -615,33 +636,34 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             }
 
             //TODO("TP BAR")
+            val tpBarPos = Vector3d(6.0, 2.0, -0.001)
             newTextDisplay(
-                loc + Vector3d(4.5, 2.0, -0.001),
-                Component.text(" ".repeat(100)).style(Style.style(TextDecoration.UNDERLINED)).color("#aa0000"),
+                loc + tpBarPos,
+                Component.text(" ".repeat(100)).style(Style.style(TextDecoration.UNDERLINED)).color("#770000"),
                 playerToShow = listOfNotNull(mcPlayer),
                 data = FakeDisplayData(Transformation(
                     Vector3f(0f, 0f, 0.00015f),
                     AxisAngle4f(1.5708f, 0.0f, 0.0f, 1.0f),
-                    Vector3f(0.32f, 20f, 1f),
+                    Vector3f(0.32f, 20f * 0.75f, 1f),
                     AxisAngle4f()
                 ))
             ) { entity ->
                 dPlayer.tpBar = entity
             }
             newTextDisplay(
-                loc + Vector3d(4.665, 1.95, -0.1),
+                loc + tpBarPos + Vector3d(0.19, -0.057, -0.01),
                 Component.text("\uD702").font("space:default"),
                 playerToShow = listOfNotNull(mcPlayer),
                 data = FakeDisplayData(Transformation(
                     Vector3f(0f, 0f, 0.00018f),
                     AxisAngle4f(),
-                    Vector3f(1.1f, 1.1f, 1f),
+                    Vector3f(1.1f * 0.8f, 1.14f, 1f),
                     AxisAngle4f()
                 ))
             )
 
             newTextDisplay(
-                loc + Vector3d(4.75, 3.8, -0.001),
+                loc + tpBarPos + Vector3d(0.18, 1.8, 0.0),
                 Component.text("0").font("space:smooth"),
                 playerToShow = listOfNotNull(mcPlayer),
                 data = FakeDisplayData(Transformation(

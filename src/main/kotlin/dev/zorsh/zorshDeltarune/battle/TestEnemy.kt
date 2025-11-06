@@ -12,11 +12,22 @@ import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.random.Random
 
-class TestEnemy(hitpoints: Int) : DeltaruneEnemy(hitpoints) {
+class TestEnemy(
+    hitpoints: Int
+) : DeltaruneEnemy(hitpoints,
+    listOf(
+        Component.text("Это что еще за балбес"),
+        Component.text("Тестовый враг встал у вас на пути!")
+    )
+) {
 
     override suspend fun attack(onAttackEnds: () -> Unit) = coroutineScope {
         val razdel = ZorshDeltarune.random.nextInt(4) + 1
-        repeat(40) { angle ->
+        var count = 40
+        if (razdel == 1) {
+            count = 160
+        }
+        repeat(count) { angle ->
             launch {
                 testSpawnNMS(angle, razdel)
             }

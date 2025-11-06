@@ -27,8 +27,8 @@ class DeltarunePlayer(private val uuid: UUID) {
 
     var locked = false
 
-    var hp = 100
-    var maxhp = 100
+    var hp = 1000
+    var maxhp = 1000
 
     var perPlayerEntities = mutableListOf<FakeDisplay>()
 
@@ -42,7 +42,7 @@ class DeltarunePlayer(private val uuid: UUID) {
     var tpBar: FakeDisplay? = null
     var tpGain = 0
 
-    var tpAmount = 0
+    var tpAmount = 0.0
 
     var playerSelectedButton = 1
 
@@ -62,23 +62,23 @@ class DeltarunePlayer(private val uuid: UUID) {
     var onHpUpdated: (Int) -> Unit = {}
 
     fun updateTpCounter() {
-        if (tpAmount == 100) {
+        if (tpAmount == 100.0) {
             tpCounter?.changeTransformation(tpCounter!!.transformation, Component.text("MAKC.").font("space:smooth"))
             tpBar?.changeTransformation(
                 tpBar!!.transformation,
                 Component.text(" ".repeat(100)).style(Style.style(TextDecoration.UNDERLINED)).color("#ffff00")
             )
         } else {
-            tpCounter?.changeTransformation(tpCounter!!.transformation, Component.text("$tpAmount").font("space:smooth")
+            tpCounter?.changeTransformation(tpCounter!!.transformation, Component.text("${tpAmount.toInt()}").font("space:smooth")
                 .append(Component.text("%").font("minecraft:default")))
             tpBar?.changeTransformation(
                 tpBar!!.transformation,
-                Component.text(" ".repeat(max(tpAmount - 2, 0))).style(Style.style(TextDecoration.UNDERLINED))
+                Component.text(" ".repeat(max(tpAmount.toInt() - 2, 0))).style(Style.style(TextDecoration.UNDERLINED))
                     .color("#ffb24d")
                     .append(Component.text("  ").style(Style.style(TextDecoration.UNDERLINED)).color("#ffffff"))
                     .append(
-                        Component.text(" ".repeat(100 - tpAmount)).style(Style.style(TextDecoration.UNDERLINED))
-                            .color("#aa0000")
+                        Component.text(" ".repeat(100 - tpAmount.toInt())).style(Style.style(TextDecoration.UNDERLINED))
+                            .color("#770000")
                     )
             )
         }
@@ -183,7 +183,7 @@ class DeltarunePlayer(private val uuid: UUID) {
                     } else {
                         if (tpGain > 0) {
                             tpGain--
-                            tpAmount = min(tpAmount + 2, 100)
+                            tpAmount = min(tpAmount + 0.5, 100.0)
                             updateTpCounter()
                         }
 

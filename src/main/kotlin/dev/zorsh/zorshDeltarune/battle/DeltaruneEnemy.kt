@@ -1,10 +1,12 @@
 package dev.zorsh.zorshDeltarune.battle
 
 import dev.zorsh.zorshDeltarune.utils.*
+import net.kyori.adventure.text.Component
 import org.joml.Vector3f
 
 abstract class DeltaruneEnemy(
     val hitpoints: Int,
+    val encounterMessages: List<Component>
 ) {
 
     lateinit var myBattle: DeltaruneBattle
