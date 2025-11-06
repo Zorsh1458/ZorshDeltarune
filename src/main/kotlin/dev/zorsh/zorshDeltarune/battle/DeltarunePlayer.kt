@@ -17,6 +17,7 @@ import org.bukkit.entity.EntityType
 import org.joml.Vector3d
 import java.util.UUID
 import kotlin.math.max
+import kotlin.math.min
 
 class DeltarunePlayer(private val uuid: UUID) {
 
@@ -37,6 +38,12 @@ class DeltarunePlayer(private val uuid: UUID) {
     var healthBar: FakeDisplay? = null
     var noDamageTicks = 0
 
+    var tpCounter: FakeDisplay? = null
+    var tpBar: FakeDisplay? = null
+    var tpGain = 0
+
+    var tpAmount = 0
+
     var playerSelectedButton = 1
 
     var playerButtonTexts = mutableListOf<FakeDisplay>()
@@ -44,6 +51,7 @@ class DeltarunePlayer(private val uuid: UUID) {
     private var prevInput = InputHolder()
 
     var soul: FakeTextDisplay? = null
+    var soulOutline: FakeTextDisplay? = null
 
     var canMoveSoul = false
 
@@ -53,7 +61,31 @@ class DeltarunePlayer(private val uuid: UUID) {
 
     var onHpUpdated: (Int) -> Unit = {}
 
+    fun updateTpCounter() {
+        if (tpAmount == 100) {
+            tpCounter?.changeTransformation(tpCounter!!.transformation, Component.text("MAKC.").font("space:smooth"))
+            tpBar?.changeTransformation(
+                tpBar!!.transformation,
+                Component.text(" ".repeat(100)).style(Style.style(TextDecoration.UNDERLINED)).color("#ffff00")
+            )
+        } else {
+            tpCounter?.changeTransformation(tpCounter!!.transformation, Component.text("$tpAmount").font("space:smooth")
+                .append(Component.text("%").font("minecraft:default")))
+            tpBar?.changeTransformation(
+                tpBar!!.transformation,
+                Component.text(" ".repeat(max(tpAmount - 2, 0))).style(Style.style(TextDecoration.UNDERLINED))
+                    .color("#ffb24d")
+                    .append(Component.text("  ").style(Style.style(TextDecoration.UNDERLINED)).color("#ffffff"))
+                    .append(
+                        Component.text(" ".repeat(100 - tpAmount)).style(Style.style(TextDecoration.UNDERLINED))
+                            .color("#aa0000")
+                    )
+            )
+        }
+    }
+
     fun damage(amount: Int) {
+        player?.playSound(player!!, "soul_hurt", 1f, 1f)
         hp = max(hp - amount, 0)
         onHpUpdated(hp)
         healthCounter?.changeTransformation(healthCounter!!.transformation, Component.text("$hp / $maxhp"))
@@ -68,13 +100,28 @@ class DeltarunePlayer(private val uuid: UUID) {
         runRepeating(40) { i ->
             noDamageTicks--
             if ((i / 4) % 2 == 0) {
-                soul?.changeTransformation(soul!!.transformation, fontText("❤", "#992222", "space:default"))
+                soul?.changeTransformation(soul!!.transformation, fontText("❤", "#772222", "space:default"))
             } else {
                 soul?.changeTransformation(soul!!.transformation, fontText("❤", "#ff2222", "space:default"))
             }
         }
         runLater(41) {
             soul?.changeTransformation(soul!!.transformation, fontText("❤", "#ff2222", "space:default"))
+        }
+    }
+
+    fun tpGain() {
+        if (soulOutline != null) {
+            soulOutline?.changeTransformation(soulOutline!!.transformation, newOpacity = 128.toByte())
+            if (tpGain <= 0) {
+                player?.playSound(player!!, "tp_gain", 1f, 1f)
+            }
+            tpGain = 3
+            runLater(3) {
+                if (tpGain <= 0) {
+                    soulOutline?.changeTransformation(soulOutline!!.transformation, newOpacity = 0)
+                }
+            }
         }
     }
 
@@ -92,6 +139,12 @@ class DeltarunePlayer(private val uuid: UUID) {
         playerButtons = null
         soul?.destroy()
         soul = null
+        soulOutline?.destroy()
+        soulOutline = null
+        tpBar?.destroy()
+        tpBar = null
+        tpCounter?.destroy()
+        tpCounter = null
         perPlayerEntities.map { it.destroy() }
         playerButtonTexts.map { it.destroy() }
         perPlayerEntities.clear()
@@ -128,6 +181,12 @@ class DeltarunePlayer(private val uuid: UUID) {
                         cancel()
                         freeFromBattle()
                     } else {
+                        if (tpGain > 0) {
+                            tpGain--
+                            tpAmount = min(tpAmount + 2, 100)
+                            updateTpCounter()
+                        }
+
                         val box = battle.battleBox
 //                        myPlayer.teleport(location)
                         PacketManager.playerLookAt(myPlayer.location + Vector3d(0.0, 0.0, 5.0), listOf(myPlayer))
@@ -162,6 +221,7 @@ class DeltarunePlayer(private val uuid: UUID) {
                             if (!check.first) {
                                 soul?.teleport(check.second)
                             }
+                            soulOutline?.teleport(soul!!.location + Vector3d(0.0, 0.0, -0.001))
                         }
                     }
                 }

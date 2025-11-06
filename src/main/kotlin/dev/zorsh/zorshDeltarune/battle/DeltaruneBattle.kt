@@ -11,7 +11,6 @@ import kotlinx.coroutines.Dispatchers
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import org.bukkit.Particle
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Transformation
@@ -40,6 +39,8 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
             if (dPlayer.noDamageTicks <= 0 && dPlayer.soul?.location?.let { Vector2d(it.x - center.x, it.y - center.y).length() <= radius } == true) {
                 dPlayer.damage(amount)
                 damagedAnyone = true
+            } else if (dPlayer.noDamageTicks <= 0 && dPlayer.soul?.location?.let { Vector2d(it.x - center.x, it.y - center.y).length() <= radius + 0.4 } == true) {
+                dPlayer.tpGain()
             }
         }
         return damagedAnyone

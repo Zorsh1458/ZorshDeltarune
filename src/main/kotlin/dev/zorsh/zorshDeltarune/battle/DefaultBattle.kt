@@ -314,6 +314,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             newTextDisplay(
                 loc - Vector3d(0.0, 0.0, 0.0003),
                 fontText("❤", "#ff2222", "space:default"),
+                playerToShow = listOfNotNull(dPlayer.player),
                 data = FakeDisplayData(Transformation(
                     Vector3f(0f, 0f, 0f),
                     AxisAngle4f(),
@@ -322,6 +323,19 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 ), teleportDuration = 1)
             ) { entity ->
                 dPlayer.soul = entity
+            }
+            newTextDisplay(
+                loc - Vector3d(0.0, 0.0, 0.0003),
+                fontText("♡", "#ffffff", "space:default"),
+                playerToShow = listOfNotNull(dPlayer.player),
+                data = FakeDisplayData(Transformation(
+                    Vector3f(0f, 0f, 0f),
+                    AxisAngle4f(),
+                    Vector3f(1f),
+                    AxisAngle4f()
+                ), teleportDuration = 1, opacity = 0)
+            ) { entity ->
+                dPlayer.soulOutline = entity
             }
 
             val mcPlayer = dPlayer.player
@@ -361,6 +375,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             newTextDisplay(
                 loc - Vector3d(0.0, 0.0, 0.001),
                 fontText(name, "#e3e3e3", "space:smooth2"),
+                playerToShow = listOfNotNull(mcPlayer),
                 data = FakeDisplayData(Transformation(
                     Vector3f(width + leftOffset + 1.15f, -2.15f - (1f - (actualWidth / 0.7f).pow(0.5f)) * 0.25f, 0.00015f),
                     AxisAngle4f(),
@@ -375,6 +390,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             newTextDisplay(
                 loc - Vector3d(0.0, 0.0, 0.001),
                 coloredText("HP", "#e3e3e3"),
+                playerToShow = listOfNotNull(mcPlayer),
                 data = FakeDisplayData(Transformation(
                     Vector3f(width * 2f + leftOffset + 1.55f, -2.1f, 0.00015f),
                     AxisAngle4f(),
@@ -390,6 +406,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             newTextDisplay(
                 loc - Vector3d(0.0, 0.0, 0.001),
                 buttons,
+                playerToShow = listOfNotNull(mcPlayer),
                 data = FakeDisplayData(Transformation(
                     Vector3f(width + leftOffset + 1.9f, -3f, 0.00021f),
                     AxisAngle4f(),
@@ -444,6 +461,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 newTextDisplay(
                     loc - Vector3d(0.0, 0.0, 0.001),
                     buttonText,
+                    playerToShow = listOfNotNull(mcPlayer),
                     data = FakeDisplayData(
                         Transformation(
                             Vector3f(width + leftOffset + 1.9f + ind * 0.9f, -3.12f, 0.00025f),
@@ -504,6 +522,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             newTextDisplay(
                 loc - Vector3d(0.0, 0.0, 0.001),
                 text,
+                playerToShow = listOfNotNull(mcPlayer),
                 data = FakeDisplayData(Transformation(
                     Vector3f(leftOffset - 0.05f, -3.3f, 0.00015f),
                     AxisAngle4f(),
@@ -519,6 +538,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             newTextDisplay(
                 loc - Vector3d(0.0, 0.0, 0.001),
                 text,
+                playerToShow = listOfNotNull(mcPlayer),
                 data = FakeDisplayData(Transformation(
                     Vector3f((leftOffset + 0.075f) * -0.95f, -3.3f, 0.00015f),
                     AxisAngle4f(),
@@ -537,6 +557,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             newTextDisplay(
                 loc - Vector3d(0.0, 0.0, 0.001),
                 coloredText("⬛", "#00ffff"),
+                playerToShow = listOfNotNull(mcPlayer),
                 data = FakeDisplayData(Transformation(
                     Vector3f(sx1 * 0.075f + leftOffset, sy1 * -0.0365f - 2.25f, 0.00005f),
                     AxisAngle4f(),
@@ -549,6 +570,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             newTextDisplay(
                 loc - Vector3d(0.0, 0.0, 0.001),
                 coloredText("⬛", "#000000"),
+                playerToShow = listOfNotNull(mcPlayer),
                 data = FakeDisplayData(Transformation(
                     Vector3f(sx1 * 0.0753f + leftOffset, sy2 * -0.0365f - 2.2f, 0.0001f),
                     AxisAngle4f(),
@@ -564,6 +586,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             newTextDisplay(
                 loc - Vector3d(0.0, 0.0, 0.001),
                 Component.text(" ".repeat(dPlayer.maxhp)).style(Style.style(TextDecoration.UNDERLINED)).color("#00ff00"),
+                playerToShow = listOfNotNull(mcPlayer),
                 data = FakeDisplayData(Transformation(
                     Vector3f(textWidth * 1.8f + leftOffset + 2.6f, -2f, 0.00015f),
                     AxisAngle4f(),
@@ -579,6 +602,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             newTextDisplay(
                 loc - Vector3d(0.0, 0.0, 0.001),
                 Component.text("${dPlayer.hp} / ${dPlayer.maxhp}"),
+                playerToShow = listOfNotNull(mcPlayer),
                 data = FakeDisplayData(Transformation(
                     Vector3f(textWidth * 1.8f + leftOffset + 2.6f, -1.7f, 0.00015f),
                     AxisAngle4f(),
@@ -588,6 +612,46 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             ) { entity ->
                 dPlayer.perPlayerEntities.add(entity)
                 dPlayer.healthCounter = entity
+            }
+
+            //TODO("TP BAR")
+            newTextDisplay(
+                loc + Vector3d(4.5, 2.0, -0.001),
+                Component.text(" ".repeat(100)).style(Style.style(TextDecoration.UNDERLINED)).color("#aa0000"),
+                playerToShow = listOfNotNull(mcPlayer),
+                data = FakeDisplayData(Transformation(
+                    Vector3f(0f, 0f, 0.00015f),
+                    AxisAngle4f(1.5708f, 0.0f, 0.0f, 1.0f),
+                    Vector3f(0.32f, 20f, 1f),
+                    AxisAngle4f()
+                ))
+            ) { entity ->
+                dPlayer.tpBar = entity
+            }
+            newTextDisplay(
+                loc + Vector3d(4.665, 1.95, -0.1),
+                Component.text("\uD702").font("space:default"),
+                playerToShow = listOfNotNull(mcPlayer),
+                data = FakeDisplayData(Transformation(
+                    Vector3f(0f, 0f, 0.00018f),
+                    AxisAngle4f(),
+                    Vector3f(1.1f, 1.1f, 1f),
+                    AxisAngle4f()
+                ))
+            )
+
+            newTextDisplay(
+                loc + Vector3d(4.75, 3.8, -0.001),
+                Component.text("0").font("space:smooth"),
+                playerToShow = listOfNotNull(mcPlayer),
+                data = FakeDisplayData(Transformation(
+                    Vector3f(0f, 0f, 0.00015f),
+                    AxisAngle4f(),
+                    Vector3f(1.5f, 1.2f, 1f),
+                    AxisAngle4f()
+                ))
+            ) { entity ->
+                dPlayer.tpCounter = entity
             }
         }
     }
