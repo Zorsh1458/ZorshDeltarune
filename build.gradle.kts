@@ -30,6 +30,7 @@ dependencies {
 //    compileOnly("io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT")
 //    compileOnly("org.spigotmc:spigot-api:1.21.7-R0.1-SNAPSHOT")
     compileOnly("net.dmulloy2:ProtocolLib:5.4.0")
+    compileOnly("io.github.toxicity188:bettermodel:1.14.2")
     paperweight.paperDevBundle("1.21.7-R0.1-SNAPSHOT")
 }
 

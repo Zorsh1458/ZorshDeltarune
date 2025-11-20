@@ -8,6 +8,7 @@ import dev.zorsh.zorshDeltarune.nms.PacketManager
 import dev.zorsh.zorshDeltarune.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -57,11 +58,15 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
     open fun end() {
         for (enemy in enemies) {
             if (enemy.isAlive) {
-                enemy.die()
+                try {
+                    enemy.die()
+                } catch (ignored: Exception) {}
             }
         }
         for (pl in players) {
-            pl.freeFromBattle()
+            try {
+                pl.freeFromBattle()
+            } catch (ignored: Exception) {}
         }
         destroyBattle()
         onEndedAction()
@@ -126,6 +131,7 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
             } catch (ignored: Exception) {}
         }
         spawnedEntities.clear()
+        scope.cancel()
     }
 
     protected abstract fun startBattle()

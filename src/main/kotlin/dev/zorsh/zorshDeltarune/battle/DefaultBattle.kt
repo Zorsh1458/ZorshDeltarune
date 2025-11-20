@@ -9,7 +9,6 @@ import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title.Times
 import net.kyori.adventure.title.Title.title
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
@@ -32,6 +31,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
     private var battleJob: Job? = null
 
     private lateinit var background: FakeTextDisplay
+    private lateinit var backgroundDark: FakeTextDisplay
 
     override fun destroyBattle() {
         super.destroyBattle()
@@ -45,62 +45,64 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
 
     override fun startBattle() {
         for (pl in players) {
-            pl.lockInBattle(battleCenterLocation)
+            pl.lockInBattle(battleCenterLocation - Vector3d(0.0, 0.5, 0.0))
             pl.player?.showTitle(title(
                 fontText("\uD701", "#000000", "space:default"),
                 Component.text(""),
-                Times.times(Duration.ZERO, Duration.ofMillis(500), Duration.ofMillis(100))
+                Times.times(Duration.ZERO, Duration.ofMillis(1000), Duration.ofMillis(100))
             ))
             pl.player?.playSound(pl.player!!, "encounter", 1f, 1f)
-            runLater(10) {
+            runLater(20) {
                 pl.player?.playSound(pl.player!!, "weaponpull", 1f, 1f)
             }
-            runLater(20) {
+            runLater(30) {
                 pl.player?.playSound(pl.player!!, "battle", 1f, 1f)
             }
         }
 
-        prepareSprites()
+        runLater(20) {
+            prepareSprites()
 
-        CoroutineScope(Dispatchers.IO).launch {
-            delay(250)
-            val job = scope.launch {
-                repeat(5) {
-                    delay(100L)
-                    showPlayersOptions()
-                    delay(5000L)
-                    playersTurn = false
-                    hidePlayersOptions()
-                    battleBoxOpen()
-                    unlockSouls()
-                    val jobs = mutableListOf<Job>()
-                    for (enemy in enemies) {
-                        jobs += launch {
-                            enemy.attack()
+            CoroutineScope(Dispatchers.IO).launch {
+                delay(250)
+                val job = scope.launch {
+                    repeat(5) {
+                        delay(100L)
+                        showPlayersOptions()
+                        delay(5000L)
+                        playersTurn = false
+                        hidePlayersOptions()
+                        battleBoxOpen()
+                        unlockSouls()
+                        val jobs = mutableListOf<Job>()
+                        for (enemy in enemies) {
+                            jobs += launch {
+                                enemy.attack()
+                            }
                         }
+                        jobs.joinAll()
+                        delay(200L)
+                        lockSouls()
+                        battleBoxClose()
+                        delay(100L)
                     }
-                    jobs.joinAll()
-                    delay(200L)
-                    lockSouls()
-                    battleBoxClose()
-                    delay(100L)
                 }
+                battleJob = job
+                job.join()
+                end()
             }
-            battleJob = job
-            job.join()
-            end()
-        }
 
-        loopTask = object : BukkitRunnable() {
-            override fun run() {
-                if (players.all { !it.locked }) {
-                    if (battleJob?.isCancelled == false) {
-                        battleJob?.cancel()
+            loopTask = object : BukkitRunnable() {
+                override fun run() {
+                    if (players.all { !it.locked }) {
+                        if (battleJob?.isCancelled == false) {
+                            battleJob?.cancel()
+                        }
+                        cancel()
                     }
-                    cancel()
                 }
-            }
-        }.runTaskTimer(ZorshDeltarune.instance, 1L, 1L)
+            }.runTaskTimer(ZorshDeltarune.instance, 1L, 1L)
+        }
     }
 
     private fun unlockSouls() {
@@ -133,36 +135,35 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
         battleBox.sizeX = ZorshDeltarune.random.nextFloat() * 35f + 5f
         battleBox.sizeY = ZorshDeltarune.random.nextFloat() * 35f + 5f
         battleBox.openAnimation()
-        delay(900)
-        scope.launch {
-            var i = 0.0f
-            while (!playersTurn) {
-                i += 0.03f
-                battleBox.teleport(battleBoxCenterLocation + Vector3f(0f, 1.5f, 0f) + Vector3f(cos(i) * 2, sin(i * 2.7215f) * 1, 0f))
-                delay(50)
-            }
+        runRepeating(10) { i ->
+            backgroundDark.changeTransformation(backgroundDark.transformation, newOpacity = (128 + (i+1)*12).toByte())
         }
+        delay(900)
+//        scope.launch {
+//            var i = 0.0f
+//            while (!playersTurn) {
+//                i += 0.03f
+//                battleBox.teleport(battleBoxCenterLocation + Vector3f(0f, 1.5f, 0f) + Vector3f(cos(i) * 2, sin(i * 2.7215f) * 1, 0f))
+//                delay(50)
+//            }
+//        }
     }
 
     private suspend fun battleBoxClose() {
         battleBox.closeAnimation()
+        runRepeating(10) { i ->
+            backgroundDark.changeTransformation(backgroundDark.transformation, newOpacity = (248 - (i+1)*12).toByte())
+        }
         delay(900)
     }
 
     private suspend fun showPlayersOptions() {
         repeat(2) {
             for (dPlayer in players) {
-                val buttonEntity1 = dPlayer.playerButtonTexts[dPlayer.playerSelectedButton]
-                buttonEntity1.changeTransformation(Transformation(
-                    buttonEntity1.transformation.translation,
-                    AxisAngle4f(),
-                    Vector3f(0f, 1f, 1f),
-                    AxisAngle4f()
-                ))
                 dPlayer.playerSelectedButton = 0
-                val buttonEntity2 = dPlayer.playerButtonTexts[0]
-                buttonEntity2.changeTransformation(Transformation(
-                    buttonEntity2.transformation.translation,
+                val buttonEntity = dPlayer.playerButtonTexts[0]
+                buttonEntity.changeTransformation(Transformation(
+                    buttonEntity.transformation.translation,
                     AxisAngle4f(),
                     Vector3f(1f, 1f, 1f),
                     AxisAngle4f()
@@ -185,6 +186,17 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
     }
 
     private suspend fun hidePlayersOptions() {
+        for (dPlayer in players) {
+            val index = dPlayer.playerSelectedButton
+            val buttonEntity = dPlayer.playerButtonTexts[index]
+            val transform = buttonEntity.transformation
+            buttonEntity.changeTransformation(Transformation(
+                transform.translation,
+                transform.leftRotation,
+                Vector3f(0f, transform.scale.y, 1f),
+                transform.rightRotation
+            ))
+        }
         repeat(2) {
             for (dPlayer in players) {
                 for (entity in dPlayer.perPlayerEntities) {
@@ -227,7 +239,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
 
         newTextDisplay(
             battleBoxCenterLocation + Vector3f(0f, 1.5f, 0f),
-            Component.text("\uE201-").font("space:dsprites").color("#050505"),
+            Component.text("\uE201-").font("space:dsprites").color("#000000"),
             data = FakeDisplayData(
                 Transformation(
                     Vector3f(0f),
@@ -264,7 +276,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 Quaternionf(0f, 0f, 0f, 1f)
             ), opacity = 128.toByte())
         ) { entity ->
-            background = entity
+            backgroundDark = entity
         }
 
         //- spawn text_display[brightness=<map[block=15;sky=15]>;text=<&color[#000000]>⬛;background_color=<color[#ffffff].with_alpha[0]>;left_rotation=<location[0,0,1].to_axis_angle_quaternion[3.1415]>;scale=180,100,1;translation=-2,2.49,-0.0009;force_no_persist=true] <[pos].forward[5].face[<[pos]>]> save:main_bg
@@ -315,16 +327,18 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             ))
         )
 
-//        newTextDisplay(
-//            loc - Vector3d(0.0, 0.0, 0.00095),
-//            coloredText("-", "#2e1e25"),
-//            data = FakeDisplayData(Transformation(
-//                Vector3f(-2f, -2.525f, 0.001f),
-//                AxisAngle4f(),
-//                Vector3f(200f, 2.2f, 1f),
-//                AxisAngle4f()
-//            ))
-//        )
+        val encounterText = enemies.random().encounterMessages.random()
+        val finalText = Component.text("✲ ").append(encounterText).style(Style.style(TextDecoration.BOLD))
+        newTextDisplay(
+            loc - Vector3d(0.0, 0.0, 0.00095),
+            finalText,
+            data = FakeDisplayData(Transformation(
+                Vector3f(0f, -3f, 0.011f),
+                AxisAngle4f(),
+                Vector3f(1.4f, 1.4f, 1f),
+                AxisAngle4f()
+            ))
+        )
 
         for (dPlayer in players.filter { it.player != null }) {
             dPlayer.perPlayerEntities = mutableListOf()
@@ -413,7 +427,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 coloredText("HP", "#e3e3e3"),
                 playerToShow = listOfNotNull(mcPlayer),
                 data = FakeDisplayData(Transformation(
-                    Vector3f(width * 2f + leftOffset + 1.55f, -2.1f, 0.00015f),
+                    Vector3f(width * 2f + leftOffset + 1.55f, -2.03f, 0.00015f),
                     AxisAngle4f(),
                     Vector3f(1f, 1.1f, 1f),
                     AxisAngle4f()
@@ -485,7 +499,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     playerToShow = listOfNotNull(mcPlayer),
                     data = FakeDisplayData(
                         Transformation(
-                            Vector3f(width + leftOffset + 1.9f + ind * 0.9f, -3.12f, 0.00025f),
+                            Vector3f(width + leftOffset + 1.9f + ind * 0.9f, -3.17f, 0.01025f),
                             AxisAngle4f(),
                             Vector3f(0f, 1f, 1f),
                             AxisAngle4f()
@@ -498,7 +512,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 }
             }
             dPlayer.onLeftPressed {
-                if (dPlayer.playerSelectedButton > 0) {
+                if (dPlayer.playerSelectedButton > 0 && playersTurn) {
                     val newIndex = dPlayer.playerSelectedButton - 1
                     val buttonEntity1 = dPlayer.playerButtonTexts[newIndex+1]
                     buttonEntity1.changeTransformation(Transformation(
@@ -518,7 +532,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 }
             }
             dPlayer.onRightPressed {
-                if (dPlayer.playerSelectedButton < 4) {
+                if (dPlayer.playerSelectedButton < 4 && playersTurn) {
                     val newIndex = dPlayer.playerSelectedButton + 1
                     val buttonEntity1 = dPlayer.playerButtonTexts[newIndex-1]
                     buttonEntity1.changeTransformation(Transformation(

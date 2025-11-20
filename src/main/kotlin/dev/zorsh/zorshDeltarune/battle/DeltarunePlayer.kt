@@ -8,13 +8,17 @@ import dev.zorsh.zorshDeltarune.utils.*
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextDecoration
+import net.kyori.adventure.title.Title.Times
+import net.kyori.adventure.title.Title.title
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.Input
+import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
 import org.joml.Vector3d
+import java.time.Duration
 import java.util.UUID
 import kotlin.math.max
 import kotlin.math.min
@@ -60,6 +64,8 @@ class DeltarunePlayer(private val uuid: UUID) {
     private val soulSpeed = 0.12
 
     var onHpUpdated: (Int) -> Unit = {}
+
+    var anchor: Entity? = null
 
     fun updateTpCounter() {
         if (tpAmount == 100.0) {
@@ -145,13 +151,26 @@ class DeltarunePlayer(private val uuid: UUID) {
         tpBar = null
         tpCounter?.destroy()
         tpCounter = null
+        runLater(1) {
+            if (player != null) {
+                anchor?.removePassenger(player!!)
+            }
+            anchor?.remove()
+            anchor = null
+        }
         perPlayerEntities.map { it.destroy() }
         playerButtonTexts.map { it.destroy() }
         perPlayerEntities.clear()
         playerButtonTexts.clear()
         playerSelectedButton = 1
         //player?.flySpeed = 0.1f
-        runLater(10) {
+        player?.showTitle(
+            title(
+            fontText("\uD701", "#000000", "space:default"),
+            Component.text(""),
+            Times.times(Duration.ZERO, Duration.ofMillis(500), Duration.ofMillis(100))
+        ))
+        runLater(6) {
             player?.gameMode = gameMode
         }
     }
@@ -162,9 +181,10 @@ class DeltarunePlayer(private val uuid: UUID) {
             val myPlayer = player!!
             gameMode = myPlayer.gameMode
             myPlayer.gameMode = GameMode.SPECTATOR
-            val anchor = location.world.spawnEntity(location, EntityType.BLOCK_DISPLAY)
-            anchor.isPersistent = false
-            anchor.addPassenger(myPlayer)
+            anchor = location.world.spawnEntity(location, EntityType.BLOCK_DISPLAY)
+            anchor?.isPersistent = false
+            anchor?.addPassenger(myPlayer)
+            myPlayer.sendActionBar(Component.text(""))
             locked = true
             object : BukkitRunnable() {
                 override fun run() {
@@ -177,7 +197,6 @@ class DeltarunePlayer(private val uuid: UUID) {
                     }
 
                     if (!locked) {
-                        anchor.remove()
                         cancel()
                         freeFromBattle()
                     } else {

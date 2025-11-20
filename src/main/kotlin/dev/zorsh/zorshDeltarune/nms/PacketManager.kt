@@ -416,6 +416,7 @@ class PacketManager {
                 ent.transformation = data.transformation
                 ent.interpolationDuration = data.interpolationDuration
                 ent.brightness = Display.Brightness(15, 15)
+                ent.isPersistent = false
                 val entityId = ent.entityId
                 privateEntities[entityId] = players.toSet()
                 runLater(1L) {
@@ -446,6 +447,7 @@ class PacketManager {
                 ent.brightness = Display.Brightness(15, 15)
                 ent.lineWidth = 10000
                 ent.textOpacity = data.opacity
+                ent.isPersistent = false
                 val entityId = ent.entityId
                 savedEntities[entityId] = ent
                 privateEntities[entityId] = players.toSet()
