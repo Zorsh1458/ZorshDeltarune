@@ -1,6 +1,7 @@
 package dev.zorsh.zorshDeltarune.battle
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
+import dev.zorsh.zorshDeltarune.bettermodel.BattlePlayer
 import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
 import dev.zorsh.zorshDeltarune.utils.*
 import kotlinx.coroutines.*
@@ -9,6 +10,7 @@ import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title.Times
 import net.kyori.adventure.title.Title.title
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
@@ -33,7 +35,16 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
     private lateinit var background: FakeTextDisplay
     private lateinit var backgroundDark: FakeTextDisplay
 
+    private val battlePlayerModels = mutableListOf<BattlePlayer>()
+
     override fun destroyBattle() {
+        Bukkit.broadcast(Component.text("destr"))
+        battlePlayerModels.forEach { bpm ->
+            try {
+                bpm.remove()
+            } catch (ignored: Exception) {}
+        }
+        battlePlayerModels.clear()
         super.destroyBattle()
         if (loopTask?.isCancelled == false) {
             loopTask?.cancel()
@@ -340,10 +351,19 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             ))
         )
 
+        //TODO("PLAYERS")
         for (dPlayer in players.filter { it.player != null }) {
             dPlayer.perPlayerEntities = mutableListOf()
             dPlayer.playerButtonTexts = mutableListOf()
             dPlayer.playerSelectedButton = 0
+
+            dPlayer.player?.let {
+                val battlePlayer = BattlePlayer()
+                val modelLocation = battleBoxCenterLocation + Vector3d(5.0, 0.75, -1.0)
+                modelLocation.yaw = 90f
+                battlePlayer.create(it, modelLocation)
+                battlePlayerModels += battlePlayer
+            }
 
             // SOUL ====++++++++++++====
             newTextDisplay(

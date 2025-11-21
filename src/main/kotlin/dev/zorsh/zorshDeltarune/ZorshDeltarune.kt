@@ -7,6 +7,7 @@ import dev.zorsh.zorshDeltarune.battle.DeltarunePlayer
 import dev.zorsh.zorshDeltarune.commands.DeltaruneBattleCommand
 import dev.zorsh.zorshDeltarune.listeners.DeltaruneListener
 import dev.zorsh.zorshDeltarune.nms.PacketListenerEntityDestroy
+import dev.zorsh.zorshDeltarune.nms.PacketListenerEntityMetadata
 import dev.zorsh.zorshDeltarune.nms.PacketListenerSpawnEntity
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.UUID
@@ -33,6 +34,7 @@ class ZorshDeltarune : JavaPlugin() {
         instance = this
         protocolManager.addPacketListener(PacketListenerSpawnEntity())
         protocolManager.addPacketListener(PacketListenerEntityDestroy())
+        protocolManager.addPacketListener(PacketListenerEntityMetadata())
         server.pluginManager.registerEvents(DeltaruneListener(), this)
         getCommand("deltarunebattle")?.setExecutor(DeltaruneBattleCommand())
         getCommand("deltarunebattle")?.tabCompleter = DeltaruneBattleCommand()
