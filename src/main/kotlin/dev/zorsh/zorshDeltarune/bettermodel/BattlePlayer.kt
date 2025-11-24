@@ -1,11 +1,9 @@
 package dev.zorsh.zorshDeltarune.bettermodel
 
+import dev.zorsh.zorshDeltarune.nms.PacketManager
 import dev.zorsh.zorshDeltarune.utils.runLater
-import dev.zorsh.zorshDeltarune.utils.runRepeating
 import kr.toxicity.model.api.BetterModel
-import kr.toxicity.model.api.tracker.EntityHideOption
 import kr.toxicity.model.api.tracker.EntityTracker
-import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Entity
@@ -25,30 +23,34 @@ class BattlePlayer {
         try {
             anchor = location.world.spawnEntity(location, EntityType.BLOCK_DISPLAY)
             anchor.isPersistent = false
+
             tracker = BetterModel.limb("battleplayer")
-//            .map { r -> r.getOrCreate(ent, player).also { tracker ->
-//                tracker.h
-//            } }
                 .map { r -> r.getOrCreate(anchor, player) }
                 .orElse(null)
-            Bukkit.getOnlinePlayers().forEach { pl ->
-                if (pl.uniqueId != player.uniqueId) {
-                    tracker.hide(pl)
-                    Bukkit.broadcast(Component.text("Hiding ${player.name}'s model from ${pl.name}"))
-                }
-            }
+
             tracker.displays().forEach { display ->
+                PacketManager.removeEntity(
+                    display.id(),
+                    Bukkit.getOnlinePlayers().filter { pl ->
+                        pl.uniqueId != player.uniqueId
+                    }
+                )
                 display.brightness(15, 15)
                 trackedModels += display.id()
+                PacketManager.privateEntities[display.id()] = setOf(player)
             }
+
             runLater(10) {
                 tracker.animate("idle")
             }
-        } catch (ignored: Exception) {}
+        } catch (_: Exception) {}
     }
 
     fun remove() {
         runLater(0) {
+            tracker.displays().forEach { display ->
+                PacketManager.privateEntities.remove(display.id())
+            }
             tracker.despawn()
             anchor.remove()
         }

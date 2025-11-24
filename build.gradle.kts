@@ -10,9 +10,6 @@ version = "1.0"
 
 repositories {
     mavenCentral()
-//    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") {
-//        name = "spigotmc"
-//    }
     maven("https://oss.sonatype.org/content/groups/public/") {
         name = "sonatype"
     }
@@ -36,9 +33,6 @@ dependencies {
 
 tasks {
     runServer {
-        // Configure the Minecraft version for our task.
-        // This is the only required configuration besides applying the plugin.
-        // Your plugin's jar (or shadowJar if present) will be used automatically.
         minecraftVersion("1.21.7")
     }
 }
