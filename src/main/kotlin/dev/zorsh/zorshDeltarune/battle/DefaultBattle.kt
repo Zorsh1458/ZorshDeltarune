@@ -1,6 +1,7 @@
 package dev.zorsh.zorshDeltarune.battle
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
+import dev.zorsh.zorshDeltarune.bettermodel.Animation
 import dev.zorsh.zorshDeltarune.bettermodel.BattlePlayer
 import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
 import dev.zorsh.zorshDeltarune.utils.*
@@ -146,6 +147,9 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
         battleBox.sizeX = ZorshDeltarune.random.nextFloat() * 35f + 5f
         battleBox.sizeY = ZorshDeltarune.random.nextFloat() * 35f + 5f
         battleBox.openAnimation()
+        battlePlayerModels.forEach { bpm ->
+            bpm.animate(Animation.ATTACK)
+        }
         runRepeating(10) { i ->
             backgroundDark.changeTransformation(backgroundDark.transformation, newOpacity = (128 + (i+1)*12).toByte())
         }

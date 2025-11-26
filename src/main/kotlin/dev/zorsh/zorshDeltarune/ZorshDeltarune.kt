@@ -9,6 +9,7 @@ import dev.zorsh.zorshDeltarune.listeners.DeltaruneListener
 import dev.zorsh.zorshDeltarune.nms.PacketListenerEntityDestroy
 import dev.zorsh.zorshDeltarune.nms.PacketListenerEntityMetadata
 import dev.zorsh.zorshDeltarune.nms.PacketListenerSpawnEntity
+import dev.zorsh.zorshDeltarune.nms.PacketListenerUpdateTime
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.UUID
 import kotlin.random.Random
@@ -35,6 +36,7 @@ class ZorshDeltarune : JavaPlugin() {
         protocolManager.addPacketListener(PacketListenerSpawnEntity())
         protocolManager.addPacketListener(PacketListenerEntityDestroy())
         protocolManager.addPacketListener(PacketListenerEntityMetadata())
+        protocolManager.addPacketListener(PacketListenerUpdateTime())
         server.pluginManager.registerEvents(DeltaruneListener(), this)
         getCommand("deltarunebattle")?.setExecutor(DeltaruneBattleCommand())
         getCommand("deltarunebattle")?.tabCompleter = DeltaruneBattleCommand()

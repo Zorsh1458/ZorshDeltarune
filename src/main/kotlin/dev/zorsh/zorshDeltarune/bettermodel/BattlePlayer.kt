@@ -4,6 +4,7 @@ import dev.zorsh.zorshDeltarune.nms.PacketManager
 import dev.zorsh.zorshDeltarune.utils.runLater
 import kr.toxicity.model.api.BetterModel
 import kr.toxicity.model.api.tracker.EntityTracker
+import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Entity
@@ -18,6 +19,7 @@ class BattlePlayer {
 
     private lateinit var anchor: Entity
     private lateinit var tracker: EntityTracker
+    private var animation: String? = null
 
     fun create(player: Player, location: Location) {
         try {
@@ -41,9 +43,28 @@ class BattlePlayer {
             }
 
             runLater(10) {
+                animation = "idle"
                 tracker.animate("idle")
             }
         } catch (_: Exception) {}
+    }
+
+    private fun cancelAnimation() = animation?.let { tracker.stopAnimation(it) }
+
+    fun animate(newAnimation: Animation) {
+//        cancelAnimation()
+//        animation = newAnimation.animationName
+//        tracker.animate(newAnimation.animationName)
+//        runLater(newAnimation.length) {
+//            cancelAnimation()
+//            animation = "idle"
+//            tracker.animate("idle")
+//        }
+        Bukkit.broadcast(Component.text("Animating $newAnimation"))
+        tracker.animate(newAnimation.animationName)
+        runLater(newAnimation.length) {
+            tracker.animate("idle")
+        }
     }
 
     fun remove() {

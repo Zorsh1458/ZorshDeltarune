@@ -14,6 +14,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.minecraft.world.entity.PositionMoveRotation
 import net.minecraft.world.phys.Vec3
+import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.entity.*
@@ -23,6 +24,7 @@ import org.joml.Quaternionf
 import org.joml.Vector3f
 import java.lang.reflect.Type
 import java.util.*
+import kotlin.math.floor
 
 
 class PacketManager {
@@ -35,6 +37,9 @@ class PacketManager {
 
         @Volatile
         var savedEntities = mutableMapOf<Int, TextDisplay>()
+
+        // UniqueID -> End Tick, Override value
+        val lockedTimeTracker = mutableMapOf<UUID, Pair<Int, Long>>()
 
         private val protocolManager: ProtocolManager by lazy { ProtocolLibrary.getProtocolManager() }
 
@@ -397,6 +402,27 @@ class PacketManager {
                 )
 
             for (player in players.filter { it.isOnline }) {
+                protocolManager.sendServerPacket(player, packet)
+            }
+        }
+
+        @JvmStatic
+        fun setShaderData(
+            data: Long,
+            players: List<Player>,
+            lockTimeTicks: Int = -1
+        ) {
+            val long = floor((data * 128 + 1) / 16383.0F * 24000).toLong()
+            for (player in players.filter { it.isOnline }) {
+                val packet = PacketContainer(PacketType.Play.Server.UPDATE_TIME)
+                packet.longs
+                    .write(0, long)
+                    .write(1, player.world.time)
+
+                packet.booleans.write(0, true)
+                if (lockTimeTicks > 0) {
+                    lockedTimeTracker[player.uniqueId] = Pair(Bukkit.getCurrentTick() + lockTimeTicks, long)
+                }
                 protocolManager.sendServerPacket(player, packet)
             }
         }
