@@ -50,7 +50,8 @@ class TestEnemy(
                 Vector3f(0f),
                 AxisAngle4f()
             ), teleportDuration = 2, opacity = 0
-            )
+            ),
+            mountTo = true
         ) { entity ->
             runLater(1) {
                 entity.changeTransformation(

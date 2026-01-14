@@ -39,7 +39,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
     private val battlePlayerModels = mutableListOf<BattlePlayer>()
 
     override fun destroyBattle() {
-        Bukkit.broadcast(Component.text("destr"))
+//        Bukkit.broadcast(Component.text("destr"))
         battlePlayerModels.forEach { bpm ->
             try {
                 bpm.remove()
@@ -247,7 +247,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     Vector3f(0f),
                     Quaternionf(0f, 0f, 0f, 1f)
                 )
-            )
+            ),
+            mountTo = true
         ) { entity ->
             battleBox.outerPart = entity
         }
@@ -262,7 +263,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     Vector3f(0f),
                     Quaternionf(0f, 0f, 0f, 1f)
                 )
-            )
+            ),
+            mountTo = true
         ) { entity ->
             battleBox.innerPart = entity
         }
@@ -276,7 +278,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 Quaternionf(0f, 0f, 0f, 1f),
                 Vector3f(168f, 120f, 1f),
                 Quaternionf(0f, 0f, 0f, 1f)
-            ))
+            )),
+            mountTo = true
         ) { entity ->
             background = entity
         }
@@ -289,7 +292,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 Quaternionf(0f, 0f, 0f, 1f),
                 Vector3f(168f, 120f, 1f),
                 Quaternionf(0f, 0f, 0f, 1f)
-            ), opacity = 128.toByte())
+            ), opacity = 128.toByte()),
+            mountTo = true
         ) { entity ->
             backgroundDark = entity
         }
@@ -303,7 +307,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 AxisAngle4f(3.1415f, 0f, 0f, 1f),
                 Vector3f(180f, 100f, 1f),
                 AxisAngle4f()
-            ))
+            )),
+            mountTo = true
         )
 
         //- spawn text_display[brightness=<map[block=15;sky=15]>;text=<&color[#000000]>⬛;background_color=<color[#ffffff].with_alpha[0]>;left_rotation=<location[0,0,1].to_axis_angle_quaternion[3.1415]>;scale=180,100,1;translation=-2,1.49,0.01;force_no_persist=true] <[pos].forward[5].face[<[pos]>]> save:main_bg
@@ -315,7 +320,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 AxisAngle4f(3.1415f, 0f, 0f, 1f),
                 Vector3f(180f, 100f, 1f),
                 AxisAngle4f()
-            ))
+            )),
+            mountTo = true
         )
 
         //- spawn text_display[brightness=<map[block=15;sky=15]>;text=<&color[#2e1e25]>-;background_color=<color[#ffffff].with_alpha[0]>;scale=160,2.2,1;translation=-2,-1.5225,0;force_no_persist=true] <[pos].forward[5].face[<[pos]>].forward[0.00095]> save:bg
@@ -327,7 +333,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 AxisAngle4f(),
                 Vector3f(200f, 2.2f, 1f),
                 AxisAngle4f()
-            ))
+            )),
+            mountTo = true
         )
 
         //- spawn text_display[brightness=<map[block=15;sky=15]>;text=<&color[#2e1e25]>-;background_color=<color[#ffffff].with_alpha[0]>;scale=160,2.2,1;translation=-2,-2.525,0.001;force_no_persist=true] <[pos].forward[5].face[<[pos]>].forward[0.00095]> save:bg
@@ -339,7 +346,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 AxisAngle4f(),
                 Vector3f(200f, 2.2f, 1f),
                 AxisAngle4f()
-            ))
+            )),
+            mountTo = true
         )
 
         val encounterText = enemies.random().encounterMessages.random()
@@ -352,7 +360,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 AxisAngle4f(),
                 Vector3f(1.4f, 1.4f, 1f),
                 AxisAngle4f()
-            ))
+            )),
+            mountTo = true
         )
 
         //TODO("PLAYERS")
@@ -361,13 +370,13 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             dPlayer.playerButtonTexts = mutableListOf()
             dPlayer.playerSelectedButton = 0
 
-            dPlayer.player?.let {
-                val battlePlayer = BattlePlayer()
-                val modelLocation = battleBoxCenterLocation + Vector3d(5.0, 0.75, -1.0)
-                modelLocation.yaw = 90f
-                battlePlayer.create(it, modelLocation)
-                battlePlayerModels += battlePlayer
-            }
+//            dPlayer.player?.let {
+//                val battlePlayer = BattlePlayer()
+//                val modelLocation = battleBoxCenterLocation + Vector3d(5.0, 0.75, -1.0)
+//                modelLocation.yaw = 90f
+//                battlePlayer.create(it, modelLocation)
+//                battlePlayerModels += battlePlayer
+//            }
 
             // SOUL ====++++++++++++====
             newTextDisplay(
@@ -379,7 +388,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     AxisAngle4f(),
                     Vector3f(0f, 0f, 0f),
                     AxisAngle4f()
-                ), teleportDuration = 1)
+                ), teleportDuration = 1),
+                mountTo = true
             ) { entity ->
                 dPlayer.soul = entity
             }
@@ -392,7 +402,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     AxisAngle4f(),
                     Vector3f(1f),
                     AxisAngle4f()
-                ), teleportDuration = 1, opacity = 0)
+                ), teleportDuration = 1, opacity = 0),
+                mountTo = true
             ) { entity ->
                 dPlayer.soulOutline = entity
             }
@@ -425,7 +436,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                         Vector3f(1f, 1f, 0.005f),
                         rightRotation
                     )
-                )
+                ),
+                mountTo = true
             ) { entity ->
                 dPlayer.perPlayerEntities.add(entity)
             }
@@ -440,7 +452,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     AxisAngle4f(),
                     Vector3f(1.8f / actualWidth * 0.7f, 2.5f / (actualWidth / 0.7f).pow(0.5f), 1f),
                     AxisAngle4f()
-                ))
+                )),
+                mountTo = true
             ) { entity ->
                 dPlayer.perPlayerEntities.add(entity)
             }
@@ -455,7 +468,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     AxisAngle4f(),
                     Vector3f(1f, 1.1f, 1f),
                     AxisAngle4f()
-                ))
+                )),
+                mountTo = true
             ) { entity ->
                 dPlayer.perPlayerEntities.add(entity)
             }
@@ -471,7 +485,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     AxisAngle4f(),
                     Vector3f(1f, 1f, 1f),
                     AxisAngle4f()
-                ))
+                )),
+                mountTo = true
             ) { entity ->
                 dPlayer.perPlayerEntities.add(entity)
                 dPlayer.playerButtons = entity
@@ -529,7 +544,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                             AxisAngle4f()
                         ),
                         interpolationDuration = 1
-                    )
+                    ),
+                    mountTo = true
                 ) { entity ->
                     dPlayer.perPlayerEntities.add(entity)
                     dPlayer.playerButtonTexts.add(entity)
@@ -587,7 +603,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     AxisAngle4f(),
                     Vector3f(2f, 4.7f, 1f),
                     AxisAngle4f()
-                ))
+                )),
+                mountTo = true
             ) { entity ->
                 dPlayer.perPlayerEntities.add(entity)
             }
@@ -603,7 +620,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     AxisAngle4f(),
                     Vector3f(2f, 4.69f, 1f),
                     AxisAngle4f()
-                ))
+                )),
+                mountTo = true
             ) { entity ->
                 dPlayer.perPlayerEntities.add(entity)
             }
@@ -622,7 +640,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     AxisAngle4f(),
                     Vector3f(sx1, sy1, 1f),
                     AxisAngle4f()
-                ))
+                )),
+                mountTo = true
             ) { entity ->
                 dPlayer.perPlayerEntities.add(entity)
             }
@@ -635,7 +654,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     AxisAngle4f(),
                     Vector3f(sx2, sy2, 1f),
                     AxisAngle4f()
-                ))
+                )),
+                mountTo = true
             ) { entity ->
                 dPlayer.perPlayerEntities.add(entity)
             }
@@ -651,7 +671,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     AxisAngle4f(),
                     Vector3f(16f / dPlayer.maxhp, 10f, 1f),
                     AxisAngle4f()
-                ))
+                )),
+                mountTo = true
             ) { entity ->
                 dPlayer.perPlayerEntities.add(entity)
                 dPlayer.healthBar = entity
@@ -667,7 +688,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     AxisAngle4f(),
                     Vector3f(1.2f, 1.2f, 1f),
                     AxisAngle4f()
-                ))
+                )),
+                mountTo = true
             ) { entity ->
                 dPlayer.perPlayerEntities.add(entity)
                 dPlayer.healthCounter = entity
@@ -684,7 +706,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     AxisAngle4f(1.5708f, 0.0f, 0.0f, 1.0f),
                     Vector3f(0.32f, 20f * 0.75f, 1f),
                     AxisAngle4f()
-                ))
+                )),
+                mountTo = true
             ) { entity ->
                 dPlayer.tpBar = entity
             }
@@ -697,7 +720,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     AxisAngle4f(),
                     Vector3f(1.1f * 0.8f, 1.14f, 1f),
                     AxisAngle4f()
-                ))
+                )),
+                mountTo = true
             )
 
             newTextDisplay(
@@ -709,7 +733,8 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     AxisAngle4f(),
                     Vector3f(1.5f, 1.2f, 1f),
                     AxisAngle4f()
-                ))
+                )),
+                mountTo = true
             ) { entity ->
                 dPlayer.tpCounter = entity
             }

@@ -12,7 +12,10 @@ import dev.zorsh.zorshDeltarune.utils.runLater
 import it.unimi.dsi.fastutil.ints.IntArrayList
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import net.minecraft.core.Holder
+import net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket
 import net.minecraft.world.entity.PositionMoveRotation
+import net.minecraft.world.entity.ai.attributes.Attribute
 import net.minecraft.world.phys.Vec3
 import org.bukkit.Bukkit
 import org.bukkit.Color
@@ -48,6 +51,8 @@ class PacketManager {
             val packet = PacketContainer(packetType)
             var res = "== FIELDS OF $packetType ==\n"
             res += "integers: [\n${packet.integers.fields.map { it.field.toGenericString() + "\n" }}\n"
+            res += "floats: [\n${packet.float.fields.map { it.field.toGenericString() + "\n" }}\n"
+            res += "booleans: [\n${packet.booleans.fields.map { it.field.toGenericString() + "\n" }}\n"
             res += "strings: [\n${packet.strings.fields.map { it.field.toGenericString() + "\n" }}\n"
             res += "structures: [\n${packet.structures.fields.map { it.field.toGenericString() + "\n" }}\n"
             res += "doubles: [\n${packet.doubles.fields.map { it.field.toGenericString() + "\n" }}\n"
@@ -365,6 +370,23 @@ class PacketManager {
 //        }
 
         @JvmStatic
+        fun playerLook(yaw: Float, pitch: Float, players: List<Player>) {
+            val packet = PacketContainer(PacketType.Play.Server.PLAYER_ROTATION)
+
+            packet.float
+                .write(0, yaw)
+                .write(1, pitch)
+
+            packet.booleans
+                .write(0, false)
+                .write(1, false)
+
+            for (player in players.filter { it.isOnline }) {
+                protocolManager.sendServerPacket(player, packet)
+            }
+        }
+
+        @JvmStatic
         fun playerLookAt(location: Location, players: List<Player>) {
             val packet = PacketContainer(PacketType.Play.Server.LOOK_AT)
 
@@ -428,6 +450,73 @@ class PacketManager {
         }
 
         @JvmStatic
+        fun setAttribute(
+            attribute: Holder<Attribute>,
+            base: Double,
+            entityId: Int,
+            players: List<Player>
+        ) {
+            val packet = PacketContainer(PacketType.Play.Server.UPDATE_ATTRIBUTES)
+            val data = ClientboundUpdateAttributesPacket.AttributeSnapshot(attribute, base, listOf())
+            packet.integers.write(0, entityId)
+//            packet.modifier.write(0, entityId)
+            packet.modifier.write(1, listOf(data).toCollection(ArrayList()))
+
+            for (player in players.filter { it.isOnline }) {
+                protocolManager.sendServerPacket(player, packet)
+            }
+        }
+
+        @JvmStatic
+        fun setTickRate(
+            rate: Float,
+            frozen: Boolean,
+            players: List<Player>
+        ) {
+            val packet = PacketContainer(PacketType.Play.Server.TICKING_STATE)
+            packet.float.write(0, rate)
+            packet.booleans.write(0, frozen)
+
+            for (player in players.filter { it.isOnline }) {
+                protocolManager.sendServerPacket(player, packet)
+            }
+        }
+
+        @JvmStatic
+        fun setCustomPacket(
+            packetName: String,
+            players: List<Player>
+        ) {
+            val packet = PacketContainer(PacketType.fromName(packetName.uppercase()).first())
+
+            for (player in players.filter { it.isOnline }) {
+                protocolManager.sendServerPacket(player, packet)
+            }
+        }
+
+        @JvmStatic
+        fun mountEntity(
+            mountId: Int,
+            entity: Int,
+            players: List<Player>
+        ) {
+            val packet = PacketContainer(PacketType.Play.Server.MOUNT)
+            try {
+                packet.integers.write(0, mountId)
+                packet.integerArrays.write(
+                    0,
+                    intArrayOf(entity)
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            for (player in players.filter { it.isOnline }) {
+                protocolManager.sendServerPacket(player, packet)
+            }
+        }
+
+        @JvmStatic
         fun spawnItemDisplay(
             location: Location,
             item: ItemStack,
@@ -474,6 +563,7 @@ class PacketManager {
                 ent.lineWidth = 10000
                 ent.textOpacity = data.opacity
                 ent.isPersistent = false
+                ent.isSeeThrough = true
                 val entityId = ent.entityId
                 savedEntities[entityId] = ent
                 privateEntities[entityId] = players.toSet()

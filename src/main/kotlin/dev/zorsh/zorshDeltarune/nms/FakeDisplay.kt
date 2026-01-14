@@ -10,7 +10,7 @@ import org.joml.AxisAngle4f
 import org.joml.Vector3f
 
 abstract class FakeDisplay(
-    protected val entityId: Int,
+    val entityId: Int,
     var location: Location,
     var transformation: Transformation,
     protected val teleportDuration: Int,
@@ -19,7 +19,7 @@ abstract class FakeDisplay(
     var holder: MutableSet<FakeDisplay>? = null,
 ) {
 
-    private var exists = true
+    var exists = true
 
     open fun destroy() {
         if (exists) {

@@ -60,7 +60,7 @@ class BattlePlayer {
 //            animation = "idle"
 //            tracker.animate("idle")
 //        }
-        Bukkit.broadcast(Component.text("Animating $newAnimation"))
+//        Bukkit.broadcast(Component.text("Animating $newAnimation"))
         tracker.animate(newAnimation.animationName)
         runLater(newAnimation.length) {
             tracker.animate("idle")

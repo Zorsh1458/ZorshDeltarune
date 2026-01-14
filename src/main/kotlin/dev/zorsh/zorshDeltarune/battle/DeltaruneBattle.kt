@@ -19,11 +19,16 @@ import org.joml.Quaternionf
 import org.joml.Vector2d
 import org.joml.Vector3f
 
+object BattleLocation {
+    val TEST = Location(Bukkit.getWorld("world"), 8.0, 100.0, 8.1)
+    val UNDER_STATION = Location(Bukkit.getWorld("moon"), 952.0, 98.9, 1101.0)
+}
+
 abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: List<DeltaruneEnemy>) {
 
     val scope = CoroutineScope(Dispatchers.IO)
 
-    val battleCenterLocation = Location(Bukkit.getWorld("world"), 8.0, 100.0, 8.1)
+    val battleCenterLocation = BattleLocation.UNDER_STATION
     val battleBoxCenterLocation = battleCenterLocation + Vector3f(0f, 0f, 5f) + Vector3f(0.0f, 0.0f, 0.002f)
 
     private var onEndedAction = {}
@@ -84,6 +89,7 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
                 Vector3f(1f),
                 Quaternionf(0f, 0f, 0f, 1f)
             )),
+        mountTo: Boolean,
         afterSpawn: (FakeItemDisplay) -> Unit = {}
     ) {
         PacketManager.spawnItemDisplay(
@@ -94,6 +100,9 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
         ) { entity ->
             spawnedEntities += entity
             entity.holder = spawnedEntities
+            if (mountTo) {
+                players.forEach { it.mountEntity(entity)}
+            }
             afterSpawn(entity)
         }
     }
@@ -109,6 +118,7 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
             Vector3f(1f),
             Quaternionf(0f, 0f, 0f, 1f)
         )),
+        mountTo: Boolean,
         afterSpawn: (FakeTextDisplay) -> Unit = {}
     ) {
         PacketManager.spawnTextDisplay(
@@ -119,6 +129,9 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
         ) { entity ->
             spawnedEntities += entity
             entity.holder = spawnedEntities
+            if (mountTo) {
+                players.forEach { it.mountEntity(entity)}
+            }
             afterSpawn(entity)
         }
     }

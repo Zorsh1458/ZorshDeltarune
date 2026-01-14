@@ -34,6 +34,8 @@ class DeltarunePlayer(private val uuid: UUID) {
     var hp = 1000
     var maxhp = 1000
 
+    var passengers = mutableListOf<FakeDisplay>()
+
     var perPlayerEntities = mutableListOf<FakeDisplay>()
 
     var playerButtons: FakeDisplay? = null
@@ -66,6 +68,18 @@ class DeltarunePlayer(private val uuid: UUID) {
     var onHpUpdated: (Int) -> Unit = {}
 
     var anchor: Entity? = null
+
+    fun mountEntity(ent: FakeDisplay) {
+        if (player != null) {
+            passengers.removeIf { !it.exists }
+            if (passengers.size > 0) {
+                PacketManager.mountEntity(passengers.last().entityId, ent.entityId, listOf(player!!))
+            } else {
+                PacketManager.mountEntity(player!!.entityId, ent.entityId, listOf(player!!))
+            }
+            passengers += ent
+        }
+    }
 
     fun updateTpCounter() {
         if (tpAmount == 100.0) {
@@ -141,6 +155,9 @@ class DeltarunePlayer(private val uuid: UUID) {
         inputCallbacksJump.clear()
         inputCallbacksSneak.clear()
         inputCallbacksSprint.clear()
+        //
+        passengers.clear()
+        //
         playerButtons?.destroy()
         playerButtons = null
         soul?.destroy()
@@ -154,12 +171,18 @@ class DeltarunePlayer(private val uuid: UUID) {
         runLater(1) {
             if (player != null) {
                 anchor?.removePassenger(player!!)
+                PacketManager.setAttribute(
+                    net.minecraft.world.entity.ai.attributes.Attributes.JUMP_STRENGTH,
+                    0.42,
+                    player!!.entityId,
+                    listOf(player!!)
+                )
             }
             anchor?.remove()
             anchor = null
         }
-        perPlayerEntities.map { it.destroy() }
-        playerButtonTexts.map { it.destroy() }
+        perPlayerEntities.toList().forEach { it.destroy() }
+        playerButtonTexts.toList().forEach { it.destroy() }
         perPlayerEntities.clear()
         playerButtonTexts.clear()
         playerSelectedButton = 1
@@ -176,15 +199,22 @@ class DeltarunePlayer(private val uuid: UUID) {
     }
 
     fun lockInBattle(location: Location) {
-        val battle = BattleManager.getBattle(myBattleUUID ?: return) ?: return
+//        val battle = BattleManager.getBattle(myBattleUUID ?: return) ?: return
         if (player != null) {
             val myPlayer = player!!
-            gameMode = myPlayer.gameMode
-            myPlayer.gameMode = GameMode.SPECTATOR
-            anchor = location.world.spawnEntity(location, EntityType.BLOCK_DISPLAY)
-            anchor?.isPersistent = false
-            anchor?.addPassenger(myPlayer)
-            myPlayer.sendActionBar(Component.text(""))
+            myPlayer.teleport(location)
+            PacketManager.setAttribute(
+                net.minecraft.world.entity.ai.attributes.Attributes.JUMP_STRENGTH,
+                0.0,
+                myPlayer.entityId,
+                listOf(myPlayer)
+            )
+//            gameMode = myPlayer.gameMode
+//            myPlayer.gameMode = GameMode.SPECTATOR
+//            anchor = location.world.spawnEntity(location, EntityType.BLOCK_DISPLAY)
+//            anchor?.isPersistent = false
+//            anchor?.addPassenger(myPlayer)
+//            myPlayer.sendActionBar(Component.text(""))
             locked = true
             object : BukkitRunnable() {
                 override fun run() {
@@ -206,42 +236,43 @@ class DeltarunePlayer(private val uuid: UUID) {
                             updateTpCounter()
                         }
 
-                        val box = battle.battleBox
+//                        PacketManager.playerLookAt(myPlayer.location + Vector3d(0.0, -1000000.0, 10.0), listOf(myPlayer))
+//
+                    //                        val box = battle.battleBox
 //                        myPlayer.teleport(location)
-                        PacketManager.playerLookAt(myPlayer.location + Vector3d(0.0, 0.0, 5.0), listOf(myPlayer))
-                        val inputs = InputHolder(myPlayer.currentInput)
-                        if (canMoveSoul && soul != null) {
-                            val soulWidth = soul!!.transformation.scale.x * 0.18f
-                            val soulHeight = soul!!.transformation.scale.y * 0.17f
+//                        val inputs = InputHolder(myPlayer.currentInput)
+//                        if (canMoveSoul && soul != null) {
+//                            val soulWidth = soul!!.transformation.scale.x * 0.18f
+//                            val soulHeight = soul!!.transformation.scale.y * 0.17f
 
-                            var speed = soulSpeed
-                            if (inputs.sneak) {
-                                speed /= 1.5
-                            }
-
-                            if (inputs.left && !inputs.right) {
-                                val new = soul!!.location + Vector3d(speed, 0.0, 0.0)
-                                soul?.teleport(box.isInside(new, soulWidth, soulHeight).second)
-                            }
-                            if (inputs.right && !inputs.left) {
-                                val new = soul!!.location + Vector3d(-speed, 0.0, 0.0)
-                                soul?.teleport(box.isInside(new, soulWidth, soulHeight).second)
-                            }
-                            if (inputs.forward && !inputs.backward) {
-                                val new = soul!!.location + Vector3d(0.0, speed, 0.0)
-                                soul?.teleport(box.isInside(new, soulWidth, soulHeight).second)
-                            }
-                            if (inputs.backward && !inputs.forward) {
-                                val new = soul!!.location + Vector3d(0.0, -speed, 0.0)
-                                soul?.teleport(box.isInside(new, soulWidth, soulHeight).second)
-                            }
-
-                            val check = box.isInside(soul!!.location, soulWidth, soulHeight)
-                            if (!check.first) {
-                                soul?.teleport(check.second)
-                            }
-                            soulOutline?.teleport(soul!!.location + Vector3d(0.0, 0.0, -0.001))
-                        }
+//                            var speed = soulSpeed
+//                            if (inputs.sneak) {
+//                                speed /= 1.5
+//                            }
+//
+//                            if (inputs.left && !inputs.right) {
+//                                val new = soul!!.location + Vector3d(speed, 0.0, 0.0)
+//                                soul?.teleport(box.isInside(new, soulWidth, soulHeight).second)
+//                            }
+//                            if (inputs.right && !inputs.left) {
+//                                val new = soul!!.location + Vector3d(-speed, 0.0, 0.0)
+//                                soul?.teleport(box.isInside(new, soulWidth, soulHeight).second)
+//                            }
+//                            if (inputs.forward && !inputs.backward) {
+//                                val new = soul!!.location + Vector3d(0.0, speed, 0.0)
+//                                soul?.teleport(box.isInside(new, soulWidth, soulHeight).second)
+//                            }
+//                            if (inputs.backward && !inputs.forward) {
+//                                val new = soul!!.location + Vector3d(0.0, -speed, 0.0)
+//                                soul?.teleport(box.isInside(new, soulWidth, soulHeight).second)
+//                            }
+//
+//                            val check = box.isInside(soul!!.location, soulWidth, soulHeight)
+//                            if (!check.first) {
+//                                soul?.teleport(check.second)
+//                            }
+//                            soulOutline?.teleport(soul!!.location + Vector3d(0.0, 0.0, -0.001))
+//                        }
                     }
                 }
             }.runTaskTimer(ZorshDeltarune.instance, 1L, 1L)
