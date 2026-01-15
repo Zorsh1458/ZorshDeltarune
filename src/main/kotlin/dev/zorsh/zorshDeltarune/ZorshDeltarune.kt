@@ -34,7 +34,7 @@ class ZorshDeltarune : JavaPlugin() {
         protocolManager.addPacketListener(PacketListenerEntityMetadata())
         protocolManager.addPacketListener(PacketListenerSpawnEntity())
 //        protocolManager.addPacketListener(PacketListenerUpdateAttributes())
-        protocolManager.addPacketListener(PacketListenerUpdateTime())
+//        protocolManager.addPacketListener(PacketListenerUpdateTime())
         server.pluginManager.registerEvents(DeltaruneListener(), this)
         getCommand("deltarunebattle")?.setExecutor(DeltaruneBattleCommand())
         getCommand("deltarunebattle")?.tabCompleter = DeltaruneBattleCommand()

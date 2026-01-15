@@ -20,9 +20,11 @@ import net.minecraft.world.phys.Vec3
 import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.entity.*
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Transformation
+import org.joml.AxisAngle4f
 import org.joml.Quaternionf
 import org.joml.Vector3f
 import java.lang.reflect.Type
@@ -495,9 +497,9 @@ class PacketManager {
         }
 
         @JvmStatic
-        fun mountEntity(
+        fun mountEntities(
             mountId: Int,
-            entity: Int,
+            entities: List<Int>,
             players: List<Player>
         ) {
             val packet = PacketContainer(PacketType.Play.Server.MOUNT)
@@ -505,14 +507,96 @@ class PacketManager {
                 packet.integers.write(0, mountId)
                 packet.integerArrays.write(
                     0,
-                    intArrayOf(entity)
+                    entities.toIntArray()
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            //TODO("REMOVE")
+            for (player in players.filter { it.isOnline }) {
+                protocolManager.sendServerPacket(player, packet)
+            }
+        }
+
+        @JvmStatic
+        fun spawnHitbox(
+            location: Location,
+            players: List<Player>,
+            afterSpawned: (Int, Int) -> Unit
+        ) {
+            val packetAnchor = PacketContainer(PacketType.Play.Server.SPAWN_ENTITY)
+            val entityIdAnchor = 1000000 + counter
+            counter = (counter + 1) % 10000
+            packetAnchor.integers.write(0, entityIdAnchor)
+            packetAnchor.uuiDs.write(0, UUID.randomUUID())
+            packetAnchor.entityTypeModifier.write(0, EntityType.BLOCK_DISPLAY)
+
+            packetAnchor.doubles
+                .write(0, location.x)
+                .write(1, location.y)
+                .write(2, location.z)
+
+            val packetShulker = PacketContainer(PacketType.Play.Server.SPAWN_ENTITY)
+            val entityIdShulker = 1000000 + counter
+            counter = (counter + 1) % 10000
+            packetShulker.integers.write(0, entityIdShulker)
+            packetShulker.uuiDs.write(0, UUID.randomUUID())
+            packetShulker.entityTypeModifier.write(0, EntityType.SHULKER)
+
+            packetShulker.doubles
+                .write(0, location.x)
+                .write(1, location.y)
+                .write(2, location.z)
+
+            val packet = PacketContainer(PacketType.Play.Server.MOUNT)
+            try {
+                packet.integers.write(0, entityIdAnchor)
+                packet.integerArrays.write(
+                    0,
+                    intArrayOf(entityIdShulker)
                 )
             } catch (e: Exception) {
                 e.printStackTrace()
             }
 
             for (player in players.filter { it.isOnline }) {
+                protocolManager.sendServerPacket(player, packetAnchor)
+                protocolManager.sendServerPacket(player, packetShulker)
                 protocolManager.sendServerPacket(player, packet)
+            }
+
+            afterSpawned(entityIdAnchor, entityIdShulker)
+        }
+
+        @JvmStatic
+        fun spawnShaderEffector(
+            location: Location,
+            players: List<Player>,
+            afterSpawned: (FakeItemDisplay) -> Unit,
+        ) {
+            runLater(0L) {
+                val ent = (location.world?.spawnEntity(location, EntityType.ITEM_DISPLAY)) as ItemDisplay
+                ent.setItemStack(ItemStack.of(Material.STONE))
+                ent.isPersistent = false
+                val transform = Transformation(
+                    Vector3f(0f),
+                    AxisAngle4f(),
+                    Vector3f(50f, 50f, 0.01f),
+                    AxisAngle4f()
+                )
+                ent.transformation = transform
+                ent.isGlowing = true
+                ent.glowColorOverride = Color.fromARGB(255, 253, 0, 6)
+                val entityId = ent.entityId
+                privateEntities[entityId] = players.toSet()
+                runLater(1L) {
+                    ent.remove()
+                }
+                runLater(2L) {
+                    privateEntities.remove(entityId)
+                }
+                afterSpawned(FakeItemDisplay(entityId, location, transform, 0, 0, players))
             }
         }
 
@@ -550,6 +634,7 @@ class PacketManager {
             text: Component,
             players: List<Player>,
             data: FakeDisplayData,
+            seeThrough: Boolean,
             afterSpawned: (FakeTextDisplay) -> Unit,
         ) {
             runLater(0L) {
@@ -563,7 +648,9 @@ class PacketManager {
                 ent.lineWidth = 10000
                 ent.textOpacity = data.opacity
                 ent.isPersistent = false
-                ent.isSeeThrough = true
+                ent.isSeeThrough = seeThrough
+//                ent.viewRange = 0f
+//                ent.billboard = Display.Billboard.CENTER
                 val entityId = ent.entityId
                 savedEntities[entityId] = ent
                 privateEntities[entityId] = players.toSet()

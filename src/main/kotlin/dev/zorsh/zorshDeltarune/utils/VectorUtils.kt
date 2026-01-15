@@ -107,6 +107,10 @@ operator fun Vector3f.plus(l: Vector3d): Vector3f {
     return Vector3f(x + l.x.toFloat(), y + l.y.toFloat(), z + l.z.toFloat())
 }
 
+operator fun Vector3f.times(v: Vector3f): Vector3f {
+    return Vector3f(x * v.x, y * v.y, z * v.z)
+}
+
 operator fun Vector3f.times(d: Double): Vector3f {
     return Vector3f((x * d).toFloat(), (y * d).toFloat(), (z * d).toFloat())
 }

@@ -1,15 +1,13 @@
 package dev.zorsh.zorshDeltarune.battle
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
+import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
 import dev.zorsh.zorshDeltarune.utils.*
 import kotlinx.coroutines.*
 import net.kyori.adventure.text.Component
 import org.bukkit.util.Transformation
 import org.joml.*
-import kotlin.math.cos
-import kotlin.math.min
-import kotlin.math.pow
-import kotlin.math.sin
+import kotlin.math.*
 import kotlin.random.Random
 
 class TestEnemy(
@@ -17,110 +15,167 @@ class TestEnemy(
 ) : DeltaruneEnemy(hitpoints,
     listOf(
         Component.text("Это что еще за балбес"),
-        Component.text("Тестовый враг встал у вас на пути!")
+        Component.text("Тестовый враг встал у вас на пути!"),
+        Component.text("Полный скебоб..")
     )
 ) {
 
+    private var attackCount = 0
+
     override suspend fun attack(onAttackEnds: () -> Unit) = coroutineScope {
-        val razdel = ZorshDeltarune.random.nextInt(4) + 1
-        var count = 40
-        if (razdel == 1) {
-            count = 160
-        }
-        repeat(count) { angle ->
-            launch {
-                testSpawnNMS(angle, razdel)
+        attackCount++
+        if (attackCount % 2 == 0) {
+            repeat(20) { _ ->
+                launch {
+                    testSpawnNMS2()
+                }
+                delay(250)
             }
-            delay(50)
+        } else {
+            repeat(20) { i ->
+                launch {
+                    testSpawnNMS(i)
+                }
+                delay(250)
+            }
         }
         delay(1500)
     }
 
-    private fun testSpawnNMS(angle: Int, razdel: Int) {
-        val a = angle.toDouble() * (6.283 / 40 / razdel + 6.283 / razdel)
-        val primary = Vector3d(cos(a), sin(a), 0.0)
-        val loc = projectileCenterLocation + primary * 2.0
-        loc.yaw = 180f
-        myBattle.newTextDisplay(
-            loc,
-            Component.text("⏺"),
-            data = FakeDisplayData(Transformation(
-                Vector3f(0f),
-                AxisAngle4f(),
-                Vector3f(0f),
-                AxisAngle4f()
-            ), teleportDuration = 2, opacity = 0
-            ),
-            mountTo = true
+    private fun testSpawnNMS2() {
+        val scale = myBattle.sceneScale
+        val loc = myBattle.battleCenterLocation
+        loc.pitch = -90f
+        myBattle.newProjectile(
+            2,
+            Vector3f(ZorshDeltarune.random.nextFloat() * 50f - 25f, -25f, 0.01f)
         ) { entity ->
             runLater(1) {
                 entity.changeTransformation(
                     Transformation(
                         entity.transformation.translation,
-                        AxisAngle4f(a.toFloat() * -1f, 0f, 0f, 1f),
-                        Vector3f(2f, 1.5f, 1f),
+                        AxisAngle4f(),
+                        Vector3f(10f, 10f, 1f) * scale,
                         AxisAngle4f()
                     )
                 )
             }
-            var speed = 0.15
-            var dest = loc
-            var projectileHit = false
-            runRepeating(42) { i ->
-                if (!projectileHit) {
-                    dest += primary * speed
-                    entity.teleport(dest)
-                    if (myBattle.damageHitbox(ZorshDeltarune.random.nextInt(10) + 20, Vector2d(dest.x, dest.y), 0.2)) {
-                        runLater(1) {
-                            projectileHit = true
-                            entity.destroy()
-                        }
-                    }
-                    speed -= 0.02
-                    if (i < 38) {
-                        entity.changeTransformation(
-                            Transformation(
-                                entity.transformation.translation,
-                                entity.transformation.leftRotation,
-                                Vector3f(2f + i * 0.17f, 1.5f - i * 0.03f, 1f),
-                                Quaternionf(AxisAngle4f())
-                            ), newOpacity = min(i * 20, 255).toByte()
-//                        ), ((sin(i.toDouble() * 0.6) + 1) * 127).toInt().toByte()
+            var hit = false
+            var speed = -2.8f
+            runRepeating(70) { _, _ ->
+                val t = entity.transformation.translation
+                val cent = Vector3f(
+                    -t.x,
+                    t.z,
+                    t.y
+                )
+                runLater(1) {
+                    hit = hit || myBattle.damageHitbox(ZorshDeltarune.random.nextInt(10) + 20, cent, 0.17)
+                }
+                if (hit) {
+                    entity.destroy()
+                } else {
+                    entity.changeTransformation(
+                        Transformation(
+                            entity.transformation.translation - Vector3f(
+                                0f,
+                                speed,
+                                0.0001f
+                            ) * scale,
+                            entity.transformation.leftRotation,
+                            entity.transformation.scale,
+                            Quaternionf(AxisAngle4f())
                         )
-                    }
+                    )
+                    speed += 0.1f
                 }
             }
-            runLater(39) {
-                if (!projectileHit) {
+            runLater(70) {
+                if (!hit) {
                     entity.changeTransformation(
                         Transformation(
                             entity.transformation.translation,
-                            AxisAngle4f(),
-                            Vector3f(0f),
-                            AxisAngle4f()
+                            entity.transformation.leftRotation,
+                            Vector3f(0f, 0f, 1f),
+                            Quaternionf(AxisAngle4f())
+                        )
+                    )
+                }
+            }
+            runLater(72) {
+                if (!hit) {
+                    entity.destroy()
+                }
+            }
+        }
+    }
+
+    private fun testSpawnNMS(i: Int) {
+        val scale = myBattle.sceneScale
+        val loc = myBattle.battleCenterLocation
+        loc.pitch = -90f
+        val a = i * 3703 + ZorshDeltarune.random.nextInt(20) * 5
+        val x = sin(a / 180.0 * 3.1415)
+        val y = cos(a / 180.0 * 3.1415)
+        myBattle.newProjectile(
+            1,
+            Vector3f(x.toFloat() * 30f, y.toFloat() * 30f, 0.01f)
+        ) { entity ->
+            runLater(1) {
+                entity.changeTransformation(
+                    Transformation(
+                        entity.transformation.translation,
+                        AxisAngle4f(a / 180.0f * -3.1415f, 0f, 0f, 1f),
+                        Vector3f(10f, 10f, 1f) * scale,
+                        AxisAngle4f()
+                    )
+                )
+            }
+            var hit = false
+            runRepeating(40) { i, _ ->
+                val t = entity.transformation.translation
+                val cent = Vector3f(
+                    -t.x,
+                    t.z,
+                    t.y
+                )
+                runLater(1) {
+                    hit = hit || myBattle.damageHitbox(ZorshDeltarune.random.nextInt(10) + 20, cent, 0.17)
+                }
+                if (hit) {
+                    entity.destroy()
+                } else {
+                    entity.changeTransformation(
+                        Transformation(
+                            entity.transformation.translation - Vector3f(
+                                1.5f * x.toFloat(),
+                                1.5f * y.toFloat(),
+                                0.0001f
+                            ) * scale,
+                            entity.transformation.leftRotation,
+                            entity.transformation.scale,
+                            Quaternionf(AxisAngle4f())
+                        )
+                    )
+                }
+            }
+            runLater(40) {
+                if (!hit) {
+                    entity.changeTransformation(
+                        Transformation(
+                            entity.transformation.translation,
+                            entity.transformation.leftRotation,
+                            Vector3f(0f, 0f, 1f),
+                            Quaternionf(AxisAngle4f())
                         )
                     )
                 }
             }
             runLater(42) {
-                if (!projectileHit) {
+                if (!hit) {
                     entity.destroy()
                 }
             }
-//            runRepeating(30) { i ->
-//                var scale = 2f + sin(i * 0.7f)
-//                if (i >= 25) {
-//                    scale = 0f
-//                }
-//                entity.changeTransformation(
-//                    Transformation(
-//                        entity.transformation.translation,
-//                        Quaternionf(AxisAngle4f()),
-//                        Vector3f(scale),
-//                        Quaternionf(AxisAngle4f())
-//                    )
-//                )
-//            }
         }
     }
 }

@@ -1,5 +1,6 @@
 package dev.zorsh.zorshDeltarune.nms
 
+import dev.zorsh.zorshDeltarune.battle.DeltarunePlayer
 import dev.zorsh.zorshDeltarune.utils.runLater
 import net.kyori.adventure.text.Component
 import net.minecraft.world.phys.Vec3
@@ -16,7 +17,7 @@ abstract class FakeDisplay(
     protected val teleportDuration: Int,
     protected val interpolationDuration: Int,
     protected val players: List<Player>,
-    var holder: MutableSet<FakeDisplay>? = null,
+    var holder: MutableSet<FakeDisplay>? = null
 ) {
 
     var exists = true
@@ -24,6 +25,7 @@ abstract class FakeDisplay(
     open fun destroy() {
         if (exists) {
             exists = false
+
             holder?.remove(this)
             val trans = Transformation(
                 Vector3f(0f),

@@ -1,6 +1,6 @@
 package dev.zorsh.zorshDeltarune.battle
 
-import dev.zorsh.zorshDeltarune.animations.BattleBox
+import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.nms.FakeDisplay
 import dev.zorsh.zorshDeltarune.nms.FakeItemDisplay
 import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
@@ -15,38 +15,56 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Transformation
-import org.joml.Quaternionf
-import org.joml.Vector2d
-import org.joml.Vector3f
+import org.joml.*
+import kotlin.math.cos
+import kotlin.math.roundToInt
+import kotlin.math.sin
 
 object BattleLocation {
     val TEST = Location(Bukkit.getWorld("world"), 8.0, 100.0, 8.1)
-    val UNDER_STATION = Location(Bukkit.getWorld("moon"), 952.0, 98.9, 1101.0)
+    val UNDER_STATION = Location(Bukkit.getWorld("moon"), 952.0, 99.2, 1101.0)
 }
 
 abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: List<DeltaruneEnemy>) {
 
     val scope = CoroutineScope(Dispatchers.IO)
 
+    val sceneScale = Vector3f(-0.04f, -0.04f, 0.04f)
+
+    val sceneOffset = Vector3d(0.0 * sceneScale.x, -0.5 * sceneScale.y, -0.45)
+
     val battleCenterLocation = BattleLocation.UNDER_STATION
     val battleBoxCenterLocation = battleCenterLocation + Vector3f(0f, 0f, 5f) + Vector3f(0.0f, 0.0f, 0.002f)
 
     private var onEndedAction = {}
 
-    private val spawnedEntities = mutableSetOf<FakeDisplay>()
+    protected val shulkerHitboxes = mutableSetOf<Int>()
 
-    val battleBox = BattleBox()
+    private val spawnedEntities = mutableSetOf<FakeDisplay>()
 
     var playersTurn = false
 
-    fun damageHitbox(amount: Int, center: Vector2d, radius: Double): Boolean {
+    fun damageHitbox(amount: Int, center: Vector3f, radius: Double): Boolean {
         var damagedAnyone = false
         for (dPlayer in players) {
-            if (dPlayer.noDamageTicks <= 0 && dPlayer.soul?.location?.let { Vector2d(it.x - center.x, it.y - center.y).length() <= radius } == true) {
-                dPlayer.damage(amount)
-                damagedAnyone = true
-            } else if (dPlayer.noDamageTicks <= 0 && dPlayer.soul?.location?.let { Vector2d(it.x - center.x, it.y - center.y).length() <= radius + 0.4 } == true) {
-                dPlayer.tpGain()
+            if (dPlayer.soul != null && dPlayer.player != null && dPlayer.canMoveSoul) {
+                val vec = Vector3f(
+                    dPlayer.soul!!.location.x.toFloat(),
+                    dPlayer.soul!!.location.y.toFloat(),
+                    dPlayer.soul!!.location.z.toFloat()
+                )
+                val correctedCent = Vector3f(
+                    center.x + dPlayer.player!!.eyeLocation.x.toFloat(),
+                    dPlayer.soul!!.location.y.toFloat(),
+                    center.z + dPlayer.player!!.eyeLocation.z.toFloat()
+                )
+//                Bukkit.getConsoleSender().sendMessage("${vec.distance(correctedCent)}")
+                if (dPlayer.noDamageTicks <= 0 && vec.distance(correctedCent) <= radius) {
+                    dPlayer.damage(amount)
+                    damagedAnyone = true
+                } else if (dPlayer.noDamageTicks <= 0 && vec.distance(correctedCent) <= radius + 0.09) {
+                    dPlayer.tpGain()
+                }
             }
         }
         return damagedAnyone
@@ -76,6 +94,69 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
         destroyBattle()
         onEndedAction()
 //        scope.cancel()
+    }
+
+    fun newProjectile(
+        projectile: Int,
+        position: Vector3f = Vector3f(0f),
+        afterSpawn: (FakeTextDisplay) -> Unit
+    ) {
+        val offset = sceneOffset
+        val scale = sceneScale
+        val loc = battleCenterLocation
+        loc.pitch = -90f
+        newTextDisplay(
+            loc,
+            Component.text("${(61440 + projectile).toChar()}").font("space:projectiles"),
+            data = FakeDisplayData(Transformation(
+                position * scale + Vector3f(0f, -0.25f, offset.z.toFloat() - 2.3f),
+                AxisAngle4f(),
+                Vector3f(0f),
+                AxisAngle4f()
+            ), teleportDuration = 1
+            ),
+            mountTo = true,
+            seeThrough = true
+        ) { entity ->
+            afterSpawn(entity)
+//            runLater(10) {
+//                entity.changeTransformation(
+//                    Transformation(
+//                        Vector3f(
+//                            entity.transformation.translation.x,
+//                            entity.transformation.translation.y,
+//                            -1.7f + battleCenterLocation.y.toFloat() + sceneOffset.z.toFloat() - entity.location.y.toFloat()
+//                        ),
+//                        entity.transformation.leftRotation,
+//                        entity.transformation.scale,
+//                        entity.transformation.rightRotation
+//                    )
+//                )
+//            }
+        }
+    }
+
+    fun newHitboxEntity(
+        loc: Location,
+        playerToShow: List<Player> = players.mapNotNull { it.player }
+    ) {
+        PacketManager.spawnHitbox(loc, playerToShow) { anchor, shulker ->
+            shulkerHitboxes += anchor
+            shulkerHitboxes += shulker
+        }
+    }
+
+    fun newShaderEffector(
+        loc: Location,
+        playerToShow: List<Player> = players.mapNotNull { it.player }
+    ) {
+        PacketManager.spawnShaderEffector(
+            loc,
+            playerToShow,
+        ) { entity ->
+            spawnedEntities += entity
+            entity.holder = spawnedEntities
+        }
     }
 
     fun newItemDisplay(
@@ -119,13 +200,15 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
             Quaternionf(0f, 0f, 0f, 1f)
         )),
         mountTo: Boolean,
+        seeThrough: Boolean = false,
         afterSpawn: (FakeTextDisplay) -> Unit = {}
     ) {
         PacketManager.spawnTextDisplay(
             loc,
             text,
             playerToShow,
-            data
+            data,
+            seeThrough
         ) { entity ->
             spawnedEntities += entity
             entity.holder = spawnedEntities
@@ -144,6 +227,12 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
             } catch (ignored: Exception) {}
         }
         spawnedEntities.clear()
+        for (ent in shulkerHitboxes) {
+            try {
+                PacketManager.removeEntity(ent, players.mapNotNull { it.player })
+            } catch (ignored: Exception) {}
+        }
+        shulkerHitboxes.clear()
         scope.cancel()
     }
 

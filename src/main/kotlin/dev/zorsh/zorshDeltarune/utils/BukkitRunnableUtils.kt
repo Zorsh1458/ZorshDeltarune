@@ -1,17 +1,18 @@
 package dev.zorsh.zorshDeltarune.utils
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
+import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitRunnable
 
 fun runLater(delay: Long, action: () -> Unit) {
-    object : BukkitRunnable() {
-        override fun run() {
-            action()
-        }
-    }.runTaskLater(ZorshDeltarune.instance, delay)
+    Bukkit.getScheduler().runTaskLater(ZorshDeltarune.instance, action, delay)
 }
 
-fun runRepeating(count: Int, action: (Int) -> Unit) {
+fun runSync(action: () -> Unit) {
+    Bukkit.getScheduler().runTask(ZorshDeltarune.instance, action)
+}
+
+fun runRepeating(count: Int, action: (Int, BukkitRunnable) -> Unit) {
     object : BukkitRunnable() {
         var counter = 0
 
@@ -20,7 +21,7 @@ fun runRepeating(count: Int, action: (Int) -> Unit) {
                 cancel()
             } else {
                 try {
-                    action(counter)
+                    action(counter, this)
                 } catch (ignored: Exception) {}
                 counter++
             }

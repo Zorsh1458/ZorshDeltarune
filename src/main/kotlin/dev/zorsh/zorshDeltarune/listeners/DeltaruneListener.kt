@@ -6,16 +6,45 @@ import org.bukkit.entity.BlockDisplay
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.entity.EntityDismountEvent
+import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.entity.EntityDamageEvent
+import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInputEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 class DeltaruneListener : Listener {
 
     @EventHandler
-    fun onVehicleExitEvent(e: EntityDismountEvent) {
+    fun onEntityDamageEvent(e: EntityDamageEvent) {
         val player = e.entity
-        if (player is Player && e.dismounted is BlockDisplay && ZorshDeltarune.getDPlayer(player.uniqueId)?.locked == true) {
+        if (player is Player) {
+            if (ZorshDeltarune.getDPlayer(player.uniqueId)?.locked == true) {
+                e.isCancelled = true
+            }
+        }
+    }
+
+    @EventHandler
+    fun onPlayerDropItemEvent(e: PlayerDropItemEvent) {
+        val player = e.player
+        if (ZorshDeltarune.getDPlayer(player.uniqueId)?.locked == true) {
+            e.isCancelled = true
+        }
+    }
+
+    @EventHandler
+    fun onPlayerDropItemEvent(e: BlockPlaceEvent) {
+        val player = e.player
+        if (ZorshDeltarune.getDPlayer(player.uniqueId)?.locked == true) {
+            e.isCancelled = true
+        }
+    }
+
+    @EventHandler
+    fun onPlayerDropItemEvent(e: BlockBreakEvent) {
+        val player = e.player
+        if (ZorshDeltarune.getDPlayer(player.uniqueId)?.locked == true) {
             e.isCancelled = true
         }
     }

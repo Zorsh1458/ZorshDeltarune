@@ -1,5 +1,6 @@
 package dev.zorsh.zorshDeltarune.nms
 
+import dev.zorsh.zorshDeltarune.battle.DeltarunePlayer
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextReplacementConfig
 import org.bukkit.Location

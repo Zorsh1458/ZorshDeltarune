@@ -11,17 +11,23 @@ import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title.Times
 import net.kyori.adventure.title.Title.title
 import org.bukkit.Bukkit
+import org.bukkit.Effect
+import org.bukkit.EntityEffect
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.Input
 import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
+import org.bukkit.util.Vector
+import org.joml.Vector2f
 import org.joml.Vector3d
+import org.joml.Vector3f
 import java.time.Duration
 import java.util.UUID
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 class DeltarunePlayer(private val uuid: UUID) {
 
@@ -34,7 +40,7 @@ class DeltarunePlayer(private val uuid: UUID) {
     var hp = 1000
     var maxhp = 1000
 
-    var passengers = mutableListOf<FakeDisplay>()
+    private var passengers = mutableListOf<FakeDisplay>()
 
     var perPlayerEntities = mutableListOf<FakeDisplay>()
 
@@ -67,21 +73,18 @@ class DeltarunePlayer(private val uuid: UUID) {
 
     var onHpUpdated: (Int) -> Unit = {}
 
-    var anchor: Entity? = null
+    private var anchor: Entity? = null
 
     fun mountEntity(ent: FakeDisplay) {
         if (player != null) {
             passengers.removeIf { !it.exists }
-            if (passengers.size > 0) {
-                PacketManager.mountEntity(passengers.last().entityId, ent.entityId, listOf(player!!))
-            } else {
-                PacketManager.mountEntity(player!!.entityId, ent.entityId, listOf(player!!))
-            }
             passengers += ent
+            PacketManager.mountEntities(player!!.entityId, passengers.map { it.entityId }, listOf(player!!))
         }
     }
 
     fun updateTpCounter() {
+//        tpCounter?.changeTransformation(tpCounter!!.transformation, Component.text("X: ${(soulLocation.x * 10).roundToInt() / 10.0} | Y: ${(soulLocation.y * 10).roundToInt() / 10.0}"))
         if (tpAmount == 100.0) {
             tpCounter?.changeTransformation(tpCounter!!.transformation, Component.text("MAKC.").font("space:smooth"))
             tpBar?.changeTransformation(
@@ -117,7 +120,7 @@ class DeltarunePlayer(private val uuid: UUID) {
             freeFromBattle()
         }
         noDamageTicks = 40
-        runRepeating(40) { i ->
+        runRepeating(40) { i, _ ->
             noDamageTicks--
             if ((i / 4) % 2 == 0) {
                 soul?.changeTransformation(soul!!.transformation, fontText("❤", "#772222", "space:default"))
@@ -187,11 +190,19 @@ class DeltarunePlayer(private val uuid: UUID) {
         playerButtonTexts.clear()
         playerSelectedButton = 1
         //player?.flySpeed = 0.1f
+        runSync {
+            if (player != null) {
+                Bukkit.dispatchCommand(
+                    Bukkit.getServer().consoleSender,
+                    "sendshaderdata ${player!!.name} 0"
+                )
+            }
+        }
         player?.showTitle(
             title(
             fontText("\uD701", "#000000", "space:default"),
             Component.text(""),
-            Times.times(Duration.ZERO, Duration.ofMillis(500), Duration.ofMillis(100))
+            Times.times(Duration.ZERO, Duration.ofMillis(1000), Duration.ofMillis(100))
         ))
         runLater(6) {
             player?.gameMode = gameMode
@@ -203,6 +214,7 @@ class DeltarunePlayer(private val uuid: UUID) {
         if (player != null) {
             val myPlayer = player!!
             myPlayer.teleport(location)
+            myPlayer.isGliding = true
             PacketManager.setAttribute(
                 net.minecraft.world.entity.ai.attributes.Attributes.JUMP_STRENGTH,
                 0.0,
@@ -236,43 +248,22 @@ class DeltarunePlayer(private val uuid: UUID) {
                             updateTpCounter()
                         }
 
-//                        PacketManager.playerLookAt(myPlayer.location + Vector3d(0.0, -1000000.0, 10.0), listOf(myPlayer))
-//
-                    //                        val box = battle.battleBox
-//                        myPlayer.teleport(location)
-//                        val inputs = InputHolder(myPlayer.currentInput)
-//                        if (canMoveSoul && soul != null) {
-//                            val soulWidth = soul!!.transformation.scale.x * 0.18f
-//                            val soulHeight = soul!!.transformation.scale.y * 0.17f
+                        PacketManager.playerLookAt(
+                            myPlayer.location + Vector3d(0.0, -1000000000.0, 100.0),
+                            listOf(myPlayer)
+                        )
+                        val target = location
+                        target.y = myPlayer.location.y
 
-//                            var speed = soulSpeed
-//                            if (inputs.sneak) {
-//                                speed /= 1.5
-//                            }
-//
-//                            if (inputs.left && !inputs.right) {
-//                                val new = soul!!.location + Vector3d(speed, 0.0, 0.0)
-//                                soul?.teleport(box.isInside(new, soulWidth, soulHeight).second)
-//                            }
-//                            if (inputs.right && !inputs.left) {
-//                                val new = soul!!.location + Vector3d(-speed, 0.0, 0.0)
-//                                soul?.teleport(box.isInside(new, soulWidth, soulHeight).second)
-//                            }
-//                            if (inputs.forward && !inputs.backward) {
-//                                val new = soul!!.location + Vector3d(0.0, speed, 0.0)
-//                                soul?.teleport(box.isInside(new, soulWidth, soulHeight).second)
-//                            }
-//                            if (inputs.backward && !inputs.forward) {
-//                                val new = soul!!.location + Vector3d(0.0, -speed, 0.0)
-//                                soul?.teleport(box.isInside(new, soulWidth, soulHeight).second)
-//                            }
-//
-//                            val check = box.isInside(soul!!.location, soulWidth, soulHeight)
-//                            if (!check.first) {
-//                                soul?.teleport(check.second)
-//                            }
-//                            soulOutline?.teleport(soul!!.location + Vector3d(0.0, 0.0, -0.001))
-//                        }
+//                        soulLocation = Vector2f((myPlayer.location.x - target.x).toFloat() * 8f / -1.8f, (myPlayer.location.z - target.z).toFloat() * 8f / -1.8f)
+
+                        if (!canMoveSoul && soul != null) {
+                            if (target.distance(myPlayer.location) > 0.02) {
+                                val l = target - myPlayer.location
+                                val v = Vector(l.x * 0.15, l.y * 0.15, l.z * 0.15)
+                                myPlayer.velocity = v
+                            }
+                        }
                     }
                 }
             }.runTaskTimer(ZorshDeltarune.instance, 1L, 1L)

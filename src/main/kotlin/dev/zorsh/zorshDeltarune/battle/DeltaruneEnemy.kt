@@ -1,5 +1,6 @@
 package dev.zorsh.zorshDeltarune.battle
 
+import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.utils.*
 import net.kyori.adventure.text.Component
 import org.joml.Vector3f
@@ -11,9 +12,11 @@ abstract class DeltaruneEnemy(
 
     lateinit var myBattle: DeltaruneBattle
 
-    val projectileCenterLocation by lazy { myBattle.battleBoxCenterLocation + Vector3f(0.0f, 1.5f, -0.005f) }
-
     var isAlive = true
+
+    open fun askBoxSize(): Pair<Float, Float> {
+        return 30f to 30f
+    }
 
     abstract suspend fun attack(onAttackEnds: () -> Unit = {})
 
