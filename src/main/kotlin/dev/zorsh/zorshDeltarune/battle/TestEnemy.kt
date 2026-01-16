@@ -32,11 +32,11 @@ class TestEnemy(
                 delay(250)
             }
         } else {
-            repeat(20) { i ->
+            repeat(6) { _ ->
                 launch {
-                    testSpawnNMS(i)
+                    attackVariant3()
                 }
-                delay(250)
+                delay(1200)
             }
         }
         delay(1500)
@@ -103,6 +103,83 @@ class TestEnemy(
                 }
             }
             runLater(72) {
+                if (!hit) {
+                    entity.destroy()
+                }
+            }
+        }
+    }
+
+    private fun attackVariant3() {
+        val x = ZorshDeltarune.random.nextFloat() * 20f - 10f
+        val y = ZorshDeltarune.random.nextFloat() * 20f - 10f
+        val aOff = ZorshDeltarune.random.nextInt(24)
+        repeat(8) { i ->
+            testSpawnNMS3(i * 47 + aOff, x, y)
+        }
+    }
+
+    private fun testSpawnNMS3(a: Int, centerX: Float, centerY: Float) {
+        val scale = myBattle.sceneScale
+        val loc = myBattle.battleCenterLocation
+        loc.pitch = -90f
+        val x = sin(a / 180.0 * 3.1415)
+        val y = cos(a / 180.0 * 3.1415)
+        myBattle.newProjectile(
+            1,
+            Vector3f(centerX + x.toFloat() * 60, centerY + y.toFloat() * 60, 0.01f)
+        ) { entity ->
+            runLater(1) {
+                entity.changeTransformation(
+                    Transformation(
+                        entity.transformation.translation,
+                        AxisAngle4f(a / 180.0f * -3.1415f, 0f, 0f, 1f),
+                        Vector3f(12f, 12f, 1f) * scale,
+                        AxisAngle4f()
+                    )
+                )
+            }
+            var hit = false
+            runRepeating(40) { i, _ ->
+                val t = entity.transformation.translation
+                val cent = Vector3f(
+                    -t.x,
+                    t.z,
+                    t.y
+                )
+                runLater(1) {
+                    hit = hit || myBattle.damageHitbox(ZorshDeltarune.random.nextInt(10) + 20, cent, 0.17)
+                }
+                if (hit) {
+                    entity.destroy()
+                } else {
+                    entity.changeTransformation(
+                        Transformation(
+                            entity.transformation.translation - Vector3f(
+                                1.5f * x.toFloat(),
+                                1.5f * y.toFloat(),
+                                0.0001f
+                            ) * scale,
+                            entity.transformation.leftRotation,
+                            entity.transformation.scale,
+                            Quaternionf(AxisAngle4f())
+                        )
+                    )
+                }
+            }
+            runLater(40) {
+                if (!hit) {
+                    entity.changeTransformation(
+                        Transformation(
+                            entity.transformation.translation,
+                            entity.transformation.leftRotation,
+                            Vector3f(0f, 0f, 1f),
+                            Quaternionf(AxisAngle4f())
+                        )
+                    )
+                }
+            }
+            runLater(42) {
                 if (!hit) {
                     entity.destroy()
                 }

@@ -64,7 +64,7 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
                     dPlayer.shakingTime = 7
                     dPlayer.shakingMult = 3.0
                     damagedAnyone = true
-                } else if (dPlayer.noDamageTicks <= 0 && vec.distance(correctedCent) <= radius + 0.075) {
+                } else if (dPlayer.noDamageTicks <= 0 && vec.distance(correctedCent) <= radius + 0.083) {
                     dPlayer.tpGain()
                 }
             }
