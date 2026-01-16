@@ -61,8 +61,10 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
 //                Bukkit.getConsoleSender().sendMessage("${vec.distance(correctedCent)}")
                 if (dPlayer.noDamageTicks <= 0 && vec.distance(correctedCent) <= radius) {
                     dPlayer.damage(amount)
+                    dPlayer.shakingTime = 7
+                    dPlayer.shakingMult = 3.0
                     damagedAnyone = true
-                } else if (dPlayer.noDamageTicks <= 0 && vec.distance(correctedCent) <= radius + 0.09) {
+                } else if (dPlayer.noDamageTicks <= 0 && vec.distance(correctedCent) <= radius + 0.075) {
                     dPlayer.tpGain()
                 }
             }

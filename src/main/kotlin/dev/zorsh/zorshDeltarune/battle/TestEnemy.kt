@@ -55,7 +55,7 @@ class TestEnemy(
                     Transformation(
                         entity.transformation.translation,
                         AxisAngle4f(),
-                        Vector3f(10f, 10f, 1f) * scale,
+                        Vector3f(7f, 7f, 1f) * scale,
                         AxisAngle4f()
                     )
                 )
@@ -70,7 +70,7 @@ class TestEnemy(
                     t.y
                 )
                 runLater(1) {
-                    hit = hit || myBattle.damageHitbox(ZorshDeltarune.random.nextInt(10) + 20, cent, 0.17)
+                    hit = hit || myBattle.damageHitbox(ZorshDeltarune.random.nextInt(10) + 20, cent, 0.1)
                 }
                 if (hit) {
                     entity.destroy()
@@ -126,7 +126,7 @@ class TestEnemy(
                     Transformation(
                         entity.transformation.translation,
                         AxisAngle4f(a / 180.0f * -3.1415f, 0f, 0f, 1f),
-                        Vector3f(10f, 10f, 1f) * scale,
+                        Vector3f(12f, 12f, 1f) * scale,
                         AxisAngle4f()
                     )
                 )

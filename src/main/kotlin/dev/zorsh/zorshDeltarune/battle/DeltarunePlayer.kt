@@ -23,6 +23,7 @@ import org.bukkit.util.Vector
 import org.joml.Vector2f
 import org.joml.Vector3d
 import org.joml.Vector3f
+import sun.util.calendar.CalendarUtils.mod
 import java.time.Duration
 import java.util.UUID
 import kotlin.math.max
@@ -55,6 +56,9 @@ class DeltarunePlayer(private val uuid: UUID) {
     var tpGain = 0
 
     var tpAmount = 0.0
+
+    var shakingTime = 0
+    var shakingMult = 1.0
 
     var playerSelectedButton = 1
 
@@ -248,10 +252,22 @@ class DeltarunePlayer(private val uuid: UUID) {
                             updateTpCounter()
                         }
 
-                        PacketManager.playerLookAt(
-                            myPlayer.location + Vector3d(0.0, -1000000000.0, 100.0),
-                            listOf(myPlayer)
-                        )
+                        if (shakingTime > 0) {
+                            PacketManager.playerLookAt(
+                                myPlayer.location + Vector3d(ZorshDeltarune.random.nextDouble() * shakingTime * shakingMult * ((shakingTime % 2) * 2 - 1), 0.0, ZorshDeltarune.random.nextDouble() * shakingTime * shakingMult * 1000000) + Vector3d(0.0, -1000000000.0, 100.0),
+                                listOf(myPlayer)
+                            )
+                        } else {
+                            PacketManager.playerLookAt(
+                                myPlayer.location + Vector3d(0.0, -1000000000.0, 100.0),
+                                listOf(myPlayer)
+                            )
+                        }
+
+                        if (shakingTime > 0) {
+                            shakingTime--
+                        }
+
                         val target = location
                         target.y = myPlayer.location.y
 

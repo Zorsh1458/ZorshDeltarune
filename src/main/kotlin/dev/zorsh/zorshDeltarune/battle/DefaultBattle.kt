@@ -137,7 +137,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             dPlayer.soul?.changeTransformation(Transformation(
                 dPlayer.soul!!.transformation.translation,
                 AxisAngle4f(),
-                Vector3f(12f) * sceneScale,
+                Vector3f(10f) * sceneScale,
                 AxisAngle4f()
             ))
         }
@@ -481,7 +481,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 data = FakeDisplayData(Transformation(
                     Vector3f(0f),
                     AxisAngle4f(),
-                    Vector3f(12f) * sceneScale,
+                    Vector3f(10f) * sceneScale,
                     AxisAngle4f()
                 ), teleportDuration = 1, opacity = 0),
                 mountTo = false,
