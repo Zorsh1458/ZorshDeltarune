@@ -12,12 +12,17 @@ import kotlin.random.Random
 
 class TestEnemy(
     hitpoints: Int
-) : DeltaruneEnemy(hitpoints,
-    listOf(
+) : SpritedEnemy(hitpoints,
+    encounterMessages = listOf(
         Component.text("Это что еще за балбес"),
         Component.text("Тестовый враг встал у вас на пути!"),
         Component.text("Полный скебоб..")
-    )
+    ),
+    sprites = listOf(
+        fontText("1", "#ffffff", "space:enemy_slime"),
+        fontText("2", "#ffffff", "space:enemy_slime")
+    ),
+    5L
 ) {
 
     private var attackCount = 0
@@ -32,11 +37,11 @@ class TestEnemy(
                 delay(250)
             }
         } else {
-            repeat(6) { _ ->
+            repeat(7) { _ ->
                 launch {
                     attackVariant3()
                 }
-                delay(1200)
+                delay(1500)
             }
         }
         delay(1500)
@@ -62,6 +67,7 @@ class TestEnemy(
             }
             var hit = false
             var speed = -2.8f
+            val speedx = (ZorshDeltarune.random.nextFloat() - 0.5f) * 1.5f
             runRepeating(70) { _, _ ->
                 val t = entity.transformation.translation
                 val cent = Vector3f(
@@ -78,11 +84,11 @@ class TestEnemy(
                     entity.changeTransformation(
                         Transformation(
                             entity.transformation.translation - Vector3f(
-                                0f,
+                                speedx,
                                 speed,
                                 0.0001f
                             ) * scale,
-                            entity.transformation.leftRotation,
+                            entity.transformation.leftRotation * Quaternionf(AxisAngle4f(speedx * 0.2f, 0f, 0f, 1f)),
                             entity.transformation.scale,
                             Quaternionf(AxisAngle4f())
                         )

@@ -60,7 +60,7 @@ class DeltarunePlayer(private val uuid: UUID) {
     var shakingTime = 0
     var shakingMult = 1.0
 
-    var playerSelectedButton = 1
+    var playerSelectedButton = 0
 
     var playerButtonTexts = mutableListOf<FakeDisplay>()
 
@@ -192,7 +192,7 @@ class DeltarunePlayer(private val uuid: UUID) {
         playerButtonTexts.toList().forEach { it.destroy() }
         perPlayerEntities.clear()
         playerButtonTexts.clear()
-        playerSelectedButton = 1
+        playerSelectedButton = 0
         //player?.flySpeed = 0.1f
         runSync {
             if (player != null) {

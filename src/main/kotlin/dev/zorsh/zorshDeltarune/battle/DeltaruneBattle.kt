@@ -1,6 +1,5 @@
 package dev.zorsh.zorshDeltarune.battle
 
-import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.nms.FakeDisplay
 import dev.zorsh.zorshDeltarune.nms.FakeItemDisplay
 import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
@@ -13,19 +12,17 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.entity.TextDisplay.TextAlignment
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Transformation
 import org.joml.*
-import kotlin.math.cos
-import kotlin.math.roundToInt
-import kotlin.math.sin
-
-object BattleLocation {
-    val TEST = Location(Bukkit.getWorld("world"), 8.0, 100.0, 8.1)
-    val UNDER_STATION = Location(Bukkit.getWorld("moon"), 952.0, 99.2, 1101.0)
-}
 
 abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: List<DeltaruneEnemy>) {
+
+    object BattleLocation {
+        val TEST = Location(Bukkit.getWorld("world"), 8.0, 100.0, 8.1)
+        val UNDER_STATION = Location(Bukkit.getWorld("moon"), 952.0, 99.2, 1101.0)
+    }
 
     val scope = CoroutineScope(Dispatchers.IO)
 
@@ -201,6 +198,9 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
             Vector3f(1f),
             Quaternionf(0f, 0f, 0f, 1f)
         )),
+        alignment: TextAlignment = TextAlignment.CENTER,
+        lineWidth: Int = 10000,
+        isShadowed: Boolean = false,
         mountTo: Boolean,
         seeThrough: Boolean = false,
         afterSpawn: (FakeTextDisplay) -> Unit = {}
@@ -210,7 +210,10 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
             text,
             playerToShow,
             data,
-            seeThrough
+            seeThrough,
+            alignment,
+            lineWidth,
+            isShadowed
         ) { entity ->
             spawnedEntities += entity
             entity.holder = spawnedEntities

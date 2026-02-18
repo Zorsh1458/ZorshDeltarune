@@ -635,6 +635,9 @@ class PacketManager {
             players: List<Player>,
             data: FakeDisplayData,
             seeThrough: Boolean,
+            alignment: TextDisplay.TextAlignment,
+            lineWidth: Int,
+            isShadowed: Boolean,
             afterSpawned: (FakeTextDisplay) -> Unit,
         ) {
             runLater(0L) {
@@ -645,10 +648,12 @@ class PacketManager {
                 ent.interpolationDuration = data.interpolationDuration
                 ent.backgroundColor = Color.fromARGB(0)
                 ent.brightness = Display.Brightness(15, 15)
-                ent.lineWidth = 10000
+                ent.lineWidth = lineWidth
                 ent.textOpacity = data.opacity
                 ent.isPersistent = false
                 ent.isSeeThrough = seeThrough
+                ent.alignment = alignment
+                ent.isShadowed = isShadowed
 //                ent.viewRange = 0f
 //                ent.billboard = Display.Billboard.CENTER
                 val entityId = ent.entityId

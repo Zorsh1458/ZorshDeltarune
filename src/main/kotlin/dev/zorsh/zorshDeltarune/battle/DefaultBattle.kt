@@ -15,6 +15,7 @@ import net.kyori.adventure.title.Title.Times
 import net.kyori.adventure.title.Title.title
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.entity.TextDisplay
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.scheduler.BukkitRunnable
@@ -230,14 +231,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
     private suspend fun showPlayersOptions() {
         repeat(2) {
             for (dPlayer in players) {
-                dPlayer.playerSelectedButton = 0
-                val buttonEntity = dPlayer.playerButtonTexts[0]
-                buttonEntity.changeTransformation(Transformation(
-                    buttonEntity.transformation.translation,
-                    AxisAngle4f(),
-                    Vector3f(1f) * sceneScale,
-                    AxisAngle4f()
-                ))
+                // Lift players interface
                 for (entity in dPlayer.perPlayerEntities) {
                     val transform = entity.transformation
                     entity.changeTransformation(
@@ -249,6 +243,16 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                         )
                     )
                 }
+                delay(100)
+                // Select button
+//                dPlayer.playerSelectedButton = 0
+                val buttonEntity = dPlayer.playerButtonTexts[dPlayer.playerSelectedButton]
+                buttonEntity.changeTransformation(Transformation(
+                    buttonEntity.transformation.translation,
+                    AxisAngle4f(),
+                    Vector3f(1f) * sceneScale,
+                    AxisAngle4f()
+                ))
             }
             delay(50)
         }
@@ -295,6 +299,26 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
 
         runLater(3) {
             newShaderEffector(loc - Vector3d(0.0, 2.0, 0.0))
+        }
+
+        //TODO("ENEMY SPRITES")
+        val spritedEnemies = enemies.filterIsInstance<SpritedEnemy>()
+        for (enemy in spritedEnemies) {
+            newTextDisplay(
+                loc,
+                Component.text(""),
+                data = FakeDisplayData(
+                    Transformation(
+                        Vector3f(6f, 1f, 0.0001f) * sceneScale + sceneOffset,
+                        AxisAngle4f(),
+                        Vector3f(3f, 3f, 3f) * sceneScale,
+                        AxisAngle4f()
+                    )
+                ),
+                mountTo = true
+            ) { display ->
+                enemy.createSprite(display)
+            }
         }
 
         //- spawn text_display[brightness=<map[block=15;sky=15]>;text=<&color[#ff770a]>⬛;background_color=<color[#ffffff].with_alpha[0]>;scale=140,100,1;translation=-2,-10,-0.001;force_no_persist=true] <[pos].forward[5].face[<[pos]>]> save:main_bg
@@ -432,17 +456,25 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
         val finalText = Component.text("✲ ").append(encounterText).style(Style.style(TextDecoration.BOLD))
         newTextDisplay(
             loc - Vector3d(0.0, 0.0, 0.00095),
-            finalText,
+            Component.text(""),
             data = FakeDisplayData(
                 Transformation(
                     Vector3f(0f, -3f, 0.011f) * sceneScale + sceneOffset,
                     AxisAngle4f(),
-                    Vector3f(1.4f, 1.4f, 1f) * sceneScale,
+                    Vector3f(1.8f, 2f, 1f) * sceneScale,
                     AxisAngle4f()
-                )
+                ),
+                interpolationDuration = 0
             ),
+            lineWidth = 320,
+            alignment = TextDisplay.TextAlignment.LEFT,
+            isShadowed = true,
             mountTo = true
-        )
+        ) { txtEntity ->
+            runLater(10) {
+                txtEntity.animateBattleText(finalText)
+            }
+        }
 
         //TODO("PLAYERS")
         for (dPlayer in players.filter { it.player != null }) {
@@ -460,7 +492,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
 
             // SOUL ====++++++++++++====
             newTextDisplay(
-                loc + Vector3d(0.0, -2.15, -0.23),
+                loc + Vector3d(0.0, -2.15, -0.2),
                 fontText("❤", "#ff2222", "space:default"),
                 playerToShow = listOfNotNull(dPlayer.player),
                 data = FakeDisplayData(Transformation(
@@ -475,7 +507,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 dPlayer.soul = entity
             }
             newTextDisplay(
-                loc + Vector3d(0.0, -2.15, -0.23),
+                loc + Vector3d(0.0, -2.15, -0.2),
                 fontText("♡", "#ffffff", "space:default"),
                 playerToShow = listOfNotNull(dPlayer.player),
                 data = FakeDisplayData(Transformation(
@@ -557,7 +589,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             }
 
             //        - spawn text_display[teleport_duration=<[tp_dur]>;brightness=<map[block=15;sky=15]>;text=<element[<&color[#fc8403]><element[f].font[space:dbuttons]> <element[a].font[space:dbuttons]> <element[i].font[space:dbuttons]> <element[m].font[space:dbuttons]> <element[d].font[space:dbuttons]>]>;background_color=<color[#ffffff].with_alpha[0]>;scale=1,1,1;translation=<[n].font[space:smooth2].text_width.mul[0.025].mul[0.9].add[<[left_offset].add[1.9]>]>,-3.02,0.00021;force_no_persist=true] <[pos].forward[5].face[<[pos]>].forward[0.001]> save:bg
-            val buttons = fontText("f a i m d", "#fe0001", "space:dbuttons")
+            val buttons = fontText("f a i m d", "#ff8800", "space:dbuttons")
             newTextDisplay(
                 loc - Vector3d(0.0, 0.0, 0.001),
                 buttons,
@@ -576,40 +608,45 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
 
             val separator = Component.text("\uF801").font("space:default")
             val buttonTexts = listOf(
-                Component.text("Б").append(separator)
-                    .append(Component.text("и").append(separator))
-                    .append(Component.text("т").append(separator))
-                    .append(Component.text("в").append(separator))
-                    .append(Component.text("а").append(separator))
-                    .color("#ff7701"),
-                Component.text("Д").append(separator)
-                    .append(Component.text("е").append(separator))
-                    .append(Component.text("и").append(separator))
-                    .append(Component.text("с").append(separator))
-                    .append(Component.text("т").append(separator))
-                    .append(Component.text(".").append(separator))
-                    .color("#ff7701"),
-                Component.text("П").append(separator)
-                    .append(Component.text("р").append(separator))
-                    .append(Component.text("е").append(separator))
-                    .append(Component.text("д").append(separator))
-                    .append(Component.text("м").append(separator))
-                    .append(Component.text(".").append(separator))
-                    .color("#ff7701"),
-                Component.text("П").append(separator)
-                    .append(Component.text("о").append(separator))
-                    .append(Component.text("щ").append(separator))
-                    .append(Component.text("а").append(separator))
-                    .append(Component.text("д").append(separator))
-                    .append(Component.text("а").append(separator))
-                    .color("#ff7701"),
-                Component.text("З").append(separator)
-                    .append(Component.text("а").append(separator))
-                    .append(Component.text("щ").append(separator))
-                    .append(Component.text("и").append(separator))
-                    .append(Component.text("т").append(separator))
-                    .append(Component.text("а").append(separator))
-                    .color("#ff7701")
+                fontText("f\n", "#ffff00", "space:dbuttons")
+                    .append(Component.text("Б").font("minecraft:default").append(separator))
+                    .append(Component.text("и").font("minecraft:default").append(separator))
+                    .append(Component.text("т").font("minecraft:default").append(separator))
+                    .append(Component.text("в").font("minecraft:default").append(separator))
+                    .append(Component.text("а").font("minecraft:default").append(separator))
+                    .color("#ffff00"),
+                fontText("a\n", "#ffff00", "space:dbuttons")
+                    .append(Component.text("Д").font("minecraft:default").append(separator))
+                    .append(Component.text("е").font("minecraft:default").append(separator))
+                    .append(Component.text("и").font("minecraft:default").append(separator))
+                    .append(Component.text("с").font("minecraft:default").append(separator))
+                    .append(Component.text("т").font("minecraft:default").append(separator))
+                    .append(Component.text(".").font("minecraft:default").append(separator))
+                    .color("#ffff00"),
+                fontText("i\n", "#ffff00", "space:dbuttons")
+                    .append(Component.text("П").font("minecraft:default").append(separator))
+                    .append(Component.text("р").font("minecraft:default").append(separator))
+                    .append(Component.text("е").font("minecraft:default").append(separator))
+                    .append(Component.text("д").font("minecraft:default").append(separator))
+                    .append(Component.text("м").font("minecraft:default").append(separator))
+                    .append(Component.text(".").font("minecraft:default").append(separator))
+                    .color("#ffff00"),
+                fontText("m\n", "#ffff00", "space:dbuttons")
+                    .append(Component.text("П").font("minecraft:default").append(separator))
+                    .append(Component.text("о").font("minecraft:default").append(separator))
+                    .append(Component.text("щ").font("minecraft:default").append(separator))
+                    .append(Component.text("а").font("minecraft:default").append(separator))
+                    .append(Component.text("д").font("minecraft:default").append(separator))
+                    .append(Component.text("а").font("minecraft:default").append(separator))
+                    .color("#ffff00"),
+                fontText("d\n", "#ffff00", "space:dbuttons")
+                    .append(Component.text("З").font("minecraft:default").append(separator))
+                    .append(Component.text("а").font("minecraft:default").append(separator))
+                    .append(Component.text("щ").font("minecraft:default").append(separator))
+                    .append(Component.text("и").font("minecraft:default").append(separator))
+                    .append(Component.text("т").font("minecraft:default").append(separator))
+                    .append(Component.text("а").font("minecraft:default").append(separator))
+                    .color("#ffff00")
             )
             var ind = -3
             for (buttonText in buttonTexts) {
@@ -620,7 +657,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     playerToShow = listOfNotNull(mcPlayer),
                     data = FakeDisplayData(
                         Transformation(
-                            Vector3f(width + leftOffset + 1.9f + ind * 0.9f, -3.17f, 0.01025f) * sceneScale + sceneOffset,
+                            Vector3f(width + leftOffset + 1.9f + ind * 0.9f, -3.25f + 0.88f, 0.01025f) * sceneScale + sceneOffset,
                             AxisAngle4f(),
                             Vector3f(0f, 1f, 1f) * sceneScale,
                             AxisAngle4f()
@@ -629,7 +666,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     ),
                     mountTo = true
                 ) { entity ->
-                    dPlayer.perPlayerEntities.add(entity)
+//                    dPlayer.perPlayerEntities.add(entity)
                     dPlayer.playerButtonTexts.add(entity)
                 }
             }
