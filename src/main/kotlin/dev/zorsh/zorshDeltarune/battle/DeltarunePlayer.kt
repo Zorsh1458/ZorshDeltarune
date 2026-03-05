@@ -19,6 +19,7 @@ import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.Input
 import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
+import org.bukkit.util.Transformation
 import org.bukkit.util.Vector
 import org.joml.Vector2f
 import org.joml.Vector3d
@@ -68,16 +69,16 @@ class DeltarunePlayer(private val uuid: UUID) {
 
     var soul: FakeTextDisplay? = null
     var soulOutline: FakeTextDisplay? = null
+    var soulForOthers: FakeTextDisplay? = null
 
     var canMoveSoul = false
 
     private var gameMode = GameMode.SURVIVAL
 
-    private val soulSpeed = 0.12
-
     var onHpUpdated: (Int) -> Unit = {}
 
-    private var anchor: Entity? = null
+    var actionStage = PlayerActionStage.SELECT_BUTTON
+    var battleInfoText: FakeTextDisplay? = null
 
     fun mountEntity(ent: FakeDisplay) {
         if (player != null) {
@@ -177,7 +178,7 @@ class DeltarunePlayer(private val uuid: UUID) {
         tpCounter = null
         runLater(1) {
             if (player != null) {
-                anchor?.removePassenger(player!!)
+                player?.showToEveryone()
                 PacketManager.setAttribute(
                     net.minecraft.world.entity.ai.attributes.Attributes.JUMP_STRENGTH,
                     0.42,
@@ -185,8 +186,6 @@ class DeltarunePlayer(private val uuid: UUID) {
                     listOf(player!!)
                 )
             }
-            anchor?.remove()
-            anchor = null
         }
         perPlayerEntities.toList().forEach { it.destroy() }
         playerButtonTexts.toList().forEach { it.destroy() }
@@ -214,7 +213,6 @@ class DeltarunePlayer(private val uuid: UUID) {
     }
 
     fun lockInBattle(location: Location) {
-//        val battle = BattleManager.getBattle(myBattleUUID ?: return) ?: return
         if (player != null) {
             val myPlayer = player!!
             myPlayer.teleport(location)
@@ -225,13 +223,12 @@ class DeltarunePlayer(private val uuid: UUID) {
                 myPlayer.entityId,
                 listOf(myPlayer)
             )
-//            gameMode = myPlayer.gameMode
-//            myPlayer.gameMode = GameMode.SPECTATOR
-//            anchor = location.world.spawnEntity(location, EntityType.BLOCK_DISPLAY)
-//            anchor?.isPersistent = false
-//            anchor?.addPassenger(myPlayer)
-//            myPlayer.sendActionBar(Component.text(""))
+            gameMode = myPlayer.gameMode
+            myPlayer.gameMode = GameMode.ADVENTURE
             locked = true
+            myPlayer.hideFromEveryone()
+            var startTranslation = soulForOthers?.transformation?.translation
+            var counter = 0L
             object : BukkitRunnable() {
                 override fun run() {
                     if (!myPlayer.isOnline) {
@@ -246,6 +243,10 @@ class DeltarunePlayer(private val uuid: UUID) {
                         cancel()
                         freeFromBattle()
                     } else {
+                        counter++
+                        if (counter % 20L == 0L) {
+                            myPlayer.hideFromEveryone()
+                        }
                         if (tpGain > 0) {
                             tpGain--
                             tpAmount = min(tpAmount + 0.5, 100.0)
@@ -270,16 +271,35 @@ class DeltarunePlayer(private val uuid: UUID) {
 
                         val target = location
                         target.y = myPlayer.location.y
-
-//                        soulLocation = Vector2f((myPlayer.location.x - target.x).toFloat() * 8f / -1.8f, (myPlayer.location.z - target.z).toFloat() * 8f / -1.8f)
+                        val playerOffset = myPlayer.location - target
 
                         if (!canMoveSoul && soul != null) {
                             if (target.distance(myPlayer.location) > 0.02) {
-                                val l = target - myPlayer.location
-                                val v = Vector(l.x * 0.15, l.y * 0.15, l.z * 0.15)
+                                val v = Vector(playerOffset.x * -0.15, playerOffset.y * -0.15, playerOffset.z * -0.15)
                                 myPlayer.velocity = v
                             }
                         }
+
+                        try {
+                            if (canMoveSoul && soulForOthers != null) {
+                                if (startTranslation == null) {
+                                    startTranslation = soulForOthers!!.transformation.translation
+                                }
+                                val trans = soulForOthers!!.transformation
+                                soulForOthers!!.changeTransformation(
+                                    Transformation(
+                                        startTranslation!! + Vector3d(
+                                            playerOffset.x * 0.098f,
+                                            playerOffset.z * -0.098f,
+                                            0.0
+                                        ),
+                                        trans.leftRotation,
+                                        trans.scale,
+                                        trans.rightRotation
+                                    )
+                                )
+                            }
+                        } catch (ignored: Exception) {}
                     }
                 }
             }.runTaskTimer(ZorshDeltarune.instance, 1L, 1L)

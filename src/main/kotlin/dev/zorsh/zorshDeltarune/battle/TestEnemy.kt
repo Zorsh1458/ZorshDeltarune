@@ -45,6 +45,8 @@ class TestEnemy(
             }
         }
         delay(1500)
+
+//        delay(10000)
     }
 
     private fun testSpawnNMS2() {
@@ -67,8 +69,8 @@ class TestEnemy(
             }
             var hit = false
             var speed = -2.8f
-            val speedx = (ZorshDeltarune.random.nextFloat() - 0.5f) * 1.5f
-            runRepeating(70) { _, _ ->
+            var speedx = (ZorshDeltarune.random.nextFloat() - 0.5f) * 1.5f
+            runRepeating(70) { i ->
                 val t = entity.transformation.translation
                 val cent = Vector3f(
                     -t.x,
@@ -94,6 +96,18 @@ class TestEnemy(
                         )
                     )
                     speed += 0.1f
+                    if (i == 53) {
+                        speedx *= -1
+                        speed = -1.7f
+                        entity.changeTransformation(
+                            Transformation(
+                                entity.transformation.translation,
+                                entity.transformation.leftRotation,
+                                entity.transformation.scale * 0.5,
+                                Quaternionf(AxisAngle4f())
+                            )
+                        )
+                    }
                 }
             }
             runLater(70) {

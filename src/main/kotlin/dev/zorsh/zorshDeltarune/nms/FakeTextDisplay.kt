@@ -34,9 +34,9 @@ class FakeTextDisplay(
     holder
 ) {
     override fun changeTransformation(newTransformation: Transformation, newText: Component, newOpacity: Byte) {
-        val new = newText.replaceText { builder ->
-            builder.match("___DEFAULT_TEXT___")
-                .replacement(text)
+        var new = newText
+        if (newText == Component.text("___DEFAULT_TEXT___")) {
+            new = text
         }
         PacketManager.setTextDisplayMetadata(entityId, new, newTransformation, players, interpolationDuration, teleportDuration, newOpacity)
         transformation = newTransformation
@@ -44,11 +44,15 @@ class FakeTextDisplay(
         text = new
     }
 
+    fun changeOnlyTransformation(newTransformation: Transformation) {
+        PacketManager.setTextDisplayMetadata(entityId, text, newTransformation, players, interpolationDuration, teleportDuration, opacity)
+        transformation = newTransformation
+    }
+
     fun animateBattleText(text: Component) {
         val content = PlainTextComponentSerializer.plainText().serialize(text)
         val style = text.style()
         val updating = Component.text()
-//        updating.append(Component.text(" ".repeat(64) + '\n').color(TextColor.color(0, 0, 0)))
         updating.append(Component.text(" ".repeat(64) + '\n'))
         runRepeating(content.length) { ind ->
             if (content[ind] == '\n') {
@@ -60,9 +64,10 @@ class FakeTextDisplay(
                 )
             }
             updating.append(Component.text(content[ind]))
+            this.text = updating.style(style).shadowColor(ShadowColor.shadowColor(0, 0, 64, 255)).build()
             PacketManager.setTextDisplayMetadata(
                 entityId,
-                updating.style(style).shadowColor(ShadowColor.shadowColor(0, 0, 64, 255)).build(),
+                this.text,
                 transformation,
                 players,
                 interpolationDuration,

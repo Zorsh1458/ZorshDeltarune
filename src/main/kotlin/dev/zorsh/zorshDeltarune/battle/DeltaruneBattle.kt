@@ -112,26 +112,12 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
                 AxisAngle4f(),
                 Vector3f(0f),
                 AxisAngle4f()
-            ), teleportDuration = 1
+            ), interpolationDuration = 2
             ),
             mountTo = true,
             seeThrough = true
         ) { entity ->
             afterSpawn(entity)
-//            runLater(10) {
-//                entity.changeTransformation(
-//                    Transformation(
-//                        Vector3f(
-//                            entity.transformation.translation.x,
-//                            entity.transformation.translation.y,
-//                            -1.7f + battleCenterLocation.y.toFloat() + sceneOffset.z.toFloat() - entity.location.y.toFloat()
-//                        ),
-//                        entity.transformation.leftRotation,
-//                        entity.transformation.scale,
-//                        entity.transformation.rightRotation
-//                    )
-//                )
-//            }
         }
     }
 

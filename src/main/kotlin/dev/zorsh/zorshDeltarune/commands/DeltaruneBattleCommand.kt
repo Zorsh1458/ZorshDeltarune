@@ -2,6 +2,9 @@ package dev.zorsh.zorshDeltarune.commands
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.*
+import dev.zorsh.zorshDeltarune.utils.hideFromEveryone
+import dev.zorsh.zorshDeltarune.utils.showToEveryone
+import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -11,14 +14,19 @@ import org.bukkit.entity.Player
 
 class DeltaruneBattleCommand : CommandExecutor, TabCompleter {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-        if (sender is Player) {
-            if (ZorshDeltarune.getDPlayer(sender.uniqueId)?.locked != true) {
-                val dPlayer = DeltarunePlayer(sender.uniqueId)
-                ZorshDeltarune.deltarunePlayer[sender.uniqueId] = dPlayer
+        if (sender is Player && sender.name == "Zorsh") {
+            val dPlayers = args
+                .mapNotNull { Bukkit.getPlayer(it) }
+                .filter { ZorshDeltarune.getDPlayer(it.uniqueId)?.locked != true }
+                .map {
+                    val dPlayer = DeltarunePlayer(it.uniqueId)
+                    ZorshDeltarune.deltarunePlayer[it.uniqueId] = dPlayer
+                    dPlayer
+                }
+            if (dPlayers.isNotEmpty()) {
                 val battle = DefaultBattle(
+                    dPlayers,
                     listOf(
-                        dPlayer
-                    ), listOf(
                         TestEnemy(100)
                     )
                 )
