@@ -9,6 +9,7 @@ import dev.zorsh.zorshDeltarune.nms.PacketManager
 import dev.zorsh.zorshDeltarune.utils.*
 import kotlinx.coroutines.*
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.ShadowColor
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title.Times
@@ -95,7 +96,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             CoroutineScope(Dispatchers.IO).launch {
                 delay(250)
                 val job = scope.launch {
-                    repeat(5) {
+                    repeat(2) {
                         delay(100L)
                         showPlayersOptions()
                         delay(5000L)
@@ -300,8 +301,13 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
 
     private suspend fun hidePlayersOptions() {
         playersTurn = false
+        for (enemy in enemies.filterIsInstance<SpritedEnemy>()) {
+            enemy.mySprite.glowTo.clear()
+        }
         for (dPlayer in players) {
             runLater(2L) {
+                dPlayer.clearMenu()
+                dPlayer.menuSelectorHeart?.hide()
                 val infoEnt = dPlayer.battleInfoText
                 infoEnt?.changeOnlyTransformation(
                     Transformation(
@@ -311,7 +317,6 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                         infoEnt.transformation.rightRotation
                     )
                 )
-                dPlayer.player?.sendMessage("SHOWING ${infoEnt?.text}")
             }
 
             val index = dPlayer.playerSelectedButton
@@ -358,21 +363,37 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
 
         //TODO("ENEMY SPRITES")
         val spritedEnemies = enemies.filterIsInstance<SpritedEnemy>()
-        for (enemy in spritedEnemies) {
+        for (enemy in spritedEnemies.reversed().withIndex()) {
             newTextDisplay(
                 loc,
                 Component.text(""),
                 data = FakeDisplayData(
                     Transformation(
-                        Vector3f(6f, 1f, 0.0001f) * sceneScale + sceneOffset,
+                        Vector3f(
+                            6f + 10f + ZorshDeltarune.random.nextFloat(),
+                            1f - (spritedEnemies.size - 1) * 0.6f + enemy.index * 1.8f,
+                            0.0001f
+                        ) * sceneScale + sceneOffset,
                         AxisAngle4f(),
-                        Vector3f(1f, 1f, 1f) * sceneScale,
+                        Vector3f(1.5f, 1.5f, 1.5f) * sceneScale,
                         AxisAngle4f()
                     )
                 ),
                 mountTo = true
             ) { display ->
-                enemy.createSprite(display)
+                enemy.value.createSprite(display)
+                runLater(10 + enemy.index.toLong() * 2L) {
+                    runRepeating(10) { _ ->
+                        display.changeOnlyTransformation(
+                            Transformation(
+                                display.transformation.translation - Vector3f(1f, 0f, 0f) * sceneScale,
+                                display.transformation.leftRotation,
+                                display.transformation.scale,
+                                display.transformation.rightRotation
+                            )
+                        )
+                    }
+                }
             }
         }
 
@@ -559,6 +580,24 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 runLater(10) {
                     txtEntity.animateBattleText(finalText)
                 }
+            }
+
+            newTextDisplay(
+                loc,
+                fontText("❤", "#ff2222", "space:default"),
+                playerToShow = listOfNotNull(dPlayer.player),
+                data = FakeDisplayData(
+                    Transformation(
+                        Vector3f(-7.475f, -2.735f, 0.011f) * sceneScale + sceneOffset,
+                        AxisAngle4f(),
+                        Vector3f(0f),
+                        AxisAngle4f()
+                    ),
+                    interpolationDuration = 0
+                ),
+                mountTo = true
+            ) { txtEntity ->
+                dPlayer.menuSelectorHeart = MenuSelectorHeart(txtEntity, sceneScale)
             }
 
             // SOUL ====++++++++++++====
@@ -1026,6 +1065,17 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
         if (playersTurn) {
             when (dPlayer.actionStage) {
                 PlayerActionStage.SELECT_BUTTON -> {
+                    val index = dPlayer.playerSelectedButton
+                    val buttonEntity = dPlayer.playerButtonTexts[index]
+                    val transform = buttonEntity.transformation
+                    buttonEntity.changeTransformation(
+                        Transformation(
+                            transform.translation,
+                            transform.leftRotation,
+                            Vector3f(0f, transform.scale.y, sceneScale.z),
+                            transform.rightRotation
+                        )
+                    )
                     val ent = dPlayer.battleInfoText
                     ent?.changeOnlyTransformation(
                         Transformation(
@@ -1035,9 +1085,87 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                             ent.transformation.rightRotation
                         )
                     )
-                    dPlayer.actionStage = PlayerActionStage.FIGHT_SELECT_ENEMY
+                    when (dPlayer.playerSelectedButton) {
+                        0 -> {
+                            dPlayer.actionStage = PlayerActionStage.FIGHT_SELECT_ENEMY
+                            showEnemiesSelection(dPlayer)
+                        }
+
+                        1 -> {
+                            dPlayer.actionStage = PlayerActionStage.ACT_SELECT_ACT
+                        }
+
+                        2 -> {
+                            dPlayer.actionStage = PlayerActionStage.ITEM_SELECT_ITEM
+                        }
+
+                        3 -> {
+                            dPlayer.actionStage = PlayerActionStage.MERCY_SELECT_ENEMY
+                        }
+
+                        else -> {
+                            dPlayer.actionStage = PlayerActionStage.NONE
+                        }
+                    }
                 }
+
+                PlayerActionStage.FIGHT_SELECT_ENEMY -> {
+                    dPlayer.actionStage = PlayerActionStage.NONE
+                    dPlayer.clearMenu()
+                    dPlayer.menuSelectorHeart?.hide()
+                    enemies.filterIsInstance<SpritedEnemy>().forEach { it.mySprite.glowTo.remove(dPlayer.player!!) }
+                }
+
                 else -> {}
+            }
+        }
+    }
+
+    private fun showEnemiesSelection(dPlayer: DeltarunePlayer) {
+        dPlayer.menuSelectorHeart?.setPosition(0, 0)
+        dPlayer.menuSelectorHeart?.setBounds(1, enemies.size)
+        val loc = battleCenterLocation
+        loc.yaw = 180f
+        loc.pitch = -90f
+        var offset = 0f
+        for (enemy in enemies) {
+            val updating = Component.text()
+            updating.append(Component.text(" ".repeat(64) + '\n'))
+            updating.append(enemy.name)
+            newTextDisplay(
+                loc,
+                updating.style(Style.style(TextDecoration.BOLD)).shadowColor(ShadowColor.shadowColor(0, 0, 64, 255))
+                    .build(),
+                playerToShow = listOfNotNull(dPlayer.player),
+                data = FakeDisplayData(
+                    Transformation(
+                        Vector3f(0f, -3f - offset, 0.011f) * sceneScale + sceneOffset,
+                        AxisAngle4f(),
+                        Vector3f(1.8f, 2f, 1f) * sceneScale,
+                        AxisAngle4f()
+                    ),
+                    interpolationDuration = 0
+                ),
+                lineWidth = 320,
+                alignment = TextDisplay.TextAlignment.LEFT,
+                isShadowed = true,
+                mountTo = true
+            ) { txtEntity ->
+                dPlayer.moveMenuTexts += txtEntity
+            }
+            offset += 0.7f
+        }
+        dPlayer.menuSelectorHeart?.show()
+        runInfinite(1) { _, task ->
+            if (enemies.isNotEmpty() && dPlayer.player != null && dPlayer.actionStage == PlayerActionStage.FIGHT_SELECT_ENEMY && dPlayer.menuSelectorHeart != null && dPlayer.locked && playersTurn) {
+                val enemy = enemies.getOrNull(dPlayer.menuSelectorHeart!!.myY)
+                enemies.filterIsInstance<SpritedEnemy>().filter { it != enemy }
+                    .forEach { it.mySprite.glowTo.remove(dPlayer.player!!) }
+                if (enemy != null && enemy is SpritedEnemy) {
+                    enemy.mySprite.glowTo.add(dPlayer.player!!)
+                }
+            } else {
+                task.cancel()
             }
         }
     }

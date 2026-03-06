@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component
 import org.joml.Vector3f
 
 abstract class DeltaruneEnemy(
+    val name: Component,
     val hitpoints: Int,
     val encounterMessages: List<Component>
 ) {

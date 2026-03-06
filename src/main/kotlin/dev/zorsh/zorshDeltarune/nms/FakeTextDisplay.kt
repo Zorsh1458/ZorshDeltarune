@@ -23,7 +23,7 @@ class FakeTextDisplay(
     interpolationDuration: Int,
     players: List<Player>,
     holder: MutableSet<FakeDisplay>? = null,
-    var opacity: Byte
+    var opacity: Byte,
 ) : FakeDisplay(
     entityId,
     location,
@@ -33,19 +33,52 @@ class FakeTextDisplay(
     players,
     holder
 ) {
+    fun changeText(newText: Component, playerOverride: List<Player>? = null) {
+        if (playerOverride != emptyList<Player>()) {
+            PacketManager.setTextDisplayMetadata(
+                entityId,
+                newText,
+                transformation,
+                playerOverride ?: players,
+                interpolationDuration,
+                teleportDuration,
+                opacity
+            )
+            if (playerOverride == null) {
+                text = newText
+            }
+        }
+    }
+
     override fun changeTransformation(newTransformation: Transformation, newText: Component, newOpacity: Byte) {
         var new = newText
         if (newText == Component.text("___DEFAULT_TEXT___")) {
             new = text
         }
-        PacketManager.setTextDisplayMetadata(entityId, new, newTransformation, players, interpolationDuration, teleportDuration, newOpacity)
+        PacketManager.setTextDisplayMetadata(
+            entityId,
+            new,
+            newTransformation,
+            players,
+            interpolationDuration,
+            teleportDuration,
+            newOpacity
+        )
         transformation = newTransformation
         opacity = newOpacity
         text = new
     }
 
     fun changeOnlyTransformation(newTransformation: Transformation) {
-        PacketManager.setTextDisplayMetadata(entityId, text, newTransformation, players, interpolationDuration, teleportDuration, opacity)
+        PacketManager.setTextDisplayMetadata(
+            entityId,
+            text,
+            newTransformation,
+            players,
+            interpolationDuration,
+            teleportDuration,
+            opacity
+        )
         transformation = newTransformation
     }
 

@@ -9,5 +9,6 @@ enum class PlayerActionStage {
     ITEM_SELECT_ITEM,
     MERCY_SELECT_ENEMY,
     SPELL_SELECT_SPELL,
-    SPELL_SELECT_ENEMY
+    SPELL_SELECT_ENEMY,
+    NONE
 }

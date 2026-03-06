@@ -4,6 +4,7 @@ import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.*
 import dev.zorsh.zorshDeltarune.utils.hideFromEveryone
 import dev.zorsh.zorshDeltarune.utils.showToEveryone
+import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -27,7 +28,9 @@ class DeltaruneBattleCommand : CommandExecutor, TabCompleter {
                 val battle = DefaultBattle(
                     dPlayers,
                     listOf(
-                        TestEnemy(100)
+                        TestEnemy(Component.text("Слизнячок"), 100),
+                        TestEnemy(Component.text("Слизнячок"), 100),
+                        TestEnemy(Component.text("Слизнячок"), 100)
                     )
                 )
                 BattleManager.startBattle(battle)

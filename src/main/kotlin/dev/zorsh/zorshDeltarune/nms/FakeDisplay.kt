@@ -16,7 +16,7 @@ abstract class FakeDisplay(
     var transformation: Transformation,
     protected val teleportDuration: Int,
     protected val interpolationDuration: Int,
-    protected val players: List<Player>,
+    val players: List<Player>,
     var holder: MutableSet<FakeDisplay>? = null
 ) {
 

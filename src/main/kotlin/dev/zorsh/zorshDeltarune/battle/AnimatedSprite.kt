@@ -1,8 +1,10 @@
 package dev.zorsh.zorshDeltarune.battle
 
+import dev.zorsh.zorshDeltarune.nms.FakeDisplay
 import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
 import dev.zorsh.zorshDeltarune.nms.PacketManager
 import dev.zorsh.zorshDeltarune.utils.FakeDisplayData
+import dev.zorsh.zorshDeltarune.utils.color
 import dev.zorsh.zorshDeltarune.utils.runInfinite
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
@@ -49,6 +51,7 @@ open class AnimatedSprite(
 
     private var frame = 0
     private var exists = true
+    var glowTo: MutableSet<Player> = mutableSetOf()
 
     private fun startAnimation() {
         runInfinite(delay) { _, task ->
@@ -59,10 +62,13 @@ open class AnimatedSprite(
                 if (frame >= sprites.size) {
                     frame = 0
                 }
-//                Bukkit.broadcast(Component.text("Animating frame $frame"))
-                display.changeTransformation(display.transformation,
+                display.changeText(
+                    sprites[frame].color("#fd0200"),
+                    playerOverride = glowTo.toList()
+                )
+                display.changeText(
                     sprites[frame],
-                    display.opacity
+                    playerOverride = display.players.filter { !glowTo.contains(it) }
                 )
             }
         }

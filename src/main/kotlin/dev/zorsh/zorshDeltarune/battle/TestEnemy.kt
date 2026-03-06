@@ -11,8 +11,11 @@ import kotlin.math.*
 import kotlin.random.Random
 
 class TestEnemy(
+    name: Component,
     hitpoints: Int
-) : SpritedEnemy(hitpoints,
+) : SpritedEnemy(
+    name,
+    hitpoints,
     encounterMessages = listOf(
         Component.text("Это что еще за балбес"),
         Component.text("Тестовый враг встал у вас на пути!"),
@@ -133,9 +136,9 @@ class TestEnemy(
     private fun attackVariant3() {
         val x = ZorshDeltarune.random.nextFloat() * 20f - 10f
         val y = ZorshDeltarune.random.nextFloat() * 20f - 10f
-        val aOff = ZorshDeltarune.random.nextInt(24)
-        repeat(8) { i ->
-            testSpawnNMS3(i * 47 + aOff, x, y)
+        val aOff = ZorshDeltarune.random.nextInt(90)
+        repeat(4) { i ->
+            testSpawnNMS3(i * 90 + aOff, x, y)
         }
     }
 
@@ -229,7 +232,7 @@ class TestEnemy(
                 )
             }
             var hit = false
-            runRepeating(40) { i, _ ->
+            runRepeating(40) { _, _ ->
                 val t = entity.transformation.translation
                 val cent = Vector3f(
                     -t.x,

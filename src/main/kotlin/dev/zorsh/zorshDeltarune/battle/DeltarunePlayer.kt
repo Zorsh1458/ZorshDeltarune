@@ -79,6 +79,13 @@ class DeltarunePlayer(private val uuid: UUID) {
 
     var actionStage = PlayerActionStage.SELECT_BUTTON
     var battleInfoText: FakeTextDisplay? = null
+    var moveMenuTexts: MutableList<FakeDisplay> = mutableListOf()
+    var menuSelectorHeart: MenuSelectorHeart? = null
+
+    fun clearMenu() {
+        moveMenuTexts.forEach { it.destroy() }
+        moveMenuTexts.clear()
+    }
 
     fun mountEntity(ent: FakeDisplay) {
         if (player != null) {
@@ -346,15 +353,19 @@ class DeltarunePlayer(private val uuid: UUID) {
         val newInput = InputHolder(input)
         if (newInput.left && !prevInput.left) {
             inputCallbacksLeft.map { it() }
+            menuSelectorHeart?.offset(-1, 0)
         }
         if (newInput.right && !prevInput.right) {
             inputCallbacksRight.map { it() }
+            menuSelectorHeart?.offset(1, 0)
         }
         if (newInput.forward && !prevInput.forward) {
             inputCallbacksForward.map { it() }
+            menuSelectorHeart?.offset(0, -1)
         }
         if (newInput.backward && !prevInput.backward) {
             inputCallbacksBackward.map { it() }
+            menuSelectorHeart?.offset(0, 1)
         }
         if (newInput.jump && !prevInput.jump) {
             inputCallbacksJump.map { it() }
