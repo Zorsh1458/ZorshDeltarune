@@ -96,7 +96,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             CoroutineScope(Dispatchers.IO).launch {
                 delay(250)
                 val job = scope.launch {
-                    repeat(2) {
+                    repeat(5) {
                         delay(100L)
                         showPlayersOptions()
                         delay(5000L)
