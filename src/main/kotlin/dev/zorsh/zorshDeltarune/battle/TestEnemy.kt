@@ -33,11 +33,11 @@ class TestEnemy(
     override suspend fun attack(onAttackEnds: () -> Unit) = coroutineScope {
         attackCount++
         if (attackCount % 2 == 0) {
-            repeat(20) { _ ->
+            repeat(10) { _ ->
                 launch {
                     testSpawnNMS2()
                 }
-                delay(250)
+                delay(500)
             }
         } else {
             repeat(7) { _ ->
@@ -136,9 +136,9 @@ class TestEnemy(
     private fun attackVariant3() {
         val x = ZorshDeltarune.random.nextFloat() * 20f - 10f
         val y = ZorshDeltarune.random.nextFloat() * 20f - 10f
-        val aOff = ZorshDeltarune.random.nextInt(90)
-        repeat(4) { i ->
-            testSpawnNMS3(i * 90 + aOff, x, y)
+        val aOff = ZorshDeltarune.random.nextInt(180)
+        repeat(2) { i ->
+            testSpawnNMS3(i * 180 + aOff, x, y)
         }
     }
 

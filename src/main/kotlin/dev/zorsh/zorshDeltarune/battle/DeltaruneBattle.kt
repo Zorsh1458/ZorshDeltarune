@@ -21,7 +21,7 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
 
     object BattleLocation {
         val TEST = Location(Bukkit.getWorld("world"), 8.0, 100.0, 8.1)
-        val UNDER_STATION = Location(Bukkit.getWorld("moon"), 952.0, 99.2, 1101.0)
+        val UNDER_STATION = Location(Bukkit.getWorld("moon"), 952.0, 99.5, 1101.0)
     }
 
     val scope = CoroutineScope(Dispatchers.IO)
