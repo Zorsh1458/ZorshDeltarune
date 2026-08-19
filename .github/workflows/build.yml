@@ -46,6 +46,6 @@ jobs:
           remote_folder: plugins
           local_folder: downloaded_artifact
           cleanup: false
-          include: '[]'
+          include: '[ZorshDeltarune-1.0-all.jar]'
           exclude: '[]'
           passive: true
