@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolManager
 import dev.zorsh.zorshDeltarune.battle.BattleManager
 import dev.zorsh.zorshDeltarune.battle.DeltarunePlayer
 import dev.zorsh.zorshDeltarune.commands.DeltaruneBattleCommand
+import dev.zorsh.zorshDeltarune.commands.NeverlandTestCommand
 import dev.zorsh.zorshDeltarune.listeners.DeltaruneListener
 import dev.zorsh.zorshDeltarune.nms.*
 import org.bukkit.plugin.java.JavaPlugin
@@ -38,6 +39,8 @@ class ZorshDeltarune : JavaPlugin() {
         server.pluginManager.registerEvents(DeltaruneListener(), this)
         getCommand("deltarunebattle")?.setExecutor(DeltaruneBattleCommand())
         getCommand("deltarunebattle")?.tabCompleter = DeltaruneBattleCommand()
+        getCommand("neverlandtest")?.setExecutor(NeverlandTestCommand())
+        getCommand("neverlandtest")?.tabCompleter = NeverlandTestCommand()
         logger.info("[ZorshDeltarune] Plugin enabled!")
     }
 

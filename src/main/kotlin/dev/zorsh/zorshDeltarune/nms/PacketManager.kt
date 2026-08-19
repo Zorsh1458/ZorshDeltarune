@@ -670,6 +670,31 @@ class PacketManager {
         }
 
         @JvmStatic
+        fun spawnInteraction(
+            location: Location,
+            players: List<Player>,
+            width: Float,
+            height: Float,
+            afterSpawned: (FakeInteraction) -> Unit,
+        ) {
+            runLater(0L) {
+                val ent = (location.world?.spawnEntity(location, EntityType.INTERACTION)) as Interaction
+                ent.interactionWidth = width
+                ent.interactionHeight = height
+                ent.isPersistent = false
+                val entityId = ent.entityId
+                privateEntities[entityId] = players.toSet()
+                runLater(1L) {
+                    ent.remove()
+                }
+                runLater(2L) {
+                    privateEntities.remove(entityId)
+                }
+                afterSpawned(FakeInteraction(entityId, width, height, location, players))
+            }
+        }
+
+        @JvmStatic
         fun spawnNewEntity(location: Location, type: EntityType, players: List<Player>): Int {
             val packet = PacketContainer(PacketType.Play.Server.SPAWN_ENTITY)
             val entityId = 1000000 + counter
