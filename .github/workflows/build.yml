@@ -36,10 +36,16 @@ jobs:
           path: downloaded_artifact/
       
       - name: Deploy to test server
-        uses: EduardoLobo23/plugin-deploy-action@v1
+        uses: sand4rt/ftp-deployer@v1.10
         with:
+          sftp: true
           host: ${{ secrets.SFTP_HOST }}
           port: ${{ secrets.SFTP_PORT }}
           username: ${{ secrets.SFTP_USER }}
           password: ${{ secrets.SFTP_PASSWORD }}
-          local-path: downloaded_artifact/ZorshDeltarune-1.0-all.jar
+          remote_folder: plugins
+          local_folder: downloaded_artifact
+          cleanup: false
+          include: '[]'
+          exclude: '[]'
+          passive: true
