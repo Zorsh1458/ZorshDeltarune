@@ -7,6 +7,7 @@ import dev.zorsh.zorshDeltarune.utils.FakeDisplayData
 import dev.zorsh.zorshDeltarune.utils.color
 import dev.zorsh.zorshDeltarune.utils.font
 import net.kyori.adventure.text.Component
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.entity.TextDisplay
 import org.bukkit.util.Transformation
@@ -37,8 +38,10 @@ class PlayerUICanvas {
     }
 
     fun updateCanvas() {
+        Bukkit.broadcast(Component.text("Trying to update canvas for ${targetPlayer?.entityId} with ${canvasHolder?.entityId}"))
         if (targetPlayer == null) return
         if (canvasHolder == null) return
+        Bukkit.broadcast(Component.text("Updating canvas for ${targetPlayer?.entityId} with ${canvasHolder?.entityId}: ${objects.map { it.entityId }}"))
         val actualPlayer = targetPlayer!!
         PacketManager.mountEntities(actualPlayer.entityId, listOf(canvasHolder!!.entityId) + objects.map { it.entityId }, listOf(actualPlayer))
     }
