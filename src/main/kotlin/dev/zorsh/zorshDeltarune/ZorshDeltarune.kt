@@ -8,6 +8,8 @@ import dev.zorsh.zorshDeltarune.commands.DeltaruneBattleCommand
 import dev.zorsh.zorshDeltarune.commands.NeverlandTestCommand
 import dev.zorsh.zorshDeltarune.listeners.DeltaruneListener
 import dev.zorsh.zorshDeltarune.nms.*
+import dev.zorsh.zorshDeltarune.ui.PlayerUICanvas
+import dev.zorsh.zorshDeltarune.ui.PlayerUIManager
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.UUID
 import kotlin.random.Random
@@ -22,6 +24,8 @@ class ZorshDeltarune : JavaPlugin() {
         val random = Random(1488)
 
         var deltarunePlayer = mutableMapOf<UUID, DeltarunePlayer>()
+
+        val UIManager = PlayerUIManager()
 
         @JvmStatic
         fun getDPlayer(uuid: UUID): DeltarunePlayer? {
