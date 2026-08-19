@@ -25,7 +25,10 @@ jobs:
         with:
           name: ZorshDeltarune-1.0-all
           path: build/libs/ZorshDeltarune-1.0-all.jar
-      
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy to test server
         uses: EduardoLobo23/plugin-deploy-action@v1
         with:
