@@ -19,19 +19,19 @@ class NeverlandTestCommand: CommandExecutor, TabCompleter {
         if (player !is Player) return true
 
         try {
-            if (args[1] == "canvas") {
-                if (args[2] == "initialize") {
+            if (args[0] == "canvas") {
+                if (args[1] == "initialize") {
                     ZorshDeltarune.UIManager.initCanvas(player)
                 }
-                if (args[2] == "drawRect") {
-                    val sx = args[3].toFloat()
-                    val sy = args[4].toFloat()
-                    val dx = args[5].toFloat()
-                    val dy = args[6].toFloat()
-                    val color = args[7]
+                if (args[1] == "drawRect") {
+                    val sx = args[2].toFloat()
+                    val sy = args[3].toFloat()
+                    val dx = args[4].toFloat()
+                    val dy = args[5].toFloat()
+                    val color = args[6]
                     ZorshDeltarune.UIManager.getCanvas(player)?.drawRect(sx, sy, dx, dy, color)
                 }
-                if (args[2] == "clear") {
+                if (args[1] == "clear") {
                     ZorshDeltarune.UIManager.getCanvas(player)?.clear()
                 }
             }

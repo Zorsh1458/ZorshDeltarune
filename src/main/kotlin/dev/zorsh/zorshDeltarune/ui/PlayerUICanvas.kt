@@ -24,6 +24,7 @@ class PlayerUICanvas {
         targetPlayer = player
         PacketManager.spawnInteraction(player.eyeLocation, listOf(player), 0f, -0.18f) { inter ->
             canvasHolder = inter
+            PacketManager.mountEntities(player.entityId, listOf(canvasHolder!!.entityId), listOf(player))
             updateCanvas()
         }
     }
@@ -33,17 +34,19 @@ class PlayerUICanvas {
             it.destroy()
         }
         objects.clear()
+    }
+
+    fun destroy() {
+        clear()
         canvasHolder?.destroy()
         canvasHolder = null
     }
 
     fun updateCanvas() {
-        Bukkit.broadcast(Component.text("Trying to update canvas for ${targetPlayer?.entityId} with ${canvasHolder?.entityId}"))
         if (targetPlayer == null) return
         if (canvasHolder == null) return
-        Bukkit.broadcast(Component.text("Updating canvas for ${targetPlayer?.entityId} with ${canvasHolder?.entityId}: ${objects.map { it.entityId }}"))
         val actualPlayer = targetPlayer!!
-        PacketManager.mountEntities(actualPlayer.entityId, listOf(canvasHolder!!.entityId) + objects.map { it.entityId }, listOf(actualPlayer))
+        PacketManager.mountEntities(canvasHolder!!.entityId, objects.map { it.entityId }, listOf(actualPlayer))
     }
 
     fun drawRect(sx: Float, sy: Float, dx: Float, dy: Float, hexColor: String) {
