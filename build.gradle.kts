@@ -10,9 +10,9 @@ version = "1.0"
 
 repositories {
     mavenCentral()
-    maven("https://oss.sonatype.org/content/groups/public/") {
-        name = "sonatype"
-    }
+//    maven("https://oss.sonatype.org/content/groups/public/") {
+//        name = "sonatype"
+//    }
     maven("https://repo.papermc.io/repository/maven-public/") {
         name = "papermc"
     }

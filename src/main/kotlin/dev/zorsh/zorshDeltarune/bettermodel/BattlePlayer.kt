@@ -18,7 +18,7 @@ class BattlePlayer {
     }
 
     private lateinit var anchor: Entity
-    private lateinit var tracker: EntityTracker
+    private var tracker: EntityTracker? = null
     private var animation: String? = null
 
     fun create(player: Player, location: Location) {
@@ -30,7 +30,7 @@ class BattlePlayer {
                 .map { r -> r.getOrCreate(anchor, player) }
                 .orElse(null)
 
-            tracker.displays().forEach { display ->
+            tracker?.displays()?.forEach { display ->
                 PacketManager.removeEntity(
                     display.id(),
                     Bukkit.getOnlinePlayers().filter { pl ->
@@ -44,12 +44,12 @@ class BattlePlayer {
 
             runLater(10) {
                 animation = "idle"
-                tracker.animate("idle")
+                tracker?.animate("idle")
             }
         } catch (_: Exception) {}
     }
 
-    private fun cancelAnimation() = animation?.let { tracker.stopAnimation(it) }
+    private fun cancelAnimation() = animation?.let { tracker?.stopAnimation(it) }
 
     fun animate(newAnimation: Animation) {
 //        cancelAnimation()
@@ -61,18 +61,18 @@ class BattlePlayer {
 //            tracker.animate("idle")
 //        }
 //        Bukkit.broadcast(Component.text("Animating $newAnimation"))
-        tracker.animate(newAnimation.animationName)
+        tracker?.animate(newAnimation.animationName)
         runLater(newAnimation.length) {
-            tracker.animate("idle")
+            tracker?.animate("idle")
         }
     }
 
     fun remove() {
         runLater(0) {
-            tracker.displays().forEach { display ->
+            tracker?.displays()?.forEach { display ->
                 PacketManager.privateEntities.remove(display.id())
             }
-            tracker.despawn()
+            tracker?.despawn()
             anchor.remove()
         }
     }
