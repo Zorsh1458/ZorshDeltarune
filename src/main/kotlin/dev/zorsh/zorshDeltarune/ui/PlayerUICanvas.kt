@@ -49,7 +49,7 @@ class PlayerUICanvas {
         PacketManager.mountEntities(canvasHolder!!.entityId, objects.map { it.entityId }, listOf(actualPlayer))
     }
 
-    fun drawRect(sx: Float, sy: Float, dx: Float, dy: Float, hexColor: String) {
+    fun drawRect(sx: Float, sy: Float, dx: Float, dy: Float, z: Int, hexColor: String) {
         if (targetPlayer == null) return
         if (canvasHolder == null) return
         val actualPlayer = targetPlayer!!
@@ -64,7 +64,7 @@ class PlayerUICanvas {
             listOf(actualPlayer),
             FakeDisplayData(
                 Transformation(
-                    Vector3f(sx / 16f, sy / 16f, 1f),
+                    Vector3f(sx / 16f, sy / 16f, z / 255f),
                     AxisAngle4f(),
                     Vector3f(2.5f * scaleX, 2.5f * scaleY, 1f),
                     AxisAngle4f()

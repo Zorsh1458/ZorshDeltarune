@@ -28,8 +28,9 @@ class NeverlandTestCommand: CommandExecutor, TabCompleter {
                     val sy = args[3].toFloat()
                     val dx = args[4].toFloat()
                     val dy = args[5].toFloat()
-                    val color = args[6]
-                    ZorshDeltarune.UIManager.getCanvas(player)?.drawRect(sx, sy, dx, dy, color)
+                    val z = args[6].toInt()
+                    val color = args[7]
+                    ZorshDeltarune.UIManager.getCanvas(player)?.drawRect(sx, sy, dx, dy, z, color)
                 }
                 if (args[1] == "clear") {
                     ZorshDeltarune.UIManager.getCanvas(player)?.clear()
@@ -56,7 +57,8 @@ class NeverlandTestCommand: CommandExecutor, TabCompleter {
             4 -> listOf("sy")
             5 -> listOf("dx")
             6 -> listOf("dy")
-            7 -> listOf("color (hex)", "#ff0000")
+            7 -> listOf("z")
+            8 -> listOf("color (hex)", "#ff0000")
             else -> emptyList()
         }
     }
