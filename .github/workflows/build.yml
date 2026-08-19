@@ -29,6 +29,12 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ZorshDeltarune-1.0-all
+          path: downloaded_artifact/
+      
       - name: Deploy to test server
         uses: EduardoLobo23/plugin-deploy-action@v1
         with:
@@ -36,5 +42,5 @@ jobs:
           port: ${{ secrets.SFTP_PORT }}
           username: ${{ secrets.SFTP_USER }}
           password: ${{ secrets.SFTP_PASSWORD }}
-          local-path: build/libs/ZorshDeltarune-1.0-all.jar
+          local-path: downloaded_artifact/ZorshDeltarune-1.0-all.jar
           remote-path: TESTFOLDER/
