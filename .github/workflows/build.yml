@@ -25,3 +25,13 @@ jobs:
         with:
           name: ZorshDeltarune-1.0-all
           path: build/libs/ZorshDeltarune-1.0-all.jar
+      
+      - name: Deploy to test server
+        uses: EduardoLobo23/plugin-deploy-action@v1
+        with:
+          host: ${{ secrets.SFTP_HOST }}
+          port: ${{ secrets.SFTP_PORT }}
+          username: ${{ secrets.SFTP_USER }}
+          password: ${{ secrets.SFTP_PASSWORD }}
+          local-path: build/libs/ZorshDeltarune-1.0-all.jar
+          remote-path: TESTFOLDER/
