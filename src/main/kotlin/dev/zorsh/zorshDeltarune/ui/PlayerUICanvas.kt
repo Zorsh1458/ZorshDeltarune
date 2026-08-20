@@ -19,6 +19,7 @@ class PlayerUICanvas {
     var canvasHolder: FakeInteraction? = null
 
     var objects = mutableListOf<FakeTextDisplay>()
+    var savedObjects = mutableMapOf<String, FakeTextDisplay>()
 
     fun initialize(player: Player) {
         targetPlayer = player
@@ -34,6 +35,7 @@ class PlayerUICanvas {
             it.destroy()
         }
         objects.clear()
+        savedObjects.clear()
     }
 
     fun destroy() {
@@ -49,7 +51,7 @@ class PlayerUICanvas {
         PacketManager.mountEntities(canvasHolder!!.entityId, objects.map { it.entityId }, listOf(actualPlayer))
     }
 
-    fun drawRect(sx: Float, sy: Float, dx: Float, dy: Float, z: Int, hexColor: String) {
+    fun drawRect(sx: Float, sy: Float, dx: Float, dy: Float, z: Int, hexColor: String, saveAs: String? = null) {
         if (targetPlayer == null) return
         if (canvasHolder == null) return
         val actualPlayer = targetPlayer!!
@@ -75,8 +77,53 @@ class PlayerUICanvas {
             TextDisplay.TextAlignment.CENTER,
             1000,
             false
-            ) { ent ->
+        ) { ent ->
             objects += ent
+            if (saveAs != null) {
+                savedObjects[saveAs] = ent
+            }
+            updateCanvas()
+        }
+    }
+
+    fun drawSprite(
+        px: Float,
+        py: Float,
+        sx: Float,
+        sy: Float,
+        z: Int,
+        sprite: CanvasSprite,
+        hexColor: String,
+        saveAs: String? = null
+    ) {
+        if (targetPlayer == null) return
+        if (canvasHolder == null) return
+        val actualPlayer = targetPlayer!!
+        val loc = actualPlayer.eyeLocation.clone()
+        loc.yaw = 0f
+        loc.pitch = 0f
+        PacketManager.spawnTextDisplay(
+            loc,
+            sprite.toTextValue().color(hexColor),
+            listOf(actualPlayer),
+            FakeDisplayData(
+                Transformation(
+                    Vector3f(px / 16f, py / 16f, z / 255f),
+                    AxisAngle4f(),
+                    Vector3f(2.5f * sx, 2.5f * sy, 1f),
+                    AxisAngle4f()
+                ),
+                opacity = 253.toByte()
+            ),
+            false,
+            TextDisplay.TextAlignment.CENTER,
+            1000,
+            false
+        ) { ent ->
+            objects += ent
+            if (saveAs != null) {
+                savedObjects[saveAs] = ent
+            }
             updateCanvas()
         }
     }

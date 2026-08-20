@@ -1,6 +1,7 @@
 package dev.zorsh.zorshDeltarune.commands
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
+import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.command.Command
@@ -32,6 +33,16 @@ class NeverlandTestCommand: CommandExecutor, TabCompleter {
                     val color = args[7]
                     ZorshDeltarune.UIManager.getCanvas(player)?.drawRect(sx, sy, dx, dy, z, color)
                 }
+                if (args[1] == "drawSprite") {
+                    val px = args[2].toFloat()
+                    val py = args[3].toFloat()
+                    val sx = args[4].toFloat()
+                    val sy = args[5].toFloat()
+                    val z = args[6].toInt()
+                    val color = args[7]
+                    val sprite = args[8]
+                    ZorshDeltarune.UIManager.getCanvas(player)?.drawSprite(px, py, sx, sy, z, CanvasSprite.valueOf(sprite.uppercase()), color)
+                }
                 if (args[1] == "clear") {
                     ZorshDeltarune.UIManager.getCanvas(player)?.clear()
                 }
@@ -53,12 +64,13 @@ class NeverlandTestCommand: CommandExecutor, TabCompleter {
             0 -> emptyList()
             1 -> listOf("canvas")
             2 -> listOf("initialize", "drawRect", "clear")
-            3 -> listOf("sx")
-            4 -> listOf("sy")
+            3 -> listOf("px")
+            4 -> listOf("py")
             5 -> listOf("dx")
             6 -> listOf("dy")
             7 -> listOf("z")
             8 -> listOf("color (hex)", "#ff0000")
+            9 -> listOf("sprite")
             else -> emptyList()
         }
     }
