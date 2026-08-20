@@ -53,6 +53,13 @@ jobs:
     needs: [deploy]
     runs-on: ubuntu-latest
     steps:
+      - name: Discord notification raw
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@ad5235de713df3ef38022185499b02ffe93b7efe
+        with:
+          args: ':beginner: Project loaded: ${{ github.event.head_commit.message }}'
+
       - name: Discord notification
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
@@ -66,10 +73,17 @@ jobs:
       - name: Set current timestamp
         run: echo "TIMESTAMP=$(date +'%Y.%m.%d %H:%M')" >> $GITHUB_ENV
 
+      - name: Discord notification raw
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@ad5235de713df3ef38022185499b02ffe93b7efe
+        with:
+          args: 'Loading project...'
+
       - name: Discord notification
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_EMBEDS: '[{"description": ":recycle: **Проект загружается**\n- `${{ github.event.head_commit.author.username }}` - [${{ github.event.head_commit.message }}](${{ github.event.head_commit.url }})"}]'
         uses: Ilshidur/action-discord@ad5235de713df3ef38022185499b02ffe93b7efe
         with:
-          args: '${{ env.TIMESTAMP }}'
+          args: ''
