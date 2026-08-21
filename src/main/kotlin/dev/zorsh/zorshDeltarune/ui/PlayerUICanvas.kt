@@ -6,8 +6,8 @@ import dev.zorsh.zorshDeltarune.nms.PacketManager
 import dev.zorsh.zorshDeltarune.utils.FakeDisplayData
 import dev.zorsh.zorshDeltarune.utils.color
 import dev.zorsh.zorshDeltarune.utils.font
+import dev.zorsh.zorshDeltarune.utils.plus
 import net.kyori.adventure.text.Component
-import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.entity.TextDisplay
 import org.bukkit.util.Transformation
@@ -51,7 +51,64 @@ class PlayerUICanvas {
         PacketManager.mountEntities(canvasHolder!!.entityId, objects.map { it.entityId }, listOf(actualPlayer))
     }
 
-    fun drawRect(sx: Float, sy: Float, dx: Float, dy: Float, z: Int, hexColor: String, saveAs: String? = null) {
+    fun setZ(z: Int, objName: String) {
+        val obj = savedObjects[objName] ?: return
+        obj.changeOnlyTransformation(
+            Transformation(
+                Vector3f(obj.transformation.translation.x, obj.transformation.translation.y, z / 255f),
+                obj.transformation.leftRotation,
+                obj.transformation.scale,
+                obj.transformation.rightRotation
+            )
+        )
+    }
+
+    fun setScale(sx: Float, sy: Float, objName: String) {
+        val obj = savedObjects[objName] ?: return
+        obj.changeOnlyTransformation(
+            Transformation(
+                obj.transformation.translation,
+                obj.transformation.leftRotation,
+                Vector3f(sx * 2.5f, sy * 2.5f, obj.transformation.scale.z),
+                obj.transformation.rightRotation
+            )
+        )
+    }
+
+    fun setPosition(px: Float, py: Float, objName: String) {
+        val obj = savedObjects[objName] ?: return
+        obj.changeOnlyTransformation(
+            Transformation(
+                Vector3f(px / 16f, py / 16f, obj.transformation.translation.z),
+                obj.transformation.leftRotation,
+                obj.transformation.scale,
+                obj.transformation.rightRotation
+            )
+        )
+    }
+
+    fun move(ox: Float, oy: Float, objName: String) {
+        val obj = savedObjects[objName] ?: return
+        obj.changeOnlyTransformation(
+            Transformation(
+                obj.transformation.translation + Vector3f(ox / 16f, oy / 16f, 0f),
+                obj.transformation.leftRotation,
+                obj.transformation.scale,
+                obj.transformation.rightRotation
+            )
+        )
+    }
+
+    fun drawRect(
+        sx: Float,
+        sy: Float,
+        dx: Float,
+        dy: Float,
+        z: Int,
+        hexColor: String,
+        saveAs: String? = null,
+        afterSpawn: () -> Unit = {}
+    ) {
         if (targetPlayer == null) return
         if (canvasHolder == null) return
         val actualPlayer = targetPlayer!!
@@ -83,6 +140,7 @@ class PlayerUICanvas {
                 savedObjects[saveAs] = ent
             }
             updateCanvas()
+            afterSpawn()
         }
     }
 
@@ -94,7 +152,8 @@ class PlayerUICanvas {
         z: Int,
         sprite: CanvasSprite,
         hexColor: String,
-        saveAs: String? = null
+        saveAs: String? = null,
+        afterSpawn: () -> Unit = {}
     ) {
         if (targetPlayer == null) return
         if (canvasHolder == null) return
@@ -125,6 +184,7 @@ class PlayerUICanvas {
                 savedObjects[saveAs] = ent
             }
             updateCanvas()
+            afterSpawn()
         }
     }
 }
