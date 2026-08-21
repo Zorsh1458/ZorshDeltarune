@@ -51,6 +51,13 @@ class PlayerUICanvas {
         PacketManager.mountEntities(canvasHolder!!.entityId, objects.map { it.entityId }, listOf(actualPlayer))
     }
 
+    fun remove(objName: String) {
+        val obj = savedObjects[objName] ?: return
+        objects.remove(obj)
+        savedObjects.remove(objName)
+        obj.destroy()
+    }
+
     fun setZ(z: Int, objName: String) {
         val obj = savedObjects[objName] ?: return
         obj.changeOnlyTransformation(

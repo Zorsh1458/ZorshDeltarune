@@ -2,6 +2,7 @@ package dev.zorsh.zorshDeltarune.commands
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
+import dev.zorsh.zorshDeltarune.utils.runLater
 import dev.zorsh.zorshDeltarune.utils.runRepeating
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -58,6 +59,27 @@ class NeverlandTestCommand : CommandExecutor, TabCompleter {
                         }
                     }
                 }
+                if (args[1] == "randomTest") {
+                    val canvas = ZorshDeltarune.UIManager.getCanvas(player) ?: return true
+                    runRepeating(60) { z ->
+                        val px = ZorshDeltarune.random.nextInt(-200, 200).toFloat()
+                        val py = ZorshDeltarune.random.nextInt(-200, 200).toFloat()
+                        val sprite = "dbutton_act"
+                        val uuid = UUID.randomUUID()
+                        canvas.drawSprite(
+                            px, py, 1f, 1f, z,
+                            CanvasSprite.valueOf(sprite.uppercase()), "#ffffff",
+                            "sprite_$uuid"
+                        ) {
+                            runRepeating(60) { i ->
+                                canvas.move(0f, round(sin(i * 0.1f) * 4f) , "sprite_$uuid")
+                            }
+                            runLater(61) {
+                                canvas.remove("sprite_$uuid")
+                            }
+                        }
+                    }
+                }
                 if (args[1] == "clear") {
                     ZorshDeltarune.UIManager.getCanvas(player)?.clear()
                 }
@@ -80,7 +102,7 @@ class NeverlandTestCommand : CommandExecutor, TabCompleter {
         return when (p3.size) {
             0 -> emptyList()
             1 -> listOf("canvas")
-            2 -> listOf("initialize", "drawRect", "drawSprite", "clear")
+            2 -> listOf("initialize", "drawRect", "drawSprite", "randomTest", "clear")
             3 -> listOf("px")
             4 -> listOf("py")
             5 -> listOf("dx")
