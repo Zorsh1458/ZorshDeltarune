@@ -247,6 +247,17 @@ void main() {
             }
             fragColor.a *= vertexColor.a;
         }
+        if (EFFECT == 4) {
+            int frameCount = PARAMETER_INT;
+            vec2 coord = texCoord0;
+            if (coord.y > 1.0 / float(frameCount)) {
+                discard;
+            }
+            coord.y += 1.0 / float(frameCount) * mod(int(GameTime * 24000.0 + 0.5), frameCount);
+            fragColor = texture(Sampler0, coord);
+            fragColor = REMOVE_BLUE(fragColor);
+            return;
+        }
     }
 
     if (round(fragColor.a * 255.0) == 0.0) {

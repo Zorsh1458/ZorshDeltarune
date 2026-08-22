@@ -80,6 +80,15 @@
             "chars": [
                 "\uF007"
             ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/animationtest.png",
+            "height": 104,
+            "ascent": 11,
+            "chars": [
+                "\uF008"
+            ]
         }
     ]
 }
