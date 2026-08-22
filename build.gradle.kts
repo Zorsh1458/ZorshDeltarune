@@ -45,7 +45,7 @@ tasks.register<Zip>("makeResourcePack") {
     destinationDirectory.set(layout.buildDirectory.dir("resourcepack"))
 
     from("resourcepack") {
-        include("**/*.txt")
+        include("**/*.*")
     }
 }
 
