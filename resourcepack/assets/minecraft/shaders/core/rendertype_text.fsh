@@ -248,10 +248,10 @@ void main() {
             fragColor.a *= vertexColor.a;
         }
         if (EFFECT == 4) {
-            if (texture(Sampler0, texCoord0).r < 0.99) {
+            fragColor = texture(Sampler0, texCoord0);
+            if (fragColor.r < 0.9) {
                 discard;
             }
-            fragColor = texture(Sampler0, texCoord0);
             return;
             int frameCount = PARAMETER_INT;
             vec2 coord = texCoord0;
