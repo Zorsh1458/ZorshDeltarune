@@ -248,6 +248,10 @@ void main() {
             fragColor.a *= vertexColor.a;
         }
         if (EFFECT == 4) {
+            if (texture(Sampler0, texCoord0).r < 0.99) {
+                discard;
+            }
+            return;
             int frameCount = PARAMETER_INT;
             vec2 coord = texCoord0;
             if (coord.y > 1.0 / float(frameCount)) {
