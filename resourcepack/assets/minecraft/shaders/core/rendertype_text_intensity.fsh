@@ -1,0 +1,34 @@
+#version 150
+
+#moj_import <minecraft:fog.glsl>
+#moj_import <minecraft:dynamictransforms.glsl>
+#moj_import <minecraft:globals.glsl>
+
+uniform sampler2D Sampler0;
+
+in float sphericalVertexDistance;
+in float cylindricalVertexDistance;
+in vec4 vertexColor;
+in vec2 texCoord0;
+
+out vec4 fragColor;
+
+#moj_import <minecraft:remove_blue.glsl>
+
+int getTimeData() {
+    return (int(floor(GameTime * 16383.0)) >> 7) & 1;
+}
+
+
+void main() {
+    if (getTimeData() != 0 && gl_FragCoord.y / ScreenSize.y < 0.1) {
+        discard;
+    }
+
+    vec4 color = texture(Sampler0, texCoord0).rrrr * vertexColor * ColorModulator;
+    if (color.a < 0.1) {
+        discard;
+    }
+    fragColor = apply_fog(color, sphericalVertexDistance, cylindricalVertexDistance, FogEnvironmentalStart, FogEnvironmentalEnd, FogRenderDistanceStart, FogRenderDistanceEnd, FogColor);
+    fragColor = REMOVE_BLUE(fragColor);
+}

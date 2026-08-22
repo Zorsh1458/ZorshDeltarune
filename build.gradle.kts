@@ -40,6 +40,15 @@ tasks.build {
     dependsOn("shadowJar")
 }
 
+tasks.register<Zip>("makeResourcePack") {
+    archiveFileName.set("Neverland.zip")
+    destinationDirectory.set(layout.buildDirectory.dir("resourcepack"))
+
+    from("resourcepack") {
+        include("**/*.txt")
+    }
+}
+
 tasks.processResources {
     val props = mapOf("version" to version)
     inputs.properties(props)

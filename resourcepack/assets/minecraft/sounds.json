@@ -1,0 +1,11 @@
+{
+	"encounter": {"sounds": [{"name": "custom/encounter","stream": "true"}]},
+	"weaponpull_fast": {"sounds": [{"name": "custom/weaponpull_fast","stream": "true"}]},
+	"weaponpull": {"sounds": [{"name": "custom/weaponpull","stream": "true"}]},
+	"tp_gain": {"sounds": [{"name": "custom/tp_gain","stream": "true"}]},
+	"soul_hurt": {"sounds": [{"name": "custom/soul_hurt","stream": "true"}]},
+	"battle": {"sounds": [{"name": "custom/battle","stream": "true"}]},
+	"moon_lobby": {"sounds": [{"name": "custom/moon_lobby","stream": "true"}]},
+	"empty": {"sounds": [{"name": "custom/empty","stream": "false"}]},
+	"menu": {"sounds": [{"name": "custom/menu","stream": "true"}]}
+}

@@ -1,0 +1,56 @@
+{
+    "model": {
+        "type": "select",
+        "property": "custom_model_data",
+        "fallback": {
+            "type": "model",
+            "model": "item/leather_horse_armor",
+            "tints": [
+                {
+                  "type": "minecraft:dye",
+                  "default": [
+                      0.573,
+                      0.361,
+                      0.227
+                  ]
+                }
+            ]
+        },
+        "cases": [
+            {
+                "when": "moon",
+                "model": {
+                    "type": "model",
+                    "model": "item/fullred",
+                    "tints": [
+                        {
+                            "type": "minecraft:dye",
+                            "default": [
+                                0.573,
+                                0.361,
+                                0.227
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "when": "anim",
+                "model": {
+                    "type": "model",
+                    "model": "item/animated_test",
+                    "tints": [
+                        {
+                            "type": "minecraft:dye",
+                            "default": [
+                                0.573,
+                                0.361,
+                                0.227
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

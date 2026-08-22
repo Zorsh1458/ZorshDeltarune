@@ -1,0 +1,22 @@
+{
+    "providers": [
+        {
+            "type": "bitmap",
+            "file": "space:font/enemies/slime_1.png",
+            "ascent": 17,
+            "height": 34,
+            "chars": [
+                "1"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/enemies/slime_2.png",
+            "ascent": 17,
+            "height": 34,
+            "chars": [
+                "2"
+            ]
+        }
+    ]
+}

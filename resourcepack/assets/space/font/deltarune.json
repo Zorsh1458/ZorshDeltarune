@@ -1,0 +1,58 @@
+{
+    "providers": [
+        {
+            "type": "bitmap",
+            "file": "space:font/space_nosplit.png",
+            "ascent": -32768,
+            "height": -22,
+            "chars": [
+                "-"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/deltarune/battle_inventory.png",
+            "height": 140,
+            "ascent": 22,
+            "chars": [
+                "\uC001"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/deltarune/hide_hud.png",
+            "height": 64,
+            "ascent": -16,
+            "chars": [
+                "\uC002"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/deltarune/hide_crosshair.png",
+            "height": 64,
+            "ascent": -96,
+            "chars": [
+                "\uC003"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/neverland_logo.png",
+            "height": 96,
+            "ascent": 48,
+            "chars": [
+                "\uC004"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/shader_dot.png",
+            "height": 512,
+            "ascent": 256,
+            "chars": [
+                "\uC005"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,597 @@
+{
+    "targets": {
+        "swap": {},
+        "rawoutline": {},
+        "outline": {},
+        "holder": {},
+        "previousmainholder": {},
+        "previous": {
+            "persistent": true
+        },
+        "previousmain": {
+            "persistent": true
+        },
+        "previousflashlight": {
+            "persistent": true
+        },
+        "bloom": {},
+        "flashlight": {},
+        "meshok": {},
+        "cellular": {
+            "persistent": true,
+            "clear_color": [ 0.0, 0.0, 0.0, 0.2 ]
+        },
+        "cellularshow": {}
+    },
+    "passes": [
+        {
+            "vertex_shader": "minecraft:post/sobel",
+            "fragment_shader": "minecraft:post/meshok",
+            "output": "meshok"
+        },
+        {
+            "vertex_shader": "minecraft:post/blur",
+            "fragment_shader": "minecraft:post/meshok_blur",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "meshok",
+                    "bilinear": true
+                }
+            ],
+            "output": "holder",
+            "uniforms": {
+                "BlurConfig": [
+                    {
+                        "name": "BlurDir",
+                        "type": "vec2",
+                        "value": [ 1.0, 0.0 ]
+                    },
+                    {
+                        "name": "Radius",
+                        "type": "float",
+                        "value": 2.0
+                    }
+                ]
+            }
+        },
+        {
+            "vertex_shader": "minecraft:post/blur",
+            "fragment_shader": "minecraft:post/meshok_blur",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "holder",
+                    "bilinear": true
+                }
+            ],
+            "output": "meshok",
+            "uniforms": {
+                "BlurConfig": [
+                    {
+                        "name": "BlurDir",
+                        "type": "vec2",
+                        "value": [ 0.0, 1.0 ]
+                    },
+                    {
+                        "name": "Radius",
+                        "type": "float",
+                        "value": 2.0
+                    }
+                ]
+            }
+        },
+        {
+            "vertex_shader": "minecraft:post/sobel",
+            "fragment_shader": "minecraft:post/copy_outline",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "minecraft:entity_outline"
+                }
+            ],
+            "output": "rawoutline"
+        },
+        {
+            "vertex_shader": "minecraft:post/blur",
+            "fragment_shader": "minecraft:post/entity_outline_box_blur",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "rawoutline",
+                    "bilinear": true
+                }
+            ],
+            "output": "holder",
+            "uniforms": {
+                "BlurConfig": [
+                    {
+                        "name": "BlurDir",
+                        "type": "vec2",
+                        "value": [ 1.0, 0.0 ]
+                    },
+                    {
+                        "name": "Radius",
+                        "type": "float",
+                        "value": 2.0
+                    }
+                ]
+            }
+        },
+        {
+            "vertex_shader": "minecraft:post/blur",
+            "fragment_shader": "minecraft:post/entity_outline_box_blur",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "holder",
+                    "bilinear": true
+                }
+            ],
+            "output": "outline",
+            "uniforms": {
+                "BlurConfig": [
+                    {
+                        "name": "BlurDir",
+                        "type": "vec2",
+                        "value": [ 0.0, 1.0 ]
+                    },
+                    {
+                        "name": "Radius",
+                        "type": "float",
+                        "value": 2.0
+                    }
+                ]
+            }
+        },
+        {
+            "vertex_shader": "minecraft:post/blit",
+            "fragment_shader": "minecraft:post/blit",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "previous"
+                }
+            ],
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
+                    }
+                ]
+            },
+            "output": "swap"
+        },
+        {
+            "vertex_shader": "minecraft:post/blit",
+            "fragment_shader": "minecraft:post/prev_frame_updater",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "swap"
+                },
+                {
+                    "sampler_name": "Screen",
+                    "target": "rawoutline"
+                }
+            ],
+            "uniforms": {},
+            "output": "previous"
+        },
+        {
+            "vertex_shader": "minecraft:post/blit",
+            "fragment_shader": "minecraft:post/blit",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "minecraft:main"
+                }
+            ],
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
+                    }
+                ]
+            },
+            "output": "previousmainholder"
+        },
+
+        {
+            "vertex_shader": "minecraft:post/sobel",
+            "fragment_shader": "minecraft:post/flashlight_update",
+            "inputs": [
+                {
+                    "sampler_name": "Depth",
+                    "target": "minecraft:main",
+                    "use_depth_buffer": true
+                },
+                {
+                    "sampler_name": "Prev",
+                    "target": "previousflashlight"
+                }
+            ],
+            "uniforms": {},
+            "output": "flashlight"
+        },
+        {
+            "vertex_shader": "minecraft:post/sobel",
+            "fragment_shader": "minecraft:post/bloom",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "minecraft:main"
+                }
+            ],
+            "output": "bloom"
+        },
+
+
+
+
+
+
+
+
+
+
+
+        {
+            "vertex_shader": "minecraft:post/custom_sobel",
+            "fragment_shader": "minecraft:post/post_effects",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "minecraft:main"
+                },
+                {
+                    "sampler_name": "Depth",
+                    "target": "minecraft:main",
+                    "use_depth_buffer": true
+                },
+                {
+                    "sampler_name": "RawScreen",
+                    "target": "rawoutline"
+                },
+                {
+                    "sampler_name": "PrevMain",
+                    "target": "previousmain"
+                },
+                {
+                    "sampler_name": "Flash",
+                    "target": "flashlight"
+                },
+                {
+                    "sampler_name": "Crt",
+                    "location": "minecraft:crt",
+                    "width": 1920.0,
+                    "height": 1080.0
+                },
+                {
+                    "sampler_name": "Bloom",
+                    "target": "bloom"
+                },
+                {
+                    "sampler_name": "Meshok",
+                    "target": "meshok"
+                },
+                {
+                    "sampler_name": "Cellular",
+                    "target": "cellularshow"
+                },
+                {
+                    "sampler_name": "Cookie",
+                    "location": "minecraft:cookie",
+                    "width": 192.0,
+                    "height": 192.0
+                },
+                {
+                    "sampler_name": "Prev",
+                    "target": "previous"
+                }
+            ],
+            "output": "swap",
+            "uniforms": {}
+        },
+        {
+            "vertex_shader": "minecraft:post/blit",
+            "fragment_shader": "minecraft:post/blit",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "swap"
+                }
+            ],
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
+                    }
+                ]
+            },
+            "output": "minecraft:main"
+        },
+        {
+            "vertex_shader": "minecraft:post/sobel",
+            "fragment_shader": "minecraft:post/video_renderer",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "minecraft:main"
+                },
+                {
+                    "sampler_name": "Prev",
+                    "target": "previous"
+                },
+                {
+                    "sampler_name": "Screen",
+                    "target": "rawoutline"
+                },
+                {
+                    "sampler_name": "Video0",
+                    "location": "minecraft:video_fortnite",
+                    "width": 192.0,
+                    "height": 192.0
+                },
+                {
+                    "sampler_name": "Video1",
+                    "location": "minecraft:video_opening",
+                    "width": 192.0,
+                    "height": 192.0
+                },
+                {
+                    "sampler_name": "Video2",
+                    "location": "minecraft:video_oppen",
+                    "width": 192.0,
+                    "height": 192.0
+                },
+                {
+                    "sampler_name": "Video3",
+                    "location": "minecraft:video_today",
+                    "width": 192.0,
+                    "height": 192.0
+                },
+                {
+                    "sampler_name": "Video4",
+                    "location": "minecraft:video_turbo1",
+                    "width": 192.0,
+                    "height": 192.0
+                },
+                {
+                    "sampler_name": "Video5",
+                    "location": "minecraft:video_turbo2",
+                    "width": 192.0,
+                    "height": 192.0
+                },
+                {
+                    "sampler_name": "Video6",
+                    "location": "minecraft:video_turbo3",
+                    "width": 192.0,
+                    "height": 192.0
+                },
+                {
+                    "sampler_name": "Video7",
+                    "location": "minecraft:video_turbo4",
+                    "width": 192.0,
+                    "height": 192.0
+                },
+                {
+                    "sampler_name": "Video8",
+                    "location": "minecraft:video_fortnite",
+                    "width": 192.0,
+                    "height": 192.0
+                }
+            ],
+            "output": "swap",
+            "uniforms": {
+                "VideoConfig": [
+                    {
+                        "name": "CutsceneIdOffset",
+                        "type": "int",
+                        "value": 0
+                    }
+                ]
+            }
+        },
+        {
+            "vertex_shader": "minecraft:post/blit",
+            "fragment_shader": "minecraft:post/blit",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "swap"
+                }
+            ],
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
+                    }
+                ]
+            },
+            "output": "minecraft:main"
+        },
+
+
+
+
+
+        {
+            "vertex_shader": "minecraft:post/blit",
+            "fragment_shader": "minecraft:post/blit",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "flashlight"
+                }
+            ],
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
+                    }
+                ]
+            },
+            "output": "previousflashlight"
+        },
+        {
+            "vertex_shader": "minecraft:post/blit",
+            "fragment_shader": "minecraft:post/blit",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "previousmainholder"
+                }
+            ],
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
+                    }
+                ]
+            },
+            "output": "previousmain"
+        },
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        {
+            "vertex_shader": "minecraft:post/sobel",
+            "fragment_shader": "minecraft:post/custom_entity_outline",
+            "inputs": [
+                {
+                    "sampler_name": "Outline",
+                    "target": "outline"
+                },
+                {
+                    "sampler_name": "RawOutline",
+                    "target": "rawoutline"
+                },
+                {
+                    "sampler_name": "Main",
+                    "target": "minecraft:main"
+                }
+            ],
+            "output": "holder"
+        },
+        {
+            "vertex_shader": "minecraft:post/blit",
+            "fragment_shader": "minecraft:post/blit",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "holder"
+                }
+            ],
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
+                    }
+                ]
+            },
+            "output": "minecraft:main"
+        },
+        {
+            "vertex_shader": "minecraft:post/sobel",
+            "fragment_shader": "minecraft:post/entity_outline_remove",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "minecraft:entity_outline"
+                }
+            ],
+            "output": "swap"
+        },
+        {
+            "vertex_shader": "minecraft:post/blit",
+            "fragment_shader": "minecraft:post/blit",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "swap"
+                }
+            ],
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
+                    }
+                ]
+            },
+            "output": "minecraft:entity_outline"
+        }
+    ]
+}
