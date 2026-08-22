@@ -134,3 +134,21 @@ jobs:
           include: '["Neverland.zip"]'
           exclude: '[]'
           passive: true
+  notify-resourcepack:
+    needs: [deploy-resourcepack]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Discord notification raw
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@ad5235de713df3ef38022185499b02ffe93b7efe
+        with:
+          args: 'Resource pack loaded'
+
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_EMBEDS: '[{"color": 11892823,"footer": {"text": "Перезагрузить ресурспак: /resourcepack"},"description": ":dividers: **Ресурспак обновлен**"}]'
+        uses: Ilshidur/action-discord@ad5235de713df3ef38022185499b02ffe93b7efe
+        with:
+          args: ''
