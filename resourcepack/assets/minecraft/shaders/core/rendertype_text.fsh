@@ -248,7 +248,7 @@ void main() {
             fragColor.a *= vertexColor.a;
         }
         if (EFFECT == 4) {
-            fragColor = texture(Sampler0, texCoord0);
+            fragColor = texture(Sampler0, texCoord0) * vec4(1.0, 0.0, 0.0, 1.0);
             if (fragColor.r < 0.9) {
                 discard;
             }
