@@ -33,7 +33,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ZorshDeltarune-1.0-all
-          path: downloaded_artifact/
+          path: downloaded_artifact_plugin/
       
       - name: Deploy to test server
         uses: sand4rt/ftp-deployer@v1.10
@@ -44,7 +44,7 @@ jobs:
           username: ${{ secrets.SFTP_USER }}
           password: ${{ secrets.SFTP_PASSWORD }}
           remote_folder: plugins
-          local_folder: downloaded_artifact
+          local_folder: downloaded_artifact_plugin
           cleanup: false
           include: '["ZorshDeltarune-1.0-all.jar"]'
           exclude: '[]'
@@ -87,3 +87,50 @@ jobs:
         uses: Ilshidur/action-discord@ad5235de713df3ef38022185499b02ffe93b7efe
         with:
           args: ''
+  build-resourcepack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew makeResourcePack
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Neverland
+          path: build/resourcepack/Neverland.zip
+  deploy-resourcepack:
+    needs: [build-resourcepack]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Neverland
+          path: downloaded_artifact_rp/
+
+      - name: Deploy to test server
+        uses: sand4rt/ftp-deployer@v1.10
+        with:
+          sftp: true
+          host: ${{ secrets.SFTP_HOST }}
+          port: ${{ secrets.SFTP_PORT }}
+          username: ${{ secrets.SFTP_USER }}
+          password: ${{ secrets.SFTP_PASSWORD }}
+          remote_folder: plugins/Denizen/webroot
+          local_folder: downloaded_artifact_rp
+          cleanup: false
+          include: '["Neverland.zip"]'
+          exclude: '[]'
+          passive: true
