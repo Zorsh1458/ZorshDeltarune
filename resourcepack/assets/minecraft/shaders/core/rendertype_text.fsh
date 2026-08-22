@@ -251,6 +251,7 @@ void main() {
             if (texture(Sampler0, texCoord0).r < 0.99) {
                 discard;
             }
+            fragColor = texture(Sampler0, texCoord0);
             return;
             int frameCount = PARAMETER_INT;
             vec2 coord = texCoord0;
