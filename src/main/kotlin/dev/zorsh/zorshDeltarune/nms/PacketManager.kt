@@ -72,28 +72,15 @@ class PacketManager {
             interpolationDuration: Int = 1,
             teleportDuration: Int = 2,
         ) {
-            fun sendPacket(packet: PacketContainer) {
-                for (player in players.filter { it.isOnline }) {
-                    protocolManager.sendServerPacket(player, packet)
-                }
-            }
+            val packet = getDisplayMetadataPacket(
+                entityId,
+                newTransformation,
+                interpolationDuration,
+                teleportDuration
+            )
 
-            if (savedEntities[entityId] != null) {
-                val ent = savedEntities[entityId] ?: return
-                ent.transformation = newTransformation
-                ent.interpolationDuration = interpolationDuration
-                ent.teleportDuration = teleportDuration
-
-                val packet = getTextDisplayMetadataPacketNew(entityId, WrappedDataWatcher.getEntityWatcher(ent))
-                sendPacket(packet)
-            } else {
-                val packet = getDisplayMetadataPacket(
-                    entityId,
-                    newTransformation,
-                    interpolationDuration,
-                    teleportDuration
-                )
-                sendPacket(packet)
+            for (player in players.filter { it.isOnline }) {
+                protocolManager.sendServerPacket(player, packet)
             }
         }
 
