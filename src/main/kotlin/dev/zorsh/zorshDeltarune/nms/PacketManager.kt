@@ -72,15 +72,28 @@ class PacketManager {
             interpolationDuration: Int = 1,
             teleportDuration: Int = 2,
         ) {
-            val packet = getDisplayMetadataPacket(
-                entityId,
-                newTransformation,
-                interpolationDuration,
-                teleportDuration
-            )
+            fun sendPacket(packet: PacketContainer) {
+                for (player in players.filter { it.isOnline }) {
+                    protocolManager.sendServerPacket(player, packet)
+                }
+            }
 
-            for (player in players.filter { it.isOnline }) {
-                protocolManager.sendServerPacket(player, packet)
+            if (savedEntities[entityId] != null) {
+                val ent = savedEntities[entityId] ?: return
+                ent.transformation = newTransformation
+                ent.interpolationDuration = interpolationDuration
+                ent.teleportDuration = teleportDuration
+
+                val packet = getTextDisplayMetadataPacketNew(entityId, WrappedDataWatcher.getEntityWatcher(ent))
+                sendPacket(packet)
+            } else {
+                val packet = getDisplayMetadataPacket(
+                    entityId,
+                    newTransformation,
+                    interpolationDuration,
+                    teleportDuration
+                )
+                sendPacket(packet)
             }
         }
 
@@ -94,14 +107,12 @@ class PacketManager {
             teleportDuration: Int = 2,
             opacity: Byte,
         ) {
-            var packet = getTextDisplayMetadataPacket(
-                entityId,
-                newText,
-                newTransformation,
-                interpolationDuration,
-                teleportDuration,
-                opacity
-            )
+            fun sendPacket(packet: PacketContainer) {
+                for (player in players.filter { it.isOnline }) {
+                    protocolManager.sendServerPacket(player, packet)
+                }
+            }
+
             if (savedEntities[entityId] != null) {
 
                 savedEntities[entityId]?.transformation = newTransformation
@@ -111,16 +122,23 @@ class PacketManager {
                 savedEntities[entityId]?.text(newText)
 
                 val ent = savedEntities[entityId]!!
-                packet = getTextDisplayMetadataPacketNew(entityId, WrappedDataWatcher.getEntityWatcher(ent))
-            }
-
-            for (player in players.filter { it.isOnline }) {
-                protocolManager.sendServerPacket(player, packet)
+                val packet = getTextDisplayMetadataPacketNew(entityId, WrappedDataWatcher.getEntityWatcher(ent))
+                sendPacket(packet)
+            } else {
+                val packet = getTextDisplayMetadataPacket(
+                    entityId,
+                    newText,
+                    newTransformation,
+                    interpolationDuration,
+                    teleportDuration,
+                    opacity
+                )
+                sendPacket(packet)
             }
         }
 
         @JvmStatic
-        fun getTextDisplayMetadataPacketNew(entityId:Int, entityWatcher: WrappedDataWatcher): PacketContainer {
+        fun getTextDisplayMetadataPacketNew(entityId: Int, entityWatcher: WrappedDataWatcher): PacketContainer {
             val metadata = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
             metadata.integers.write(0, entityId)
             metadata.dataValueCollectionModifier.write(0, entityWatcher.toDataValueCollection())
@@ -200,7 +218,8 @@ class PacketManager {
                     WrappedDataWatcher.Registry.get(Byte::class.java as Type),
                     opacity
                 )
-            } catch (ignored: Exception) {}
+            } catch (ignored: Exception) {
+            }
 
             metadata.dataValueCollectionModifier.write(0, metadataList)
 
@@ -264,7 +283,8 @@ class PacketManager {
                     WrappedDataWatcher.Registry.get(Quaternionf::class.java as Type),
                     newTransformation.rightRotation
                 )
-            } catch (ignored: Exception) {}
+            } catch (ignored: Exception) {
+            }
 
             metadata.dataValueCollectionModifier.write(0, metadataList)
 
@@ -624,7 +644,16 @@ class PacketManager {
                 runLater(2L) {
                     privateEntities.remove(entityId)
                 }
-                afterSpawned(FakeItemDisplay(entityId, location, data.transformation, data.teleportDuration, data.interpolationDuration, players))
+                afterSpawned(
+                    FakeItemDisplay(
+                        entityId,
+                        location,
+                        data.transformation,
+                        data.teleportDuration,
+                        data.interpolationDuration,
+                        players
+                    )
+                )
             }
         }
 
@@ -665,7 +694,18 @@ class PacketManager {
                 runLater(2L) {
                     privateEntities.remove(entityId)
                 }
-                afterSpawned(FakeTextDisplay(entityId, text, location, data.transformation, data.teleportDuration, data.interpolationDuration, players, opacity = data.opacity))
+                afterSpawned(
+                    FakeTextDisplay(
+                        entityId,
+                        text,
+                        location,
+                        data.transformation,
+                        data.teleportDuration,
+                        data.interpolationDuration,
+                        players,
+                        opacity = data.opacity
+                    )
+                )
             }
         }
 
