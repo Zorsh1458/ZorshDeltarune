@@ -23,7 +23,10 @@ class PlayerUICanvas {
 
     fun initialize(player: Player) {
         targetPlayer = player
-        PacketManager.spawnInteraction(player.eyeLocation, listOf(player), 0f, -0.18f) { inter ->
+        val loc = player.eyeLocation.clone()
+        loc.yaw = 0f
+        loc.pitch = 0f
+        PacketManager.spawnInteraction(loc, listOf(player), 0f, -0.18f) { inter ->
             canvasHolder = inter
             PacketManager.mountEntities(player.entityId, listOf(canvasHolder!!.entityId), listOf(player))
             updateCanvas()
