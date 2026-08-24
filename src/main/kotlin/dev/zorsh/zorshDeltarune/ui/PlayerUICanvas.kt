@@ -34,10 +34,10 @@ class PlayerUICanvas {
         savedObjects.clear()
     }
 
-    fun updateCanvas(entityId: Int) {
+    fun updateCanvas() {
         if (targetPlayers.isEmpty()) return
         targetPlayers.forEach { pl ->
-            PacketManager.mountEntities(pl.entityId, listOf(entityId), listOf(pl))
+            PacketManager.mountEntities(pl.entityId, objects.map { it.entityId }, listOf(pl))
         }
     }
 
@@ -135,7 +135,7 @@ class PlayerUICanvas {
             if (saveAs != null) {
                 savedObjects[saveAs] = ent
             }
-            updateCanvas(ent.entityId)
+            updateCanvas()
             afterSpawn()
         }
     }
@@ -178,7 +178,7 @@ class PlayerUICanvas {
             if (saveAs != null) {
                 savedObjects[saveAs] = ent
             }
-            updateCanvas(ent.entityId)
+            updateCanvas()
             afterSpawn()
         }
     }
