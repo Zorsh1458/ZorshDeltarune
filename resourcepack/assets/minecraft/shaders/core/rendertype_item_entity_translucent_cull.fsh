@@ -665,8 +665,14 @@ void main() {
     vec4 texcolor = texture(Sampler0, texCoord0);
     vec2 rounded = floor(texCoord0 * size / 16.0);
     vec2 uv2 = texCoord0 * size / 16.0 - rounded;
-    fragColor = vec4(gl_FragCoord.xy / ScreenSize, 0.0, 1.0);
-    return;
+    if (round(texcolor.a * 255) == 254.0) {
+        fragColor = vec4(gl_FragCoord.xy / ScreenSize, 0.0, 1.0);
+        return;
+    }
+    if (int(round(texcolor.a * 255) + 0.5) == 254) {
+        fragColor = vec4(0.0, 1.0, 0.0, 1.0);
+        return;
+    }
     if (round(texcolor.a * 255) == 254.0 && length(controlColor.xyz) < sqrt(3.0) - 0.1) {
         fragColor = controlColor;
             //vec2 uvPoint = texcolor.rg;
