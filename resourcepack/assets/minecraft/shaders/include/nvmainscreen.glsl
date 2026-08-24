@@ -28,15 +28,15 @@ void nvmainscreen_mainImage( out vec4 fragColor, in vec2 fragCoord, float nv_tim
 
     vec3 col = vec3(0.0);
     
-    for (float i = 0.0; i < 8.0; i++) {
-        nvmainscreen_iteration(uv, i, col, 45, 0.001, nv_time);
-    }
+    //for (float i = 0.0; i < 8.0; i++) {
+    //    nvmainscreen_iteration(uv, i, col, 45, 0.001, nv_time);
+    //}
     
-    for (float i = 8.0; i < 12.0; i++) {
-        nvmainscreen_iteration(uv, i, col, 25, 0.001, nv_time);
-    }
+    //for (float i = 8.0; i < 12.0; i++) {
+    //    nvmainscreen_iteration(uv, i, col, 25, 0.001, nv_time);
+    //}
     
-    for (float i = 12.0; i < 20.0; i++) {
+    for (float i = 12.0; i < 30.0; i++) {
         nvmainscreen_iteration(uv, i, col, 85, 0.0003, nv_time);
     }
     
