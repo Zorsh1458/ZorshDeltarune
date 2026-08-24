@@ -669,7 +669,7 @@ void main() {
         fragColor = vec4(gl_FragCoord.xy / ScreenSize, 0.0, 1.0);
         return;
     }
-    if (int(floor(texcolor.a * 255.99) + 0.5) == 253) {
+    if (int(floor(texcolor.a * 255.99) + 0.5) == 255) {
         fragColor = vec4(0.0, 1.0, 0.0, 1.0);
         return;
     }
