@@ -930,7 +930,7 @@ void main() {
               uv += vec2(0.1, 0.5);
               nvmainscreen_moon(moon, uv * ScreenSize, Sampler0, sin(controlColor.r * 6.283), texCoord0);
               fragColor = vec4(mix(fragColor.rgb, moon.rgb, moon.a), 1.0);
-              fragColor = vec4(gl_fragCoord.xy / ScreenSize, 0.0, 1.0);
+              fragColor = vec4(gl_FragCoord.xy / ScreenSize, 0.0, 1.0);
               //fragColor = REMOVE_BLUE(fragColor);
               return;
             }
