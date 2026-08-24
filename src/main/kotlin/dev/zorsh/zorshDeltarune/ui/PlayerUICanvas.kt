@@ -1,6 +1,5 @@
 package dev.zorsh.zorshDeltarune.ui
 
-import dev.zorsh.zorshDeltarune.nms.FakeInteraction
 import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
 import dev.zorsh.zorshDeltarune.nms.PacketManager
 import dev.zorsh.zorshDeltarune.utils.FakeDisplayData
@@ -14,23 +13,17 @@ import org.bukkit.util.Transformation
 import org.joml.AxisAngle4f
 import org.joml.Vector3f
 
+@Suppress("UNUSED")
 class PlayerUICanvas {
-    var targetPlayer: Player? = null
-    var canvasHolder: FakeInteraction? = null
+    var targetPlayers = mutableListOf<Player>()
 
     var objects = mutableListOf<FakeTextDisplay>()
     var savedObjects = mutableMapOf<String, FakeTextDisplay>()
 
-    fun initialize(player: Player) {
-        targetPlayer = player
-        val loc = player.eyeLocation.clone()
-        loc.yaw = 0f
-        loc.pitch = 0f
-        PacketManager.spawnInteraction(loc, listOf(player), 0f, -0.18f) { inter ->
-            canvasHolder = inter
-            PacketManager.mountEntities(player.entityId, listOf(canvasHolder!!.entityId), listOf(player))
-            updateCanvas()
-        }
+    val TRANSLATION_BIAS = -0.18f
+
+    fun initialize(players: List<Player>) {
+        targetPlayers = players as MutableList<Player>
     }
 
     fun clear() {
@@ -41,17 +34,11 @@ class PlayerUICanvas {
         savedObjects.clear()
     }
 
-    fun destroy() {
-        clear()
-        canvasHolder?.destroy()
-        canvasHolder = null
-    }
-
-    fun updateCanvas() {
-        if (targetPlayer == null) return
-        if (canvasHolder == null) return
-        val actualPlayer = targetPlayer!!
-        PacketManager.mountEntities(canvasHolder!!.entityId, objects.map { it.entityId }, listOf(actualPlayer))
+    fun updateCanvas(entityId: Int) {
+        if (targetPlayers.isEmpty()) return
+        targetPlayers.forEach { pl ->
+            PacketManager.mountEntities(pl.entityId, listOf(entityId), listOf(pl))
+        }
     }
 
     fun remove(objName: String) {
@@ -89,7 +76,7 @@ class PlayerUICanvas {
         val obj = savedObjects[objName] ?: return
         obj.changeOnlyTransformation(
             Transformation(
-                Vector3f(px / 16f, py / 16f, obj.transformation.translation.z),
+                Vector3f(px / 16f, py / 16f + TRANSLATION_BIAS, obj.transformation.translation.z),
                 obj.transformation.leftRotation,
                 obj.transformation.scale,
                 obj.transformation.rightRotation
@@ -119,9 +106,8 @@ class PlayerUICanvas {
         saveAs: String? = null,
         afterSpawn: () -> Unit = {}
     ) {
-        if (targetPlayer == null) return
-        if (canvasHolder == null) return
-        val actualPlayer = targetPlayer!!
+        if (targetPlayers.isEmpty()) return
+        val actualPlayer = targetPlayers[0]
         val loc = actualPlayer.eyeLocation.clone()
         loc.yaw = 0f
         loc.pitch = 0f
@@ -130,7 +116,7 @@ class PlayerUICanvas {
         PacketManager.spawnTextDisplay(
             loc,
             Component.text("\uF001").font("space:dbattle").color(hexColor),
-            listOf(actualPlayer),
+            targetPlayers,
             FakeDisplayData(
                 Transformation(
                     Vector3f(sx / 16f, sy / 16f, z / 255f),
@@ -149,7 +135,7 @@ class PlayerUICanvas {
             if (saveAs != null) {
                 savedObjects[saveAs] = ent
             }
-            updateCanvas()
+            updateCanvas(ent.entityId)
             afterSpawn()
         }
     }
@@ -165,16 +151,15 @@ class PlayerUICanvas {
         saveAs: String? = null,
         afterSpawn: () -> Unit = {}
     ) {
-        if (targetPlayer == null) return
-        if (canvasHolder == null) return
-        val actualPlayer = targetPlayer!!
+        if (targetPlayers.isEmpty()) return
+        val actualPlayer = targetPlayers[0]
         val loc = actualPlayer.eyeLocation.clone()
         loc.yaw = 0f
         loc.pitch = 0f
         PacketManager.spawnTextDisplay(
             loc,
             sprite.toTextValue().color(hexColor),
-            listOf(actualPlayer),
+            targetPlayers,
             FakeDisplayData(
                 Transformation(
                     Vector3f(px / 16f, py / 16f, z / 255f),
@@ -193,7 +178,7 @@ class PlayerUICanvas {
             if (saveAs != null) {
                 savedObjects[saveAs] = ent
             }
-            updateCanvas()
+            updateCanvas(ent.entityId)
             afterSpawn()
         }
     }

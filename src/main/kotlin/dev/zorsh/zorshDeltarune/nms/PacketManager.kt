@@ -32,6 +32,7 @@ import java.util.*
 import kotlin.math.floor
 
 
+@Suppress("UNUSED", "PLATFORM_CLASS_MAPPED_TO_KOTLIN")
 class PacketManager {
     companion object {
         @Volatile
@@ -520,7 +521,6 @@ class PacketManager {
                 e.printStackTrace()
             }
 
-            //TODO("REMOVE")
             for (player in players.filter { it.isOnline }) {
                 protocolManager.sendServerPacket(player, packet)
             }
