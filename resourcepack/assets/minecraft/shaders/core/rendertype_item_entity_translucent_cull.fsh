@@ -665,15 +665,7 @@ void main() {
     vec4 texcolor = texture(Sampler0, texCoord0);
     vec2 rounded = floor(texCoord0 * size / 16.0);
     vec2 uv2 = texCoord0 * size / 16.0 - rounded;
-    if (int(floor(texcolor.a * 255.99) + 0.5) == 254) {
-        fragColor = vec4(gl_FragCoord.xy / ScreenSize, 0.0, 1.0);
-        return;
-    }
-    if (int(floor(texcolor.a * 255.99) + 0.5) == 255) {
-        fragColor = vec4(0.0, 1.0, 0.0, 1.0);
-        return;
-    }
-    if (round(texcolor.a * 255) == 254.0 && length(controlColor.xyz) < sqrt(3.0) - 0.1) {
+    if (length(controlColor.xyz) < sqrt(3.0) - 0.1) {
         fragColor = controlColor;
             //vec2 uvPoint = texcolor.rg;
             vec2 uv = uvPoint;
@@ -938,8 +930,7 @@ void main() {
               uv += vec2(0.1, 0.5);
               nvmainscreen_moon(moon, uv * ScreenSize, Sampler0, sin(controlColor.r * 6.283), texCoord0);
               fragColor = vec4(mix(fragColor.rgb, moon.rgb, moon.a), 1.0);
-              fragColor = vec4(gl_FragCoord.xy / ScreenSize, 0.0, 1.0);
-              //fragColor = REMOVE_BLUE(fragColor);
+              fragColor = REMOVE_BLUE(fragColor);
               return;
             }
             if (effect_id == 20)
