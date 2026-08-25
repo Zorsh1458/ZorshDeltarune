@@ -70,7 +70,7 @@ void main() {
 
             vec3 dir = normalize(vec3(fx, fy, fz));
 
-            float pitch = max(min(asin(dir.y), 1.0), -1.0);
+            float pitch = max(min(asin(dir.y), 3.1415 / 2.0), -3.1415 / 2.0);
 
             float yaw = atan(dir.x, dir.z);
             gl_Position += vec4(yaw / -3.1415, pitch * 2.0 / 3.1415, 0.0, 0.0);
