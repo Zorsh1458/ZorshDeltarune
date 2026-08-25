@@ -64,8 +64,8 @@ void main() {
 
         // Mouse cursor
         if (opacity == 252.0) {
-            float fx = -ModelViewMat[2][0];
-            float fy = -ModelViewMat[2][1];
+            float fx = -ModelViewMat[0][2];
+            float fy = -ModelViewMat[1][2];
             float fz = -ModelViewMat[2][2];
 
             vec3 dir = normalize(vec3(fx, fy, fz));
