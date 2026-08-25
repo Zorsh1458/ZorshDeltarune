@@ -15,7 +15,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
     fun setupLayout() {
 
-        val spritedEnemies = battle.getEnemies().filterIsInstance<SpritedEnemy>()
+        val spritedEnemies = battle.getBattleEnemies().filterIsInstance<SpritedEnemy>()
         for (enemy in spritedEnemies.reversed().withIndex()) {
             myCanvas.drawSprite(
                 200f,
@@ -60,7 +60,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             null
         )
 
-        val dPlayers = battle.getPlayers().filter { it.player != null && it.player?.isOnline == true }
+        val dPlayers = battle.getBattlePlayers().filter { it.player != null && it.player?.isOnline == true }
         for (dPlayer in dPlayers) {
 //            dPlayer.playerSelectedButton = 0
 

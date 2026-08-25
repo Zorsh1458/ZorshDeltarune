@@ -18,8 +18,8 @@ class BattleManager {
         fun startBattle(battle: INeverlandBattle) {
             val uuid = UUID.randomUUID()
             battlesList[uuid] = battle
-            battle.setBattleUUID(uuid)
-            for (dPlayer in battle.getPlayers()) {
+            battle.setUUID(uuid)
+            for (dPlayer in battle.getBattlePlayers()) {
                 dPlayer.myBattleUUID = uuid
             }
             battle.startBattle {

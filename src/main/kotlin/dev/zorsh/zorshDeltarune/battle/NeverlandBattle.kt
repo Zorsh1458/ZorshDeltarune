@@ -99,7 +99,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         }
         for (ent in shulkerHitboxes) {
             try {
-                PacketManager.removeEntity(ent, getPlayers().mapNotNull { it.player })
+                PacketManager.removeEntity(ent, getBattlePlayers().mapNotNull { it.player })
             } catch (_: Exception) {}
         }
         shulkerHitboxes.clear()
@@ -107,18 +107,18 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         battleCanvas.myCanvas.clear()
     }
 
-    override fun setBattleUUID(uuid: UUID) {
+    override fun setUUID(uuid: UUID) {
         battleUUID = uuid
     }
 
-    override fun getPlayers() = players.filter { it.player?.isOnline == true && it.myBattleUUID == battleUUID }
+    override fun getBattlePlayers() = players.filter { it.player?.isOnline == true && it.myBattleUUID == battleUUID }
 
-    override fun getEnemies() = enemies
+    override fun getBattleEnemies() = enemies
 
     override fun startBattle(onEnded: () -> Unit) {
         onEndedAction = onEnded
 
-        for (pl in getPlayers()) {
+        for (pl in getBattlePlayers()) {
             pl.player?.showTitle(
                 title(
                     fontText("\uD701", "#000000", "space:default"),
