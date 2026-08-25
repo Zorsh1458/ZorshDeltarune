@@ -1,6 +1,7 @@
 package dev.zorsh.zorshDeltarune.battle
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
+import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.utils.*
 import kotlinx.coroutines.*
 import net.kyori.adventure.text.Component
@@ -19,11 +20,7 @@ class TestEnemy(
         Component.text("Тестовый враг встал у вас на пути!"),
         Component.text("Полный скебоб..")
     ),
-    sprites = listOf(
-        fontText("1", "#ffffff", "space:enemy_slime"),
-        fontText("2", "#ffffff", "space:enemy_slime")
-    ),
-    5L
+    CanvasSprite.MOUSE
 ) {
 
     private var attackCount = 0
@@ -51,84 +48,84 @@ class TestEnemy(
     }
 
     private fun testSpawnNMS2() {
-        val scale = myBattle.sceneScale
-        val loc = myBattle.battleCenterLocation
-        loc.pitch = -90f
-        myBattle.newProjectile(
-            2,
-            Vector3f(ZorshDeltarune.random.nextFloat() * 50f - 25f, -25f, 0.01f)
-        ) { entity ->
-            runLater(1) {
-                entity.changeTransformation(
-                    Transformation(
-                        entity.transformation.translation,
-                        AxisAngle4f(),
-                        Vector3f(7f, 7f, 1f) * scale,
-                        AxisAngle4f()
-                    )
-                )
-            }
-            var hit = false
-            var speed = -2.8f
-            var speedx = (ZorshDeltarune.random.nextFloat() - 0.5f) * 1.5f
-            runRepeating(70) { i ->
-                val t = entity.transformation.translation
-                val cent = Vector3f(
-                    -t.x,
-                    t.z,
-                    t.y
-                )
-                runLater(1) {
-                    hit = hit || myBattle.damageHitbox(ZorshDeltarune.random.nextInt(10) + 20, cent, 0.1)
-                }
-                if (hit) {
-                    entity.destroy()
-                } else {
-                    entity.changeTransformation(
-                        Transformation(
-                            entity.transformation.translation - Vector3f(
-                                speedx,
-                                speed,
-                                0.0001f
-                            ) * scale,
-                            entity.transformation.leftRotation * Quaternionf(AxisAngle4f(speedx * 0.2f, 0f, 0f, 1f)),
-                            entity.transformation.scale,
-                            Quaternionf(AxisAngle4f())
-                        )
-                    )
-                    speed += 0.1f
-                    if (i == 53) {
-                        speedx *= -1
-                        speed = -1.7f
-                        entity.changeTransformation(
-                            Transformation(
-                                entity.transformation.translation,
-                                entity.transformation.leftRotation,
-                                entity.transformation.scale * 0.5,
-                                Quaternionf(AxisAngle4f())
-                            )
-                        )
-                    }
-                }
-            }
-            runLater(70) {
-                if (!hit) {
-                    entity.changeTransformation(
-                        Transformation(
-                            entity.transformation.translation,
-                            entity.transformation.leftRotation,
-                            Vector3f(0f, 0f, 1f),
-                            Quaternionf(AxisAngle4f())
-                        )
-                    )
-                }
-            }
-            runLater(72) {
-                if (!hit) {
-                    entity.destroy()
-                }
-            }
-        }
+//        val scale = myBattle.sceneScale
+//        val loc = myBattle.battleCenterLocation
+//        loc.pitch = -90f
+//        myBattle.newProjectile(
+//            2,
+//            Vector3f(ZorshDeltarune.random.nextFloat() * 50f - 25f, -25f, 0.01f)
+//        ) { entity ->
+//            runLater(1) {
+//                entity.changeTransformation(
+//                    Transformation(
+//                        entity.transformation.translation,
+//                        AxisAngle4f(),
+//                        Vector3f(7f, 7f, 1f) * scale,
+//                        AxisAngle4f()
+//                    )
+//                )
+//            }
+//            var hit = false
+//            var speed = -2.8f
+//            var speedx = (ZorshDeltarune.random.nextFloat() - 0.5f) * 1.5f
+//            runRepeating(70) { i ->
+//                val t = entity.transformation.translation
+//                val cent = Vector3f(
+//                    -t.x,
+//                    t.z,
+//                    t.y
+//                )
+//                runLater(1) {
+//                    hit = hit || myBattle.damageHitbox(ZorshDeltarune.random.nextInt(10) + 20, cent, 0.1)
+//                }
+//                if (hit) {
+//                    entity.destroy()
+//                } else {
+//                    entity.changeTransformation(
+//                        Transformation(
+//                            entity.transformation.translation - Vector3f(
+//                                speedx,
+//                                speed,
+//                                0.0001f
+//                            ) * scale,
+//                            entity.transformation.leftRotation * Quaternionf(AxisAngle4f(speedx * 0.2f, 0f, 0f, 1f)),
+//                            entity.transformation.scale,
+//                            Quaternionf(AxisAngle4f())
+//                        )
+//                    )
+//                    speed += 0.1f
+//                    if (i == 53) {
+//                        speedx *= -1
+//                        speed = -1.7f
+//                        entity.changeTransformation(
+//                            Transformation(
+//                                entity.transformation.translation,
+//                                entity.transformation.leftRotation,
+//                                entity.transformation.scale * 0.5,
+//                                Quaternionf(AxisAngle4f())
+//                            )
+//                        )
+//                    }
+//                }
+//            }
+//            runLater(70) {
+//                if (!hit) {
+//                    entity.changeTransformation(
+//                        Transformation(
+//                            entity.transformation.translation,
+//                            entity.transformation.leftRotation,
+//                            Vector3f(0f, 0f, 1f),
+//                            Quaternionf(AxisAngle4f())
+//                        )
+//                    )
+//                }
+//            }
+//            runLater(72) {
+//                if (!hit) {
+//                    entity.destroy()
+//                }
+//            }
+//        }
     }
 
     private fun attackVariant3() {
@@ -141,139 +138,139 @@ class TestEnemy(
     }
 
     private fun testSpawnNMS3(a: Int, centerX: Float, centerY: Float) {
-        val scale = myBattle.sceneScale
-        val loc = myBattle.battleCenterLocation
-        loc.pitch = -90f
-        val x = sin(a / 180.0 * 3.1415)
-        val y = cos(a / 180.0 * 3.1415)
-        myBattle.newProjectile(
-            1,
-            Vector3f(centerX + x.toFloat() * 60, centerY + y.toFloat() * 60, 0.01f)
-        ) { entity ->
-            runLater(1) {
-                entity.changeTransformation(
-                    Transformation(
-                        entity.transformation.translation,
-                        AxisAngle4f(a / 180.0f * -3.1415f, 0f, 0f, 1f),
-                        Vector3f(12f, 12f, 1f) * scale,
-                        AxisAngle4f()
-                    )
-                )
-            }
-            var hit = false
-            runRepeating(40) { i, _ ->
-                val t = entity.transformation.translation
-                val cent = Vector3f(
-                    -t.x,
-                    t.z,
-                    t.y
-                )
-                runLater(1) {
-                    hit = hit || myBattle.damageHitbox(ZorshDeltarune.random.nextInt(10) + 20, cent, 0.17)
-                }
-                if (hit) {
-                    entity.destroy()
-                } else {
-                    entity.changeTransformation(
-                        Transformation(
-                            entity.transformation.translation - Vector3f(
-                                1.5f * x.toFloat(),
-                                1.5f * y.toFloat(),
-                                0.0001f
-                            ) * scale,
-                            entity.transformation.leftRotation,
-                            entity.transformation.scale,
-                            Quaternionf(AxisAngle4f())
-                        )
-                    )
-                }
-            }
-            runLater(40) {
-                if (!hit) {
-                    entity.changeTransformation(
-                        Transformation(
-                            entity.transformation.translation,
-                            entity.transformation.leftRotation,
-                            Vector3f(0f, 0f, 1f),
-                            Quaternionf(AxisAngle4f())
-                        )
-                    )
-                }
-            }
-            runLater(42) {
-                if (!hit) {
-                    entity.destroy()
-                }
-            }
-        }
+//        val scale = myBattle.sceneScale
+//        val loc = myBattle.battleCenterLocation
+//        loc.pitch = -90f
+//        val x = sin(a / 180.0 * 3.1415)
+//        val y = cos(a / 180.0 * 3.1415)
+//        myBattle.newProjectile(
+//            1,
+//            Vector3f(centerX + x.toFloat() * 60, centerY + y.toFloat() * 60, 0.01f)
+//        ) { entity ->
+//            runLater(1) {
+//                entity.changeTransformation(
+//                    Transformation(
+//                        entity.transformation.translation,
+//                        AxisAngle4f(a / 180.0f * -3.1415f, 0f, 0f, 1f),
+//                        Vector3f(12f, 12f, 1f) * scale,
+//                        AxisAngle4f()
+//                    )
+//                )
+//            }
+//            var hit = false
+//            runRepeating(40) { i, _ ->
+//                val t = entity.transformation.translation
+//                val cent = Vector3f(
+//                    -t.x,
+//                    t.z,
+//                    t.y
+//                )
+//                runLater(1) {
+//                    hit = hit || myBattle.damageHitbox(ZorshDeltarune.random.nextInt(10) + 20, cent, 0.17)
+//                }
+//                if (hit) {
+//                    entity.destroy()
+//                } else {
+//                    entity.changeTransformation(
+//                        Transformation(
+//                            entity.transformation.translation - Vector3f(
+//                                1.5f * x.toFloat(),
+//                                1.5f * y.toFloat(),
+//                                0.0001f
+//                            ) * scale,
+//                            entity.transformation.leftRotation,
+//                            entity.transformation.scale,
+//                            Quaternionf(AxisAngle4f())
+//                        )
+//                    )
+//                }
+//            }
+//            runLater(40) {
+//                if (!hit) {
+//                    entity.changeTransformation(
+//                        Transformation(
+//                            entity.transformation.translation,
+//                            entity.transformation.leftRotation,
+//                            Vector3f(0f, 0f, 1f),
+//                            Quaternionf(AxisAngle4f())
+//                        )
+//                    )
+//                }
+//            }
+//            runLater(42) {
+//                if (!hit) {
+//                    entity.destroy()
+//                }
+//            }
+//        }
     }
 
     private fun testSpawnNMS(i: Int) {
-        val scale = myBattle.sceneScale
-        val loc = myBattle.battleCenterLocation
-        loc.pitch = -90f
-        val a = i * 3703 + ZorshDeltarune.random.nextInt(20) * 5
-        val x = sin(a / 180.0 * 3.1415)
-        val y = cos(a / 180.0 * 3.1415)
-        myBattle.newProjectile(
-            1,
-            Vector3f(x.toFloat() * 30f, y.toFloat() * 30f, 0.01f)
-        ) { entity ->
-            runLater(1) {
-                entity.changeTransformation(
-                    Transformation(
-                        entity.transformation.translation,
-                        AxisAngle4f(a / 180.0f * -3.1415f, 0f, 0f, 1f),
-                        Vector3f(12f, 12f, 1f) * scale,
-                        AxisAngle4f()
-                    )
-                )
-            }
-            var hit = false
-            runRepeating(40) { _, _ ->
-                val t = entity.transformation.translation
-                val cent = Vector3f(
-                    -t.x,
-                    t.z,
-                    t.y
-                )
-                runLater(1) {
-                    hit = hit || myBattle.damageHitbox(ZorshDeltarune.random.nextInt(10) + 20, cent, 0.17)
-                }
-                if (hit) {
-                    entity.destroy()
-                } else {
-                    entity.changeTransformation(
-                        Transformation(
-                            entity.transformation.translation - Vector3f(
-                                1.5f * x.toFloat(),
-                                1.5f * y.toFloat(),
-                                0.0001f
-                            ) * scale,
-                            entity.transformation.leftRotation,
-                            entity.transformation.scale,
-                            Quaternionf(AxisAngle4f())
-                        )
-                    )
-                }
-            }
-            runLater(40) {
-                if (!hit) {
-                    entity.changeTransformation(
-                        Transformation(
-                            entity.transformation.translation,
-                            entity.transformation.leftRotation,
-                            Vector3f(0f, 0f, 1f),
-                            Quaternionf(AxisAngle4f())
-                        )
-                    )
-                }
-            }
-            runLater(42) {
-                if (!hit) {
-                    entity.destroy()
-                }
-            }
-        }
+//        val scale = myBattle.sceneScale
+//        val loc = myBattle.battleCenterLocation
+//        loc.pitch = -90f
+//        val a = i * 3703 + ZorshDeltarune.random.nextInt(20) * 5
+//        val x = sin(a / 180.0 * 3.1415)
+//        val y = cos(a / 180.0 * 3.1415)
+//        myBattle.newProjectile(
+//            1,
+//            Vector3f(x.toFloat() * 30f, y.toFloat() * 30f, 0.01f)
+//        ) { entity ->
+//            runLater(1) {
+//                entity.changeTransformation(
+//                    Transformation(
+//                        entity.transformation.translation,
+//                        AxisAngle4f(a / 180.0f * -3.1415f, 0f, 0f, 1f),
+//                        Vector3f(12f, 12f, 1f) * scale,
+//                        AxisAngle4f()
+//                    )
+//                )
+//            }
+//            var hit = false
+//            runRepeating(40) { _, _ ->
+//                val t = entity.transformation.translation
+//                val cent = Vector3f(
+//                    -t.x,
+//                    t.z,
+//                    t.y
+//                )
+//                runLater(1) {
+//                    hit = hit || myBattle.damageHitbox(ZorshDeltarune.random.nextInt(10) + 20, cent, 0.17)
+//                }
+//                if (hit) {
+//                    entity.destroy()
+//                } else {
+//                    entity.changeTransformation(
+//                        Transformation(
+//                            entity.transformation.translation - Vector3f(
+//                                1.5f * x.toFloat(),
+//                                1.5f * y.toFloat(),
+//                                0.0001f
+//                            ) * scale,
+//                            entity.transformation.leftRotation,
+//                            entity.transformation.scale,
+//                            Quaternionf(AxisAngle4f())
+//                        )
+//                    )
+//                }
+//            }
+//            runLater(40) {
+//                if (!hit) {
+//                    entity.changeTransformation(
+//                        Transformation(
+//                            entity.transformation.translation,
+//                            entity.transformation.leftRotation,
+//                            Vector3f(0f, 0f, 1f),
+//                            Quaternionf(AxisAngle4f())
+//                        )
+//                    )
+//                }
+//            }
+//            runLater(42) {
+//                if (!hit) {
+//                    entity.destroy()
+//                }
+//            }
+//        }
     }
 }
