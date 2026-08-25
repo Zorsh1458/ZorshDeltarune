@@ -38,6 +38,7 @@ class NeverlandTestCommand : CommandExecutor, TabCompleter {
                         dPlayer
                     }
                 val battle = NeverlandBattle(dPlayers, listOf())
+                battle.setUUID(UUID.randomUUID())
                 val cv = BattleCanvas(listOf(player), battle)
                 cv.initCanvas()
                 cv.setupLayout()
