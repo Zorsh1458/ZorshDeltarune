@@ -60,6 +60,30 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             null
         )
 
+        myCanvas.drawSprite(
+            0f,
+            0f,
+            240f,
+            240f,
+            63,
+            CanvasSprite.SQUARE,
+            "#ffffff",
+            null,
+            null
+        )
+
+        myCanvas.drawSprite(
+            0f,
+            0f,
+            238f,
+            238f,
+            62,
+            CanvasSprite.SQUARE,
+            "#000000",
+            null,
+            null
+        )
+
         val dPlayers = battle.getBattlePlayers().filter { it.player != null && it.player?.isOnline == true }
         for (dPlayer in dPlayers) {
 //            dPlayer.playerSelectedButton = 0
