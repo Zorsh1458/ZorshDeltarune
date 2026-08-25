@@ -68,11 +68,11 @@ void main() {
             float fy = -ModelViewMat[2][1];
             float fz = -ModelViewMat[2][2];
 
-            vec3 dir = normalize(fx, fy, fz);
+            vec3 dir = normalize(vec3(fx, fy, fz));
 
             float pitch = max(min(asin(dir.y), 1.0), -1.0);
 
-            float yaw = atan2(dir.x, dir.z);
+            float yaw = atan(dir.x, dir.z);
             gl_Position += vec4(yaw / 3.1415, pitch * 2.0 / 3.1415, 0.0, 0.0)
         }
     }
