@@ -1,14 +1,12 @@
 package dev.zorsh.zorshDeltarune.battle
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
-import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
 import dev.zorsh.zorshDeltarune.utils.*
 import kotlinx.coroutines.*
 import net.kyori.adventure.text.Component
 import org.bukkit.util.Transformation
 import org.joml.*
 import kotlin.math.*
-import kotlin.random.Random
 
 class TestEnemy(
     name: Component,

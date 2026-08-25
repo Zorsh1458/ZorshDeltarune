@@ -1,13 +1,11 @@
 package dev.zorsh.zorshDeltarune.battle
 
-import dev.zorsh.zorshDeltarune.nms.FakeDisplay
 import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
 import dev.zorsh.zorshDeltarune.nms.PacketManager
 import dev.zorsh.zorshDeltarune.utils.FakeDisplayData
 import dev.zorsh.zorshDeltarune.utils.color
 import dev.zorsh.zorshDeltarune.utils.runInfinite
 import net.kyori.adventure.text.Component
-import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.entity.TextDisplay

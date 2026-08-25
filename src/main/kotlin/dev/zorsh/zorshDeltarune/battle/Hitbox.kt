@@ -4,8 +4,7 @@ import org.bukkit.Location
 import org.joml.Vector2d
 import org.joml.Vector3d
 
-//WHOLE CLASS IS DEPRECATED!!!
-
+@Deprecated("Deprecated", level = DeprecationLevel.ERROR)
 class Hitbox(var center: Vector2d, private val sides: List<Pair<Vector2d, Vector2d>>) {
 
     constructor(center: Location, vectors2: List<Pair<Vector2d, Vector2d>>) : this(

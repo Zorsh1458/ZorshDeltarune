@@ -2,8 +2,6 @@ package dev.zorsh.zorshDeltarune.commands
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.*
-import dev.zorsh.zorshDeltarune.utils.hideFromEveryone
-import dev.zorsh.zorshDeltarune.utils.showToEveryone
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
@@ -35,20 +33,6 @@ class DeltaruneBattleCommand : CommandExecutor, TabCompleter {
                 )
                 BattleManager.startBattle(battle)
             }
-
-//            AnimatedSprite.create(
-//                sender.location,
-//                Bukkit.getOnlinePlayers().toList(),
-//                listOf(
-//                    fontText("1", "#ffffff", "space:enemy_slime"),
-//                    fontText("2", "#ffffff", "space:enemy_slime")
-//                ),
-//                2L
-//            ) { sprite ->
-//                runLater(60) {
-//                    sprite.destroy()
-//                }
-//            }
         }
         return true
     }

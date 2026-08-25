@@ -4,7 +4,6 @@ import dev.zorsh.zorshDeltarune.nms.PacketManager
 import dev.zorsh.zorshDeltarune.utils.runLater
 import kr.toxicity.model.api.BetterModel
 import kr.toxicity.model.api.tracker.EntityTracker
-import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Entity

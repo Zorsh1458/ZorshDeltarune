@@ -1,6 +1,5 @@
 package dev.zorsh.zorshDeltarune.nms
 
-import dev.zorsh.zorshDeltarune.battle.DeltarunePlayer
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.util.Transformation

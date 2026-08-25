@@ -2,7 +2,6 @@ package dev.zorsh.zorshDeltarune.listeners
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.nms.PacketManager
-import org.bukkit.entity.BlockDisplay
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener

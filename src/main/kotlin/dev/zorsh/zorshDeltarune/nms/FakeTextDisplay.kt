@@ -4,11 +4,7 @@ import dev.zorsh.zorshDeltarune.utils.plus
 import dev.zorsh.zorshDeltarune.utils.runRepeating
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.ShadowColor
-import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
-import net.kyori.adventure.util.ARGBLike
-import net.kyori.adventure.util.RGBLike
-import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.util.Transformation

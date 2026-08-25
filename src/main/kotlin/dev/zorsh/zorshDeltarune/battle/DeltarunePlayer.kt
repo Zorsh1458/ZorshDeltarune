@@ -11,25 +11,17 @@ import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title.Times
 import net.kyori.adventure.title.Title.title
 import org.bukkit.Bukkit
-import org.bukkit.Effect
-import org.bukkit.EntityEffect
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.Input
-import org.bukkit.entity.Entity
-import org.bukkit.entity.EntityType
 import org.bukkit.util.Transformation
 import org.bukkit.util.Vector
-import org.joml.Vector2f
 import org.joml.Vector3d
-import org.joml.Vector3f
-import sun.util.calendar.CalendarUtils.mod
 import java.time.Duration
 import java.util.UUID
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.roundToInt
 
 class DeltarunePlayer(private val uuid: UUID) {
 
