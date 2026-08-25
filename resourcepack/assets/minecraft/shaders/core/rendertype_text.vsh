@@ -49,7 +49,6 @@ void main() {
     float opacity = round(Color.a * 255.0);
     if (opacity == 253.0 || opacity == 252.0) {
         vertexColor = Color;
-        vertexColor.a = opacity / 255.0;
         float RESOLUTION_Y = 480;
         float scaling_factor = floor(ScreenSize.y / RESOLUTION_Y);
         float scaling_remainder = mod(ScreenSize.y, RESOLUTION_Y);
