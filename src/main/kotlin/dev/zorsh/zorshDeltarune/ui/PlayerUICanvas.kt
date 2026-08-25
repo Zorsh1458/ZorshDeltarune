@@ -157,7 +157,7 @@ class PlayerUICanvas {
                 Transformation(
                     Vector3f(0f, TRANSLATION_BIAS, 1 / 255f),
                     AxisAngle4f(),
-                    Vector3f(2.5f, 2.5f, 1f),
+                    Vector3f(5f, 5f, 1f),
                     AxisAngle4f()
                 ),
                 opacity = 252.toByte()
