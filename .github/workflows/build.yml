@@ -1,6 +1,6 @@
 name: plugin-build
 run-name: Building plugin
-on: [workflow_dispatch]
+on: [push, workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,12 +29,126 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to test server
-        uses: EduardoLobo23/plugin-deploy-action@v1
+      - name: Download artifact
+        uses: actions/download-artifact@v4
         with:
+          name: ZorshDeltarune-1.0-all
+          path: downloaded_artifact_plugin/
+      
+      - name: Deploy to test server
+        uses: sand4rt/ftp-deployer@v1.10
+        with:
+          sftp: true
           host: ${{ secrets.SFTP_HOST }}
           port: ${{ secrets.SFTP_PORT }}
           username: ${{ secrets.SFTP_USER }}
           password: ${{ secrets.SFTP_PASSWORD }}
-          local-path: build/libs/ZorshDeltarune-1.0-all.jar
-          remote-path: TESTFOLDER/
+          remote_folder: plugins
+          local_folder: downloaded_artifact_plugin
+          cleanup: false
+          include: '["ZorshDeltarune-1.0-all.jar"]'
+          exclude: '[]'
+          passive: true
+  notify:
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Discord notification raw
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@ad5235de713df3ef38022185499b02ffe93b7efe
+        with:
+          args: ':beginner: Project loaded: ${{ github.event.head_commit.message }}'
+
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_EMBEDS: '[{"title": "Проект обновлен на тестовом сервере","color": 9145852,"footer": {"text": "Айпи тестового сервера: ${{ secrets.TEST_SERVER_IP }}"},"description": ":pushpin: **Последний коммит:**\n- `${{ github.event.head_commit.author.username }}` - [${{ github.event.head_commit.message }}](${{ github.event.head_commit.url }})\n\n[Полные изменения](${{ github.event.compare }})"}]'
+        uses: Ilshidur/action-discord@ad5235de713df3ef38022185499b02ffe93b7efe
+        with:
+          args: '<@&1537434613016694834>'
+  pre-notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set current timestamp
+        run: echo "TIMESTAMP=$(date +'%Y.%m.%d %H:%M')" >> $GITHUB_ENV
+
+      - name: Discord notification raw
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@ad5235de713df3ef38022185499b02ffe93b7efe
+        with:
+          args: 'Loading project...'
+
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_EMBEDS: '[{"description": ":recycle: **Проект загружается**\n- `${{ github.event.head_commit.author.username }}` - [${{ github.event.head_commit.message }}](${{ github.event.head_commit.url }})"}]'
+        uses: Ilshidur/action-discord@ad5235de713df3ef38022185499b02ffe93b7efe
+        with:
+          args: ''
+  build-resourcepack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew makeResourcePack
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Neverland
+          path: build/resourcepack/Neverland.zip
+  deploy-resourcepack:
+    needs: [build-resourcepack]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Neverland
+          path: downloaded_artifact_rp/
+
+      - name: Deploy to test server
+        uses: sand4rt/ftp-deployer@v1.10
+        with:
+          sftp: true
+          host: ${{ secrets.SFTP_HOST }}
+          port: ${{ secrets.SFTP_PORT }}
+          username: ${{ secrets.SFTP_USER }}
+          password: ${{ secrets.SFTP_PASSWORD }}
+          remote_folder: plugins/Denizen/webroot
+          local_folder: downloaded_artifact_rp
+          cleanup: false
+          include: '["Neverland.zip"]'
+          exclude: '[]'
+          passive: true
+  notify-resourcepack:
+    needs: [deploy-resourcepack]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Discord notification raw
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@ad5235de713df3ef38022185499b02ffe93b7efe
+        with:
+          args: 'Resource pack loaded'
+
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_EMBEDS: '[{"color": 11892823,"footer": {"text": "Перезагрузить ресурспак: /resourcepack"},"description": ":dividers: **Ресурспак обновлен**"}]'
+        uses: Ilshidur/action-discord@ad5235de713df3ef38022185499b02ffe93b7efe
+        with:
+          args: ''

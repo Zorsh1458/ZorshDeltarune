@@ -1,0 +1,22 @@
+{
+    "providers": [
+        {
+            "type": "bitmap",
+            "file": "space:font/shader_dot.png",
+            "ascent": 0,
+            "height": 4,
+            "chars": [
+                "\uE201"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/space_nosplit.png",
+            "ascent": 0,
+            "height": 0,
+            "chars": [
+                "-"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,65 @@
+{
+    "providers": [
+        {
+            "type": "bitmap",
+            "file": "space:font/dbutton_act.png",
+            "ascent": 26,
+            "height": 26,
+            "chars": [
+                "a"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/dbutton_defend.png",
+            "ascent": 26,
+            "height": 26,
+            "chars": [
+                "d"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/dbutton_fight.png",
+            "ascent": 26,
+            "height": 26,
+            "chars": [
+                "f"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/dbutton_item.png",
+            "ascent": 26,
+            "height": 26,
+            "chars": [
+                "i"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/dbutton_mercy.png",
+            "ascent": 26,
+            "height": 26,
+            "chars": [
+                "m"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/dbutton_spell.png",
+            "ascent": 26,
+            "height": 26,
+            "chars": [
+                "s"
+            ]
+        },
+        {
+            "type": "space",
+            "advances": {
+                " ": 4,
+                "\u200c": 0
+            }
+        }
+    ]
+}

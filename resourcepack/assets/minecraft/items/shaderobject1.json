@@ -1,0 +1,16 @@
+{
+    "model": {
+        "type": "model",
+        "model": "item/shaderobject1",
+        "tints": [
+            {
+                "type": "minecraft:dye",
+                "default": [
+                    0.573,
+                    0.361,
+                    0.227
+                ]
+            }
+        ]
+    }
+}

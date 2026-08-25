@@ -1,0 +1,103 @@
+{
+    "providers": [
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/unknown_sprite.png",
+            "ascent": 14,
+            "height": 32,
+            "chars": [
+                "\uF000"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/unknown_sprite_odd.png",
+            "ascent": 14,
+            "height": 32,
+            "chars": [
+                "\uF100"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/shader_dot.png",
+            "ascent": -32768,
+            "height": 0,
+            "chars": [
+                "\uF001"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/shader_dot.png",
+            "height": 2,
+            "ascent": -1,
+            "chars": [
+                "\uF002"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/dbutton_fight.png",
+            "height": 26,
+            "ascent": 11,
+            "chars": [
+                "\uF003"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/dbutton_act.png",
+            "height": 26,
+            "ascent": 11,
+            "chars": [
+                "\uF004"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/dbutton_item.png",
+            "height": 26,
+            "ascent": 11,
+            "chars": [
+                "\uF005"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/dbutton_mercy.png",
+            "height": 26,
+            "ascent": 11,
+            "chars": [
+                "\uF006"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/dbutton_defend.png",
+            "height": 26,
+            "ascent": 11,
+            "chars": [
+                "\uF007"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/animationtest.png",
+            "height": 104,
+            "ascent": 11,
+            "chars": [
+                "\uF008"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/mouse.png",
+            "height": 9,
+            "ascent": 3,
+            "chars": [
+                "\uF009"
+            ]
+        }
+    ]
+}

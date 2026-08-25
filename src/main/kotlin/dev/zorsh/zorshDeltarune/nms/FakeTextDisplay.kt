@@ -70,14 +70,12 @@ class FakeTextDisplay(
     }
 
     fun changeOnlyTransformation(newTransformation: Transformation) {
-        PacketManager.setTextDisplayMetadata(
+        PacketManager.setTransformation(
             entityId,
-            text,
             newTransformation,
             players,
             interpolationDuration,
-            teleportDuration,
-            opacity
+            teleportDuration
         )
         transformation = newTransformation
     }
