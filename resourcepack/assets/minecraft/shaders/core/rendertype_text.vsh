@@ -52,7 +52,7 @@ void main() {
         float RESOLUTION_Y = 480;
         float scaling_factor = floor(ScreenSize.y / RESOLUTION_Y);
         float scaling_remainder = mod(ScreenSize.y, RESOLUTION_Y);
-        //scaling_factor = ScreenSize.y / RESOLUTION_Y;
+        scaling_factor = ScreenSize.y / RESOLUTION_Y;
         vec2 screenTexel = vec2(1.0) / ScreenSize;
         vec2 pixelPos = Position.xy * 16.0 - vec2(0.0, 0.25);
         float x_remainder = ScreenSize.x - RESOLUTION_Y * scaling_factor;

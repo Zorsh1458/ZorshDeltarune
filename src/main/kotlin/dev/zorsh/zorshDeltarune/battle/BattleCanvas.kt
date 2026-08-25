@@ -99,9 +99,21 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         myCanvas.drawSprite(
             0f,
             0f,
-            238f,
-            238f,
+            239f,
+            239f,
             59,
+            CanvasSprite.SQUARE,
+            "#999999",
+            null,
+            null
+        )
+
+        myCanvas.drawSprite(
+            0f,
+            0f,
+            238f,
+            238f,
+            58,
             CanvasSprite.SQUARE,
             "#000000",
             null,
