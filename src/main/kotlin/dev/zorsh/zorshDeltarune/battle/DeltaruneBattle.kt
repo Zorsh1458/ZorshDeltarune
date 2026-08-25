@@ -17,12 +17,14 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Transformation
 import org.joml.*
 
+@Deprecated("Deprecated in favor of INeverlandBattle")
 abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: List<DeltaruneEnemy>) {
 
     object BattleLocation {
         val TEST = Location(Bukkit.getWorld("world"), 8.0, 100.0, 8.1)
         val UNDER_STATION = Location(Bukkit.getWorld("moon"), 952.0, 99.5, 1101.0)
     }
+    val battleCenterLocation = BattleLocation.UNDER_STATION
 
     val scope = CoroutineScope(Dispatchers.IO)
 
@@ -30,7 +32,6 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
 
     val sceneOffset = Vector3d(0.0 * sceneScale.x, -0.5 * sceneScale.y, -0.45)
 
-    val battleCenterLocation = BattleLocation.UNDER_STATION
     val battleBoxCenterLocation = battleCenterLocation + Vector3f(0f, 0f, 5f) + Vector3f(0.0f, 0.0f, 0.002f)
 
     private var onEndedAction = {}
@@ -71,9 +72,9 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
 
     fun start(onEnded: () -> Unit) {
         onEndedAction = onEnded
-        for (enemy in enemies) {
-            enemy.myBattle = this
-        }
+//        for (enemy in enemies) {
+//            enemy.myBattle = this
+//        }
         startBattle()
     }
 

@@ -8,7 +8,7 @@ abstract class DeltaruneEnemy(
     val encounterMessages: List<Component>
 ) {
 
-    lateinit var myBattle: DeltaruneBattle
+    lateinit var myBattle: INeverlandBattle
 
     var isAlive = true
 

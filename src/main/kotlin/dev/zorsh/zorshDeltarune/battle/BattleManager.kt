@@ -4,7 +4,7 @@ import java.util.UUID
 
 class BattleManager {
     companion object {
-        private var battlesList = mutableMapOf<UUID, DeltaruneBattle>()
+        private var battlesList = mutableMapOf<UUID, INeverlandBattle>()
 
         @JvmStatic
         fun destroyAllBattles() {
@@ -15,17 +15,16 @@ class BattleManager {
         }
 
         @JvmStatic
-        fun startBattle(battle: DeltaruneBattle) {
+        fun startBattle(battle: INeverlandBattle) {
             val uuid = UUID.randomUUID()
             battlesList[uuid] = battle
-            for (dPlayer in battle.players) {
+            battle.setBattleUUID(uuid)
+            for (dPlayer in battle.getPlayers()) {
                 dPlayer.myBattleUUID = uuid
             }
-            battle.start(
-                onEnded = {
-                    battlesList.remove(uuid)
-                }
-            )
+            battle.startBattle {
+                battlesList.remove(uuid)
+            }
         }
 
         @JvmStatic

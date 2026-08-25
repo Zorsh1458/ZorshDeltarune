@@ -1,22 +1,15 @@
 package dev.zorsh.zorshDeltarune.battle
 
-import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
+import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import net.kyori.adventure.text.Component
 
 abstract class SpritedEnemy(
     name: Component,
     hitpoints: Int,
     encounterMessages: List<Component>,
-    private val sprites: List<Component>,
-    private val delay: Long
+    val canvasSprite: CanvasSprite
 ) : DeltaruneEnemy(
     name,
     hitpoints,
     encounterMessages
-) {
-    lateinit var mySprite: AnimatedSprite
-
-    open fun createSprite(display: FakeTextDisplay) {
-        mySprite = AnimatedSprite(display, sprites, delay)
-    }
-}
+)

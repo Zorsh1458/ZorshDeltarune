@@ -1,6 +1,9 @@
 package dev.zorsh.zorshDeltarune.commands
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
+import dev.zorsh.zorshDeltarune.battle.BattleCanvas
+import dev.zorsh.zorshDeltarune.battle.DeltarunePlayer
+import dev.zorsh.zorshDeltarune.battle.NeverlandBattle
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.utils.runLater
 import dev.zorsh.zorshDeltarune.utils.runRepeating
@@ -26,6 +29,22 @@ class NeverlandTestCommand : CommandExecutor, TabCompleter {
         if (!player.isOp) return true
 
         try {
+            if (args[0] == "testBattleCanvas") {
+                val dPlayers = listOf(player)
+                    .filter { ZorshDeltarune.getDPlayer(it.uniqueId)?.locked != true }
+                    .map {
+                        val dPlayer = DeltarunePlayer(it.uniqueId)
+                        ZorshDeltarune.deltarunePlayer[it.uniqueId] = dPlayer
+                        dPlayer
+                    }
+                val battle = NeverlandBattle(dPlayers, listOf())
+                val cv = BattleCanvas(listOf(player), battle)
+                cv.initCanvas()
+                cv.setupLayout()
+                runLater(200) {
+                    cv.myCanvas.clear()
+                }
+            }
             if (args[0] == "canvas") {
                 if (args[1] == "initialize") {
                     ZorshDeltarune.UIManager.initCanvas(player)
@@ -107,7 +126,7 @@ class NeverlandTestCommand : CommandExecutor, TabCompleter {
     ): List<String?> {
         return when (p3.size) {
             0 -> emptyList()
-            1 -> listOf("canvas")
+            1 -> listOf("canvas", "testBattleCanvas")
             2 -> listOf("initialize", "drawRect", "drawSprite", "drawMouse", "randomTest", "clear")
             3 -> listOf("px")
             4 -> listOf("py")

@@ -30,6 +30,7 @@ import java.time.Duration
 import kotlin.math.ceil
 import kotlin.math.pow
 
+@Deprecated("Deprecated in favor of NeverlandBattle")
 class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy>) : DeltaruneBattle(players, enemies) {
 
     private var loopTask: BukkitTask? = null
@@ -48,7 +49,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
         battlePlayerModels.forEach { bpm ->
             try {
                 bpm.remove()
-            } catch (ignored: Exception) {
+            } catch (_: Exception) {
             }
         }
         battlePlayerModels.clear()
@@ -301,9 +302,9 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
 
     private suspend fun hidePlayersOptions() {
         playersTurn = false
-        for (enemy in enemies.filterIsInstance<SpritedEnemy>()) {
-            enemy.mySprite.glowTo.clear()
-        }
+//        for (enemy in enemies.filterIsInstance<SpritedEnemy>()) {
+//            enemy.mySprite.glowTo.clear()
+//        }
         for (dPlayer in players) {
             runLater(2L) {
                 dPlayer.clearMenu()
@@ -381,7 +382,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                 ),
                 mountTo = true
             ) { display ->
-                enemy.value.createSprite(display)
+//                enemy.value.createSprite(display)
                 runLater(10 + enemy.index.toLong() * 2L) {
                     runRepeating(10) { _ ->
                         display.changeOnlyTransformation(
@@ -1113,7 +1114,7 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
                     dPlayer.actionStage = PlayerActionStage.NONE
                     dPlayer.clearMenu()
                     dPlayer.menuSelectorHeart?.hide()
-                    enemies.filterIsInstance<SpritedEnemy>().forEach { it.mySprite.glowTo.remove(dPlayer.player!!) }
+//                    enemies.filterIsInstance<SpritedEnemy>().forEach { it.mySprite.glowTo.remove(dPlayer.player!!) }
                 }
 
                 else -> {}
@@ -1156,17 +1157,17 @@ class DefaultBattle(players: List<DeltarunePlayer>, enemies: List<DeltaruneEnemy
             offset += 0.7f
         }
         dPlayer.menuSelectorHeart?.show()
-        runInfinite(1) { _, task ->
-            if (enemies.isNotEmpty() && dPlayer.player != null && dPlayer.actionStage == PlayerActionStage.FIGHT_SELECT_ENEMY && dPlayer.menuSelectorHeart != null && dPlayer.locked && playersTurn) {
-                val enemy = enemies.getOrNull(dPlayer.menuSelectorHeart!!.myY)
-                enemies.filterIsInstance<SpritedEnemy>().filter { it != enemy }
-                    .forEach { it.mySprite.glowTo.remove(dPlayer.player!!) }
-                if (enemy != null && enemy is SpritedEnemy) {
-                    enemy.mySprite.glowTo.add(dPlayer.player!!)
-                }
-            } else {
-                task.cancel()
-            }
-        }
+//        runInfinite(1) { _, task ->
+//            if (enemies.isNotEmpty() && dPlayer.player != null && dPlayer.actionStage == PlayerActionStage.FIGHT_SELECT_ENEMY && dPlayer.menuSelectorHeart != null && dPlayer.locked && playersTurn) {
+//                val enemy = enemies.getOrNull(dPlayer.menuSelectorHeart!!.myY)
+//                enemies.filterIsInstance<SpritedEnemy>().filter { it != enemy }
+//                    .forEach { it.mySprite.glowTo.remove(dPlayer.player!!) }
+//                if (enemy != null && enemy is SpritedEnemy) {
+//                    enemy.mySprite.glowTo.add(dPlayer.player!!)
+//                }
+//            } else {
+//                task.cancel()
+//            }
+//        }
     }
 }

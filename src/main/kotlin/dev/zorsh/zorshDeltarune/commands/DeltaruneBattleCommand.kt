@@ -23,7 +23,7 @@ class DeltaruneBattleCommand : CommandExecutor, TabCompleter {
                     dPlayer
                 }
             if (dPlayers.isNotEmpty()) {
-                val battle = DefaultBattle(
+                val battle = NeverlandBattle(
                     dPlayers,
                     listOf(
                         TestEnemy(Component.text("Слизнячок"), 100),
