@@ -62,10 +62,34 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
         myCanvas.drawSprite(
             0f,
+            -60f,
+            238f,
+            1f,
+            63,
+            CanvasSprite.SQUARE,
+            "#2e1e25",
+            null,
+            null
+        )
+
+        myCanvas.drawSprite(
+            0f,
+            -96f,
+            238f,
+            1f,
+            63,
+            CanvasSprite.SQUARE,
+            "#2e1e25",
+            null,
+            null
+        )
+
+        myCanvas.drawSprite(
+            0f,
             0f,
             240f,
             240f,
-            63,
+            60,
             CanvasSprite.SQUARE,
             "#ffffff",
             null,
@@ -77,7 +101,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             0f,
             238f,
             238f,
-            62,
+            59,
             CanvasSprite.SQUARE,
             "#000000",
             null,
