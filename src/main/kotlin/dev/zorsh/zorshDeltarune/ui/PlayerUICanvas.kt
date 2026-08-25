@@ -151,7 +151,7 @@ class PlayerUICanvas {
         loc.pitch = 0f
         PacketManager.spawnTextDisplay(
             loc,
-            CanvasSprite.SQUARE.toTextValue().color("#ffffff"),
+            CanvasSprite.MOUSE.toTextValue().color("#ffffff"),
             targetPlayers,
             FakeDisplayData(
                 Transformation(

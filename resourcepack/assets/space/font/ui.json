@@ -89,6 +89,15 @@
             "chars": [
                 "\uF008"
             ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/mouse.png",
+            "height": 9,
+            "ascent": 3,
+            "chars": [
+                "\uF009"
+            ]
         }
     ]
 }

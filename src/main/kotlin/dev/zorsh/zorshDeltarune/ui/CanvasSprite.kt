@@ -4,6 +4,7 @@ import dev.zorsh.zorshDeltarune.utils.font
 import net.kyori.adventure.text.Component
 
 enum class CanvasSprite {
+    MOUSE,
     SQUARE,
     DBUTTON_FIGHT,
     DBUTTON_ACT,
@@ -13,6 +14,7 @@ enum class CanvasSprite {
     UNKNOWN;
 
     fun isSpriteWidthEven() = when (this) {
+        MOUSE -> false
         SQUARE -> true
         DBUTTON_FIGHT -> false
         DBUTTON_ACT -> false
@@ -24,6 +26,7 @@ enum class CanvasSprite {
 
     fun toTextValue(): Component {
         var text = when(this) {
+            MOUSE -> "\uF009"
             SQUARE -> "\uF002"
             DBUTTON_FIGHT -> "\uF003"
             DBUTTON_ACT -> "\uF004"
