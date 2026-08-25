@@ -119,12 +119,48 @@ class PlayerUICanvas {
             targetPlayers,
             FakeDisplayData(
                 Transformation(
-                    Vector3f(sx / 16f, sy / 16f, z / 255f),
+                    Vector3f(sx / 16f, sy / 16f + TRANSLATION_BIAS, z / 255f),
                     AxisAngle4f(),
                     Vector3f(2.5f * scaleX, 2.5f * scaleY, 1f),
                     AxisAngle4f()
                 ),
                 opacity = 253.toByte()
+            ),
+            false,
+            TextDisplay.TextAlignment.CENTER,
+            1000,
+            false
+        ) { ent ->
+            objects += ent
+            if (saveAs != null) {
+                savedObjects[saveAs] = ent
+            }
+            updateCanvas()
+            afterSpawn()
+        }
+    }
+
+    fun drawMouse(
+        saveAs: String? = null,
+        afterSpawn: () -> Unit = {}
+    ) {
+        if (targetPlayers.isEmpty()) return
+        val actualPlayer = targetPlayers[0]
+        val loc = actualPlayer.eyeLocation.clone()
+        loc.yaw = 0f
+        loc.pitch = 0f
+        PacketManager.spawnTextDisplay(
+            loc,
+            CanvasSprite.SQUARE.toTextValue().color("#ffffff"),
+            targetPlayers,
+            FakeDisplayData(
+                Transformation(
+                    Vector3f(0f, TRANSLATION_BIAS, 1 / 255f),
+                    AxisAngle4f(),
+                    Vector3f(2.5f, 2.5f, 1f),
+                    AxisAngle4f()
+                ),
+                opacity = 252.toByte()
             ),
             false,
             TextDisplay.TextAlignment.CENTER,
@@ -162,7 +198,7 @@ class PlayerUICanvas {
             targetPlayers,
             FakeDisplayData(
                 Transformation(
-                    Vector3f(px / 16f, py / 16f, z / 255f),
+                    Vector3f(px / 16f, py / 16f + TRANSLATION_BIAS, z / 255f),
                     AxisAngle4f(),
                     Vector3f(2.5f * sx, 2.5f * sy, 1f),
                     AxisAngle4f()

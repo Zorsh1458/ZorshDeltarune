@@ -23,11 +23,13 @@ class NeverlandTestCommand : CommandExecutor, TabCompleter {
         args: Array<out String>
     ): Boolean {
         if (player !is Player) return true
+        if (!player.isOp) return true
 
         try {
             if (args[0] == "canvas") {
                 if (args[1] == "initialize") {
                     ZorshDeltarune.UIManager.initCanvas(player)
+                    player.sendMessage(Component.text("Canvas initialized"))
                 }
                 if (args[1] == "drawRect") {
                     val canvas = ZorshDeltarune.UIManager.getCanvas(player) ?: return true
@@ -58,6 +60,10 @@ class NeverlandTestCommand : CommandExecutor, TabCompleter {
                             canvas.move(0f, round(sin(i * 0.1f) * 4f) , "sprite_$uuid")
                         }
                     }
+                }
+                if (args[1] == "drawMouse") {
+                    val canvas = ZorshDeltarune.UIManager.getCanvas(player) ?: return true
+                    canvas.drawMouse()
                 }
                 if (args[1] == "randomTest") {
                     val canvas = ZorshDeltarune.UIManager.getCanvas(player) ?: return true
@@ -102,7 +108,7 @@ class NeverlandTestCommand : CommandExecutor, TabCompleter {
         return when (p3.size) {
             0 -> emptyList()
             1 -> listOf("canvas")
-            2 -> listOf("initialize", "drawRect", "drawSprite", "randomTest", "clear")
+            2 -> listOf("initialize", "drawRect", "drawSprite", "drawMouse", "randomTest", "clear")
             3 -> listOf("px")
             4 -> listOf("py")
             5 -> listOf("dx")

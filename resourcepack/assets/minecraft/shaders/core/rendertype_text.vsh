@@ -46,9 +46,10 @@ void main() {
     sphericalVertexDistance = fog_spherical_distance(Position);
     cylindricalVertexDistance = fog_cylindrical_distance(Position);
     vertexColor = Color * texelFetch(Sampler2, UV2 / 16, 0);
-    if (round(Color.a * 255.0) == 253.0) {
+    float opacity = round(Color.a * 255.0);
+    if (opacity == 253.0 || opacity == 252.0) {
         vertexColor = Color;
-        vertexColor.a = 253.0 / 255.0;
+        vertexColor.a = opacity / 255.0;
         float RESOLUTION_Y = 480;
         float scaling_factor = floor(ScreenSize.y / RESOLUTION_Y);
         float scaling_remainder = mod(ScreenSize.y, RESOLUTION_Y);
@@ -60,6 +61,20 @@ void main() {
         finalPos.x += pixelPos.x * screenTexel.x;
         gl_Position = vec4(finalPos * scaling_factor * 2.0, Position.z, 1.0);
         sphericalVertexDistance = 0.1;
+
+        // Mouse cursor
+        if (opacity == 252.0) {
+            float fx = -ModelViewMat[2][0];
+            float fy = -ModelViewMat[2][1];
+            float fz = -ModelViewMat[2][2];
+
+            vec3 dir = normalize(fx, fy, fz);
+
+            float pitch = max(min(asin(dir.y), 1.0), -1.0);
+
+            float yaw = atan2(dir.x, dir.z);
+            gl_Position += vec4(yaw / 3.1415, pitch * 2.0 / 3.1415, 0.0, 0.0)
+        }
     }
     texCoord0 = UV0;
 
