@@ -212,16 +212,17 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
             //newShaderEffector(loc - Vector3d(0.0, 2.0, 0.0))
 
             PacketManager.spawnTextDisplay(
-                loc + Vector3d(0.0, -2.15, -0.2),
+                loc,
                 fontText("❤", "#ff2222", "space:default"),
                 getBattlePlayers().mapNotNull { it.player },
                 data = FakeDisplayData(
                     Transformation(
                         Vector3f(0f),
                         AxisAngle4f(),
-                        Vector3f(0f),
+                        Vector3f(2.5f, 2.5f, 1f),
                         AxisAngle4f()
-                    )
+                    ),
+                    opacity = 251.toByte()
                 ),
                 seeThrough = true,
                 alignment = TextDisplay.TextAlignment.CENTER,
