@@ -19,7 +19,7 @@ out vec2 texCoord0;
 flat out ivec3 control;
 out vec2 uvIndex;
 out vec2 fontUV;
-out int isUI;
+flat out int isUI;
 
 mat4 changeFov(mat4 projection) {
     float fov = 90.0;

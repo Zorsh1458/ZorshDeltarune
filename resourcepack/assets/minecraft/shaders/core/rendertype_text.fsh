@@ -14,7 +14,7 @@ in vec2 texCoord0;
 flat in ivec3 control;
 in vec2 uvIndex;
 in vec2 fontUV;
-in int isUI;
+flat in int isUI;
 
 out vec4 fragColor;
 
