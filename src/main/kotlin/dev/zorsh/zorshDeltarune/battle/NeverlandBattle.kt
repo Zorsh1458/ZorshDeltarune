@@ -206,12 +206,10 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 
     private fun prepareBattle() {
         val loc = battleCenterLocation
-        loc.yaw = 180f
+        loc.yaw = 0f
         loc.pitch = -90f
 
         runLater(3) {
-            //newShaderEffector(loc - Vector3d(0.0, 2.0, 0.0))
-
             PacketManager.spawnTextDisplay(
                 loc,
                 fontText("❤", "#ff2222", "space:default"),
