@@ -18,7 +18,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         val spritedEnemies = battle.getBattleEnemies().filterIsInstance<SpritedEnemy>()
         for (enemy in spritedEnemies.reversed().withIndex()) {
             myCanvas.drawSprite(
-                600f,
+                0f,
                 20f - (spritedEnemies.size - 1) * 24f + enemy.index * 72f,
                 2f,
                 2f,
@@ -30,7 +30,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             ) {
                 runLater(10 + enemy.index.toLong() * 1L) {
                     runRepeating(10) { i ->
-                        myCanvas.move(-60f + i * 6f, 0f, "enemy_${enemy.index}")
+                        myCanvas.move(-20f + i * 2f, 0f, "enemy_${enemy.index}")
                     }
                 }
             }
