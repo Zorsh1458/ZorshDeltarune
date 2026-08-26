@@ -23,7 +23,7 @@ class PlayerUICanvas {
     var objectsPerPlayer = mutableMapOf<UUID, MutableList<FakeTextDisplay>>()
     var savedObjectsPerPlayer = mutableMapOf<UUID, MutableMap<String, FakeTextDisplay>>()
 
-    val TRANSLATION_BIAS = -0.18f
+    val TRANSLATION_BIAS = -0.2f
 
     fun initialize(players: List<Player>) {
         targetPlayers = players as MutableList<Player>
