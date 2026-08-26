@@ -20,8 +20,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             myCanvas.drawSprite(
                 0f,
                 20f - (spritedEnemies.size - 1) * 24f + enemy.index * 72f,
-                2f,
-                2f,
+                1f,
+                1f,
                 16,
                 enemy.value.canvasSprite,
                 "#ffffff",
