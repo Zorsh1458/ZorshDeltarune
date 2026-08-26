@@ -18,10 +18,19 @@ import java.util.UUID
 class PlayerUICanvas {
     var targetPlayers = mutableListOf<Player>()
 
+    data class SpriteScalingHolder(
+        val entity: FakeTextDisplay,
+        val scaling: Pair<Float, Float>
+    )
+
     var objects = mutableListOf<FakeTextDisplay>()
-    var savedObjects = mutableMapOf<String, FakeTextDisplay>()
+
+    // savedObjects[name] = (entity: display, scaling: (x, y))
+    var savedObjects = mutableMapOf<String, SpriteScalingHolder>()
     var objectsPerPlayer = mutableMapOf<UUID, MutableList<FakeTextDisplay>>()
-    var savedObjectsPerPlayer = mutableMapOf<UUID, MutableMap<String, FakeTextDisplay>>()
+
+    // savedObjects[player.uniqueId][name] = (entity: display, scaling: (x, y))
+    var savedObjectsPerPlayer = mutableMapOf<UUID, MutableMap<String, SpriteScalingHolder>>()
 
     val TRANSLATION_BIAS = -0.2f
 
@@ -69,12 +78,14 @@ class PlayerUICanvas {
 
     fun remove(objName: String, player: Player? = null) {
         if (player == null) {
-            val obj = savedObjects[objName] ?: return
+            val pair = savedObjects[objName] ?: return
+            val obj = pair.entity
             objects.remove(obj)
             savedObjects.remove(objName)
             obj.destroy()
         } else {
-            val obj = savedObjectsPerPlayer[player.uniqueId]?.get(objName) ?: return
+            val pair = savedObjectsPerPlayer[player.uniqueId]?.get(objName) ?: return
+            val obj = pair.entity
             objectsPerPlayer[player.uniqueId]?.remove(obj)
             savedObjectsPerPlayer[player.uniqueId]?.remove(objName)
             obj.destroy()
@@ -83,7 +94,7 @@ class PlayerUICanvas {
 
     fun setZ(z: Int, objName: String, player: Player? = null) {
         fun getObj() =
-            if (player == null) savedObjects[objName] else savedObjectsPerPlayer[player.uniqueId]?.get(objName)
+            if (player == null) savedObjects[objName]?.entity else savedObjectsPerPlayer[player.uniqueId]?.get(objName)?.entity
 
         val obj = getObj() ?: return
         obj.changeOnlyTransformation(
@@ -97,15 +108,16 @@ class PlayerUICanvas {
     }
 
     fun setScale(sx: Float, sy: Float, objName: String, player: Player? = null) {
-        fun getObj() =
-            if (player == null) savedObjects[objName] else savedObjectsPerPlayer[player.uniqueId]?.get(objName)
+        val holder =
+            (if (player == null) savedObjects[objName] else savedObjectsPerPlayer[player.uniqueId]?.get(objName)) ?: return
 
-        val obj = getObj() ?: return
+        val obj = holder.entity
+        val scaling = holder.scaling
         obj.changeOnlyTransformation(
             Transformation(
                 obj.transformation.translation,
                 obj.transformation.leftRotation,
-                Vector3f(sx * 2.5f, sy * 2.5f, obj.transformation.scale.z),
+                Vector3f(sx * scaling.first * 2.5f, sy * scaling.second * 2.5f, obj.transformation.scale.z),
                 obj.transformation.rightRotation
             )
         )
@@ -113,7 +125,7 @@ class PlayerUICanvas {
 
     fun setPosition(px: Float, py: Float, objName: String, player: Player? = null) {
         fun getObj() =
-            if (player == null) savedObjects[objName] else savedObjectsPerPlayer[player.uniqueId]?.get(objName)
+            if (player == null) savedObjects[objName]?.entity else savedObjectsPerPlayer[player.uniqueId]?.get(objName)?.entity
 
         val obj = getObj() ?: return
         obj.changeOnlyTransformation(
@@ -128,7 +140,7 @@ class PlayerUICanvas {
 
     fun move(ox: Float, oy: Float, objName: String, player: Player? = null) {
         fun getObj() =
-            if (player == null) savedObjects[objName] else savedObjectsPerPlayer[player.uniqueId]?.get(objName)
+            if (player == null) savedObjects[objName]?.entity else savedObjectsPerPlayer[player.uniqueId]?.get(objName)?.entity
 
         val obj = getObj() ?: return
         obj.changeOnlyTransformation(
@@ -143,6 +155,7 @@ class PlayerUICanvas {
 
     private fun handleDraw(
         drawFunction: (List<Player>, (FakeTextDisplay) -> Unit) -> Unit,
+        scaling: Pair<Float, Float> = 1f to 1f,
         saveAs: String? = null,
         player: Player? = null,
         afterSpawn: () -> Unit)
@@ -152,7 +165,7 @@ class PlayerUICanvas {
             drawFunction(targetPlayers) { ent ->
                 objects += ent
                 if (saveAs != null) {
-                    savedObjects[saveAs] = ent
+                    savedObjects[saveAs] = SpriteScalingHolder(ent, scaling)
                 }
                 updateCanvas()
                 afterSpawn()
@@ -161,7 +174,7 @@ class PlayerUICanvas {
             drawFunction(listOf(player)) { ent ->
                 objectsPerPlayer.getOrPut(player.uniqueId, { return@getOrPut mutableListOf() }) += ent
                 if (saveAs != null) {
-                    savedObjectsPerPlayer.getOrPut(player.uniqueId, { return@getOrPut mutableMapOf() })[saveAs] = ent
+                    savedObjectsPerPlayer.getOrPut(player.uniqueId, { return@getOrPut mutableMapOf() })[saveAs] = SpriteScalingHolder(ent, scaling)
                 }
                 updateCanvas(player)
                 afterSpawn()
@@ -210,7 +223,7 @@ class PlayerUICanvas {
             }
         }
 
-        handleDraw(::drawToPlayers, saveAs, player, afterSpawn)
+        handleDraw(::drawToPlayers, 1f to 1f, saveAs, player, afterSpawn)
     }
 
     fun drawMouse(
@@ -218,6 +231,7 @@ class PlayerUICanvas {
         player: Player? = null,
         afterSpawn: () -> Unit = {},
     ) {
+        val scaling = CanvasSprite.MOUSE.getSizeRatios()
         fun drawToPlayers(players: List<Player>, after: (FakeTextDisplay) -> Unit) {
             if (players.isEmpty()) return
             val actualPlayer = players[0]
@@ -232,7 +246,7 @@ class PlayerUICanvas {
                     Transformation(
                         Vector3f(0f, TRANSLATION_BIAS, 1 / 255f),
                         AxisAngle4f(),
-                        Vector3f(5f, 5f, 1f),
+                        Vector3f(5f * scaling.first, 5f * scaling.second, 1f),
                         AxisAngle4f()
                     ),
                     opacity = 252.toByte()
@@ -246,7 +260,7 @@ class PlayerUICanvas {
             }
         }
 
-        handleDraw(::drawToPlayers, saveAs, player, afterSpawn)
+        handleDraw(::drawToPlayers, scaling, saveAs, player, afterSpawn)
     }
 
     fun drawSprite(
@@ -261,6 +275,7 @@ class PlayerUICanvas {
         player: Player? = null,
         afterSpawn: () -> Unit = {},
     ) {
+        val scaling = sprite.getSizeRatios()
         fun drawToPlayers(players: List<Player>, after: (FakeTextDisplay) -> Unit) {
             if (players.isEmpty()) return
             val actualPlayer = players[0]
@@ -275,7 +290,7 @@ class PlayerUICanvas {
                     Transformation(
                         Vector3f(px / 16f, py / 16f + TRANSLATION_BIAS, z / 255f),
                         AxisAngle4f(),
-                        Vector3f(2.5f * sx, 2.5f * sy, 1f),
+                        Vector3f(2.5f * scaling.first * sx, 2.5f * scaling.second * sy, 1f),
                         AxisAngle4f()
                     ),
                     opacity = 253.toByte()
@@ -289,6 +304,6 @@ class PlayerUICanvas {
             }
         }
 
-        handleDraw(::drawToPlayers, saveAs, player, afterSpawn)
+        handleDraw(::drawToPlayers, scaling, saveAs, player, afterSpawn)
     }
 }

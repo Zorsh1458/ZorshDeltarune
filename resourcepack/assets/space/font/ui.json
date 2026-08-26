@@ -116,6 +116,15 @@
             "chars": [
                 "\uF00B"
             ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/soul.png",
+            "height": 20,
+            "ascent": 8,
+            "chars": [
+                "\uF00C"
+            ]
         }
     ]
 }

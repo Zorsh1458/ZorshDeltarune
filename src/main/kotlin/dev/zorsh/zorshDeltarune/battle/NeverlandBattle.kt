@@ -2,7 +2,9 @@ package dev.zorsh.zorshDeltarune.battle
 
 import dev.zorsh.zorshDeltarune.nms.FakeDisplay
 import dev.zorsh.zorshDeltarune.nms.PacketManager
+import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.utils.FakeDisplayData
+import dev.zorsh.zorshDeltarune.utils.color
 import dev.zorsh.zorshDeltarune.utils.fontText
 import dev.zorsh.zorshDeltarune.utils.plus
 import dev.zorsh.zorshDeltarune.utils.runLater
@@ -210,15 +212,17 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         loc.pitch = -90f
 
         runLater(3) {
+            val sprite = CanvasSprite.SOUL
+            val scaling = sprite.getSizeRatios()
             PacketManager.spawnTextDisplay(
                 loc,
-                fontText("❤", "#ff2222", "space:default"),
+                sprite.toTextValue().color("#ff2222"),
                 getBattlePlayers().mapNotNull { it.player },
                 data = FakeDisplayData(
                     Transformation(
                         Vector3f(0f),
                         AxisAngle4f(),
-                        Vector3f(2.5f * 20f / 19f / 8f, 2.5f / 8f * 20f / 19f, 1f),
+                        Vector3f(2.5f * scaling.first / 8f, 2.5f * scaling.second / 8f, 1f),
                         AxisAngle4f()
                     ),
                     opacity = 251.toByte()
