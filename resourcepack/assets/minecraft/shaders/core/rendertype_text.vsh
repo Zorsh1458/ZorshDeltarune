@@ -73,7 +73,7 @@ void main() {
     if (opacity == 251.0) {
         vertexColor = Color;
         vertexColor.a = 1.0;
-        isUI = 2;
+        isUI = 1;
         gl_Position.z = 0.0;
     }
 
