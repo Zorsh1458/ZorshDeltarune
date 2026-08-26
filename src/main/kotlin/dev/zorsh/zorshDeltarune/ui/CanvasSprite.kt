@@ -11,6 +11,8 @@ enum class CanvasSprite {
     DBUTTON_ITEM,
     DBUTTON_MERCY,
     DBUTTON_DEFEND,
+    SLIME_SPRITE_1,
+    SLIME_SPRITE_2,
     UNKNOWN;
 
     fun isSpriteWidthEven() = when (this) {
@@ -21,6 +23,8 @@ enum class CanvasSprite {
         DBUTTON_ITEM -> false
         DBUTTON_MERCY -> false
         DBUTTON_DEFEND -> false
+        SLIME_SPRITE_1 -> true
+        SLIME_SPRITE_2 -> true
         else -> true
     }
 
@@ -33,6 +37,8 @@ enum class CanvasSprite {
             DBUTTON_ITEM -> "\uF005"
             DBUTTON_MERCY -> "\uF006"
             DBUTTON_DEFEND -> "\uF007"
+            SLIME_SPRITE_1 -> "\uF00A"
+            SLIME_SPRITE_2 -> "\uF00B"
             else -> "\uF000"
         }
         if (isSpriteWidthEven()) {

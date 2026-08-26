@@ -20,7 +20,7 @@ class TestEnemy(
         Component.text("Тестовый враг встал у вас на пути!"),
         Component.text("Полный скебоб..")
     ),
-    CanvasSprite.MOUSE
+    CanvasSprite.SLIME_SPRITE_1
 ) {
 
     private var attackCount = 0
