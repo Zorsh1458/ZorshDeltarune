@@ -78,14 +78,15 @@ void main() {
         scaling_factor = ScreenSize.y / RESOLUTION_Y;
         vec2 screenTexel = vec2(1.0) / ScreenSize;
         vec2 pixelPos = Position.xy * 16.0;
-        if (opacity == 251.0) {
-            pixelPos = Position.xz * -16.0;
-        }
+//        if (opacity == 251.0) {
+//            pixelPos = Position.xz * -16.0;
+//        }
         float x_remainder = ScreenSize.x - RESOLUTION_Y * scaling_factor;
         vec2 finalPos = pixelPos * screenTexel;
         gl_Position = vec4((finalPos * scaling_factor * 2.0) - vec2(0.25, 0.25) * screenTexel, Position.z, 1.0);
         if (opacity == 251.0) {
-            gl_Position.z = 0.0;
+            gl_Position.z = 1.0 / 255.0;
+            isUI = 2;
         }
         sphericalVertexDistance = 0.1;
 

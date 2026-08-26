@@ -150,6 +150,10 @@ void main() {
         fragColor = vec4(baseCol.rgb * vertexColor.rgb, baseCol.a);
     }
 
+    if (isUI == 2) {
+        fragColor = vec4(0.0, 1.0, 0.0, 1.0);
+    }
+
     if (control.x == 253) {
         if (control.y == 1) {
             float z = control.z * 1.0;
