@@ -69,7 +69,12 @@ void main() {
     texCoord0 = UV0;
 
     float opacity = round(Color.a * 255.0);
-    if (opacity == 253.0 || opacity == 252.0 || opacity == 251.0) {
+
+    if (opacity == 251.0) {
+        isUI = 2;
+    }
+
+    if (opacity == 253.0 || opacity == 252.0) {
         vertexColor = Color;
         isUI = 1;
         float RESOLUTION_Y = 480;
