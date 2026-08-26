@@ -79,7 +79,7 @@ void main() {
         float scaling_remainder = mod(ScreenSize.y, RESOLUTION_Y);
         scaling_factor = ScreenSize.y / RESOLUTION_Y;
         vec2 screenTexel = vec2(1.0) / ScreenSize;
-        vec2 pixelPos = Position.xz * vec2(-16.0, 16.0) * 2.0;
+        vec2 pixelPos = Position.xz * vec2(16.0, -16.0) * 2.0;
         float x_remainder = ScreenSize.x - RESOLUTION_Y * scaling_factor;
         vec2 finalPos = pixelPos * screenTexel;
         gl_Position = vec4((finalPos * scaling_factor * 2.0) - vec2(0.25, 0.25) * screenTexel, 0.0, 1.0);
