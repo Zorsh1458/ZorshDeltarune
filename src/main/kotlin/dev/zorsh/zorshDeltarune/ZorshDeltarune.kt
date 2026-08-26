@@ -21,7 +21,7 @@ class ZorshDeltarune : JavaPlugin() {
         lateinit var instance: ZorshDeltarune
         val protocolManager: ProtocolManager by lazy { ProtocolLibrary.getProtocolManager() }
 
-        val random = Random(1488)
+        val random = Random(1458)
 
         var deltarunePlayer = mutableMapOf<UUID, DeltarunePlayer>()
 
