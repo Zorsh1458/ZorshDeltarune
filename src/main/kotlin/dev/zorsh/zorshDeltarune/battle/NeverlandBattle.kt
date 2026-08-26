@@ -218,7 +218,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                     Transformation(
                         Vector3f(0f),
                         AxisAngle4f(),
-                        Vector3f(2.5f / 8f, 2.5f / 8f, 1f),
+                        Vector3f(2.5f * 20f / 19f / 8f, 2.5f / 8f * 20f / 19f, 1f),
                         AxisAngle4f()
                     ),
                     opacity = 251.toByte()
