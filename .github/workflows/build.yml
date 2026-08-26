@@ -21,7 +21,7 @@ jobs:
         run: ./gradlew build
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: ZorshDeltarune-1.0-all
           path: build/libs/ZorshDeltarune-1.0-all.jar
@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: ZorshDeltarune-1.0-all
           path: downloaded_artifact_plugin/
@@ -106,7 +106,7 @@ jobs:
         run: ./gradlew makeResourcePack
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: Neverland
           path: build/resourcepack/Neverland.zip
@@ -115,7 +115,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: Neverland
           path: downloaded_artifact_rp/
