@@ -71,7 +71,7 @@ void main() {
     float opacity = round(Color.a * 255.0);
     if (opacity == 251.0) {
         vertexColor = vec4(0.0, 1.0, 0.0, 1.0);
-        isUI = 1;
+        isUI = 2;
         return;
     }
     if (opacity == 253.0 || opacity == 252.0) {
