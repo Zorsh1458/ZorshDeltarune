@@ -4,6 +4,7 @@ import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.BattleCanvas
 import dev.zorsh.zorshDeltarune.battle.DeltarunePlayer
 import dev.zorsh.zorshDeltarune.battle.NeverlandBattle
+import dev.zorsh.zorshDeltarune.battle.TestEnemy
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.utils.runLater
 import dev.zorsh.zorshDeltarune.utils.runRepeating
@@ -37,7 +38,11 @@ class NeverlandTestCommand : CommandExecutor, TabCompleter {
                         ZorshDeltarune.deltarunePlayer[it.uniqueId] = dPlayer
                         dPlayer
                     }
-                val battle = NeverlandBattle(dPlayers, listOf())
+                val battle = NeverlandBattle(dPlayers, listOf(
+                    TestEnemy(Component.text("Скебоб 1"), 100),
+                    TestEnemy(Component.text("Скебоб 2"), 100),
+                    TestEnemy(Component.text("Скебоб 3"), 100)
+                ))
                 battle.setUUID(UUID.randomUUID())
                 val cv = BattleCanvas(listOf(player), battle)
                 cv.initCanvas()
