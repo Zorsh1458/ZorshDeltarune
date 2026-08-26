@@ -80,10 +80,6 @@ void main() {
             gl_Position += vec4(yaw / -3.1415, pitch * 2.0 / 3.1415, 0.0, 0.0);
         }
     }
-    if (opacity == 251.0) {
-        vertexColor = Color;
-        gl_Position += vec4(yaw / -3.1415, pitch * 2.0 / 3.1415, 0.0, 0.0);
-    }
     texCoord0 = UV0;
 
     //applyTextEffects();
