@@ -19,7 +19,7 @@ out vec2 texCoord0;
 flat out ivec3 control;
 out vec2 uvIndex;
 out vec2 fontUV;
-out bool isUI;
+out int isUI;
 
 mat4 changeFov(mat4 projection) {
     float fov = 90.0;
@@ -40,7 +40,7 @@ int getTimeData() {
 
 void main() {
     gl_Position = ProjMat * ModelViewMat * vec4(Position, 1.0);
-    isUI = false;
+    isUI = 0;
 //    if (getTimeData() == 1) {
 //        gl_Position = changeFov(ProjMat) * ModelViewMat * vec4(Position, 1.0);
 //    }
@@ -71,12 +71,12 @@ void main() {
     float opacity = round(Color.a * 255.0);
     if (opacity == 251.0) {
         vertexColor = vec3(0.0, 1.0, 0.0);
-        isUI = true;
+        isUI = 1;
         return;
     }
     if (opacity == 253.0 || opacity == 252.0) {
         vertexColor = Color;
-        isUI = true;
+        isUI = 1;
         float RESOLUTION_Y = 480;
         float scaling_factor = floor(ScreenSize.y / RESOLUTION_Y);
         float scaling_remainder = mod(ScreenSize.y, RESOLUTION_Y);

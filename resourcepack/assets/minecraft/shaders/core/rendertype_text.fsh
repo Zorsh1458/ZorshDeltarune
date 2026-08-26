@@ -14,7 +14,7 @@ in vec2 texCoord0;
 flat in ivec3 control;
 in vec2 uvIndex;
 in vec2 fontUV;
-in bool isUI;
+in int isUI;
 
 out vec4 fragColor;
 
@@ -146,7 +146,7 @@ void main() {
 
     fragColor = apply_fog(color, sphericalVertexDistance, cylindricalVertexDistance, FogEnvironmentalStart, FogEnvironmentalEnd, FogRenderDistanceStart, FogRenderDistanceEnd, FogColor);
 
-    if (isUI) {
+    if (isUI == 1) {
         fragColor = vec4(baseCol.rgb * vertexColor.rgb, baseCol.a);
     }
 
