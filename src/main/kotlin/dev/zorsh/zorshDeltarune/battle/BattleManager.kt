@@ -19,7 +19,7 @@ class BattleManager {
             val uuid = UUID.randomUUID()
             battlesList[uuid] = battle
             battle.setUUID(uuid)
-            for (dPlayer in battle.getBattlePlayers()) {
+            for (dPlayer in battle.getBattleInitialPlayers()) {
                 dPlayer.myBattleUUID = uuid
             }
             battle.startBattle {

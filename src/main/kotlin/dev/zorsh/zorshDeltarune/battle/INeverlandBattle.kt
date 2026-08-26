@@ -9,6 +9,7 @@ interface INeverlandBattle {
 
     fun setUUID(uuid: UUID)
 
+    fun getBattleInitialPlayers(): List<DeltarunePlayer>
     fun getBattlePlayers(): List<DeltarunePlayer>
     fun getBattleEnemies(): List<DeltaruneEnemy>
 }
