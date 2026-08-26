@@ -249,7 +249,8 @@ void main() {
         }
     }
 
-    if (round(fragColor.a * 255.0) == 0.0) {
+    if (floor(fragColor.a * 255.99) < 1.5) {
+        fragColor.a = 0.0;
         discard;
     }
 
