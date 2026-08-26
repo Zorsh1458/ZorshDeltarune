@@ -71,11 +71,15 @@ void main() {
     float opacity = round(Color.a * 255.0);
 
     if (opacity == 251.0) {
+        vertexColor = Color;
+        vertexColor.a = 1.0;
         isUI = 2;
+        gl_Position.z = 0.0;
     }
 
     if (opacity == 253.0 || opacity == 252.0) {
         vertexColor = Color;
+        vertexColor.a = 1.0;
         isUI = 1;
         float RESOLUTION_Y = 480;
         float scaling_factor = floor(ScreenSize.y / RESOLUTION_Y);
