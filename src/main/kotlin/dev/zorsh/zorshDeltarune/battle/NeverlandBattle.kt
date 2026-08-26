@@ -224,7 +224,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                     ),
                     opacity = 251.toByte()
                 ),
-                seeThrough = true,
+                seeThrough = false,
                 alignment = TextDisplay.TextAlignment.CENTER,
                 lineWidth = 1000,
                 isShadowed = false
