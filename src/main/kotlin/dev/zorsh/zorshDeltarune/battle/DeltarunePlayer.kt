@@ -287,7 +287,7 @@ class DeltarunePlayer(private val uuid: UUID) {
                                 val trans = soulForOthers!!.transformation
                                 soulForOthers!!.changeTransformation(
                                     Transformation(
-                                        startTranslation!! + Vector3d(
+                                        startTranslation + Vector3d(
                                             playerOffset.x * 0.098f,
                                             playerOffset.z * -0.098f,
                                             0.0
@@ -344,29 +344,29 @@ class DeltarunePlayer(private val uuid: UUID) {
     fun updateInputs(input: Input) {
         val newInput = InputHolder(input)
         if (newInput.left && !prevInput.left) {
-            inputCallbacksLeft.map { it() }
+            inputCallbacksLeft.forEach { it() }
             menuSelectorHeart?.offset(-1, 0)
         }
         if (newInput.right && !prevInput.right) {
-            inputCallbacksRight.map { it() }
+            inputCallbacksRight.forEach { it() }
             menuSelectorHeart?.offset(1, 0)
         }
         if (newInput.forward && !prevInput.forward) {
-            inputCallbacksForward.map { it() }
+            inputCallbacksForward.forEach { it() }
             menuSelectorHeart?.offset(0, -1)
         }
         if (newInput.backward && !prevInput.backward) {
-            inputCallbacksBackward.map { it() }
+            inputCallbacksBackward.forEach { it() }
             menuSelectorHeart?.offset(0, 1)
         }
         if (newInput.jump && !prevInput.jump) {
-            inputCallbacksJump.map { it() }
+            inputCallbacksJump.forEach { it() }
         }
         if (newInput.sneak && !prevInput.sneak) {
-            inputCallbacksSneak.map { it() }
+            inputCallbacksSneak.forEach { it() }
         }
         if (newInput.sprint && !prevInput.sprint) {
-            inputCallbacksSprint.map { it() }
+            inputCallbacksSprint.forEach { it() }
         }
         prevInput = newInput
     }

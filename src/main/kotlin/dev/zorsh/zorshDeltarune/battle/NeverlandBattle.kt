@@ -1,10 +1,9 @@
 package dev.zorsh.zorshDeltarune.battle
 
-import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.nms.FakeDisplay
 import dev.zorsh.zorshDeltarune.nms.PacketManager
+import dev.zorsh.zorshDeltarune.utils.FakeDisplayData
 import dev.zorsh.zorshDeltarune.utils.fontText
-import dev.zorsh.zorshDeltarune.utils.minus
 import dev.zorsh.zorshDeltarune.utils.plus
 import dev.zorsh.zorshDeltarune.utils.runLater
 import kotlinx.coroutines.CoroutineScope
@@ -12,15 +11,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title.Times
 import net.kyori.adventure.title.Title.title
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.entity.TextDisplay
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.Transformation
 import org.joml.AxisAngle4f
@@ -148,48 +145,51 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
             battleCanvas.setupLayout()
             prepareBattle()
         }
-
-        runLater(20) {
-            CoroutineScope(Dispatchers.IO).launch {
-                delay(250)
-                val job = scope.launch {
-                    repeat(5) {
-                        delay(100L)
-                        showPlayersOptions()
-                        delay(5000L)
-                        playersTurn = false
-                        hidePlayersOptions()
-                        battleBoxOpen()
-                        unlockSouls()
-                        val jobs = mutableListOf<Job>()
-                        for (enemy in enemies) {
-                            jobs += launch {
-                                enemy.attack()
-                            }
-                        }
-                        jobs.joinAll()
-                        delay(200L)
-                        lockSouls()
-                        battleBoxClose()
-                        delay(100L)
-                    }
-                }
-                battleJob = job
-                job.join()
-                endBattle()
-            }
-
-            loopTask = object : BukkitRunnable() {
-                override fun run() {
-                    if (players.all { !it.locked }) {
-                        if (battleJob?.isCancelled == false) {
-                            battleJob?.cancel()
-                        }
-                        cancel()
-                    }
-                }
-            }.runTaskTimer(ZorshDeltarune.instance, 1L, 1L)
+        runLater(200) {
+            endBattle()
         }
+
+//        runLater(20) {
+//            CoroutineScope(Dispatchers.IO).launch {
+//                delay(250)
+//                val job = scope.launch {
+//                    repeat(5) {
+//                        delay(100L)
+//                        showPlayersOptions()
+//                        delay(5000L)
+//                        playersTurn = false
+//                        hidePlayersOptions()
+//                        battleBoxOpen()
+//                        unlockSouls()
+//                        val jobs = mutableListOf<Job>()
+//                        for (enemy in enemies) {
+//                            jobs += launch {
+//                                enemy.attack()
+//                            }
+//                        }
+//                        jobs.joinAll()
+//                        delay(200L)
+//                        lockSouls()
+//                        battleBoxClose()
+//                        delay(100L)
+//                    }
+//                }
+//                battleJob = job
+//                job.join()
+//                endBattle()
+//            }
+//
+//            loopTask = object : BukkitRunnable() {
+//                override fun run() {
+//                    if (players.all { !it.locked }) {
+//                        if (battleJob?.isCancelled == false) {
+//                            battleJob?.cancel()
+//                        }
+//                        cancel()
+//                    }
+//                }
+//            }.runTaskTimer(ZorshDeltarune.instance, 1L, 1L)
+//        }
     }
 
     override fun endBattle() {
@@ -203,7 +203,27 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         loc.pitch = -90f
 
         runLater(3) {
-            newShaderEffector(loc - Vector3d(0.0, 2.0, 0.0))
+            //newShaderEffector(loc - Vector3d(0.0, 2.0, 0.0))
+
+            PacketManager.spawnTextDisplay(
+                loc + Vector3d(0.0, -2.15, -0.2),
+                fontText("❤", "#ff2222", "space:default"),
+                getBattlePlayers().mapNotNull { it.player },
+                data = FakeDisplayData(
+                    Transformation(
+                        Vector3f(0f),
+                        AxisAngle4f(),
+                        Vector3f(0f),
+                        AxisAngle4f()
+                    )
+                ),
+                seeThrough = true,
+                alignment = TextDisplay.TextAlignment.CENTER,
+                lineWidth = 1000,
+                isShadowed = false
+            ) { ent ->
+                spawnedEntities += ent
+            }
         }
     }
 
