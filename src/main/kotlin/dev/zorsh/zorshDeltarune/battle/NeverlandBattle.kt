@@ -115,6 +115,9 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
     override fun startBattle(onEnded: () -> Unit) {
         onEndedAction = onEnded
 
+        Bukkit.broadcast(Component.text("Debug: Starting battle $battleUUID"))
+        Bukkit.broadcast(Component.text("Debug: Players: ${getBattlePlayers().map { it.player?.name }}"))
+
         for (pl in getBattlePlayers()) {
             pl.player?.showTitle(
                 title(
@@ -142,6 +145,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         }
 
         runLater(10) {
+            battleCanvas.initCanvas()
             battleCanvas.setupLayout()
             prepareBattle()
         }
