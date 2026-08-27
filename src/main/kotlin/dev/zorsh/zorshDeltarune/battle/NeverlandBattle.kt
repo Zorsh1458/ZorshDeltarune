@@ -318,7 +318,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         val sizeZ = 78f
         val scale = 1 / 16.0 / 8.0
         val playerWidth = 0.3
-        val soulWidth = 8.0 * scale
+        val soulWidth = 9.0 * scale
         val shulkScaleZ = ceil(sizeX * scale)
         val shulkScaleX = ceil(sizeZ * scale)
         val loc1 = battleCenterLocation + Vector3d(0.0, 0.0, sizeZ * scale + shulkScaleZ * 0.5 + playerWidth - soulWidth)
