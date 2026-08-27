@@ -166,7 +166,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                 }
                 battleJob = job
                 job.join()
-                endBattle()
+//                endBattle()
             }
         }
 
@@ -337,7 +337,6 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                 battleCenterLocation + Vector3d(-sizeX * scale - playerShulkerWidth + soulWidth, 0.0, z - sizeZ * scale)
             newHitboxEntity(loc)
         }
-        delay(900)
     }
 
     private suspend fun battleBoxClose() {
