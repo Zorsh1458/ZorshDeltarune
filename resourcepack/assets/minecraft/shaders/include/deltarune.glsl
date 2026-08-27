@@ -88,7 +88,7 @@ vec3 deltaruneBg2( vec2 uv, float timeOffset )
 vec3 deltaruneBgPart(vec2 uv, vec2 dir, vec2 offset, float time) {
     vec3 col = vec3(0.0);
     uv.x *= ScreenSize.x / ScreenSize.y;
-    uv = mod(uv * 12.0 + offset + dir * time * 2.4, 1.0);
+    uv = mod(uv * 12.0 + offset + dir * time * 2.45, 1.0);
     if (uv.x < 0.03 || uv.y < 0.03) {
         col = vec3(1.0, 0.0, 1.0);
     }
