@@ -584,8 +584,10 @@ class PacketManager {
             for (player in players.filter { it.isOnline }) {
                 protocolManager.sendServerPacket(player, packetShulker)
                 protocolManager.sendServerPacket(player, packetScale)
-                protocolManager.sendServerPacket(player, packetAnchor)
-                //protocolManager.sendServerPacket(player, packet)
+                runLater(20) {
+                    protocolManager.sendServerPacket(player, packetAnchor)
+                    protocolManager.sendServerPacket(player, packet)
+                }
             }
 
             afterSpawned(entityIdAnchor, entityIdShulker)
