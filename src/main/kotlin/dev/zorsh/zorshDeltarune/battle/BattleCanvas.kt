@@ -13,6 +13,49 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         myCanvas.initialize(players)
     }
 
+    fun closeBattleBox() {
+        val scale = myCanvas.getScale("battle_box_inner")
+        runRepeating(10) { t ->
+            val i = 9 - t
+            myCanvas.setScale(i * 0.1f * scale.first, i * 0.1f * scale.second, "battle_box_inner")
+            myCanvas.setScale(i * 0.1f * scale.first + 2, i * 0.1f * scale.second + 2, "battle_box_outer")
+        }
+        runLater(11) {
+            myCanvas.remove("battle_box_inner")
+            myCanvas.remove("battle_box_outer")
+        }
+    }
+
+    fun openBattleBox(px: Float, py: Float, sx: Float, sy: Float) {
+        myCanvas.drawSprite(
+            px,
+            py,
+            0f,
+            0f,
+            60,
+            CanvasSprite.SQUARE,
+            "#00c400",
+            "battle_box_outer"
+        )
+
+        myCanvas.drawSprite(
+            px,
+            py,
+            0f,
+            0f,
+            59,
+            CanvasSprite.SQUARE,
+            "#000000",
+            "battle_box_inner"
+        )
+
+        runRepeating(10) { t ->
+            val i = t + 1
+            myCanvas.setScale(i * 0.1f * sx, i * 0.1f * sy, "battle_box_inner")
+            myCanvas.setScale(i * 0.1f * sx + 2, i * 0.1f * sy + 2, "battle_box_outer")
+        }
+    }
+
     fun setupLayout() {
         val spritedEnemies = battle.getBattleEnemies().filterIsInstance<SpritedEnemy>()
         for (enemy in spritedEnemies.reversed().withIndex()) {
@@ -158,26 +201,6 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             63,
             CanvasSprite.SQUARE,
             "#2e1e25"
-        )
-
-        myCanvas.drawSprite(
-            0f,
-            20f,
-            80f,
-            80f,
-            60,
-            CanvasSprite.SQUARE,
-            "#00c400"
-        )
-
-        myCanvas.drawSprite(
-            0f,
-            20f,
-            78f,
-            78f,
-            59,
-            CanvasSprite.SQUARE,
-            "#000000"
         )
 
         val dPlayers = battle.getBattlePlayers().filter { it.player != null && it.player?.isOnline == true }

@@ -303,19 +303,16 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         }
     }
 
-    private suspend fun battleBoxOpen() {
-//        val availableSizes = enemies.map { it.askBoxSize() }
-//        if (availableSizes.isEmpty()) {
-//            battleBox.sizeX = 30f
-//            battleBox.sizeY = 30f
-//        } else {
-//            val rand = availableSizes.toSet().random()
-//            battleBox.sizeX = rand.first
-//            battleBox.sizeY = rand.second
-//        }
-//        battleBox.openAnimation()
-        val sizeX = 78f
-        val sizeZ = 78f
+    private fun battleBoxOpen() {
+        val availableSizes = enemies.map { it.askBoxSize() }
+        var sizeX = 30f
+        var sizeZ = 30f
+        if (availableSizes.isNotEmpty()) {
+            val rand = availableSizes.toSet().random()
+            sizeX = rand.first
+            sizeZ = rand.second
+        }
+        battleCanvas.openBattleBox(0f, 0f, sizeX, sizeZ)
         val scale = 1 / 16.0 / 8.0
         val playerWidth = 0.3
         val soulWidth = 9.0 * scale
@@ -331,13 +328,12 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         newHitboxEntity(loc4, shulkScaleX)
     }
 
-    private suspend fun battleBoxClose() {
+    private fun battleBoxClose() {
         for (id in shulkerHitboxes) {
             PacketManager.removeEntity(id, players.mapNotNull { it.player })
         }
         shulkerHitboxes.clear()
-//        battleBox.closeAnimation()
-//        delay(900)
+        battleCanvas.closeBattleBox()
     }
 
     private suspend fun showPlayersOptions() {

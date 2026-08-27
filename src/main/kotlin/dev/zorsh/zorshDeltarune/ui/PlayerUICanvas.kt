@@ -123,6 +123,16 @@ class PlayerUICanvas {
         )
     }
 
+    fun getScale(objName: String, player: Player? = null): Pair<Float, Float> {
+        val holder =
+            (if (player == null) savedObjects[objName] else savedObjectsPerPlayer[player.uniqueId]?.get(objName)) ?: throw IllegalStateException("Object $objName not found")
+
+        val obj = holder.entity
+        val scaling = holder.scaling
+
+        return obj.transformation.scale.x / scaling.first / 2.5f to obj.transformation.scale.y / scaling.second / 2.5f
+    }
+
     fun setPosition(px: Float, py: Float, objName: String, player: Player? = null) {
         fun getObj() =
             if (player == null) savedObjects[objName]?.entity else savedObjectsPerPlayer[player.uniqueId]?.get(objName)?.entity
