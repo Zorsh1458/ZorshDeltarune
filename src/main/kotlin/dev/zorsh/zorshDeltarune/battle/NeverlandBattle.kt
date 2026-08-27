@@ -315,7 +315,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 //        battleBox.openAnimation()
         val sizeX = 78f
         val sizeZ = 78f
-        val scale = 1 / 16.0
+        val scale = 1 / 16.0 / 8.0
         val playerWidth = 0.297
         val soulWidth = 0.0
         val loc = battleCenterLocation + Vector3d(0.0, 0.0, sizeZ * scale + sizeX * scale * 0.5 + playerWidth - soulWidth)
