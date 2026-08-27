@@ -6,6 +6,7 @@ import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.utils.FakeDisplayData
 import dev.zorsh.zorshDeltarune.utils.color
 import dev.zorsh.zorshDeltarune.utils.fontText
+import dev.zorsh.zorshDeltarune.utils.minus
 import dev.zorsh.zorshDeltarune.utils.plus
 import dev.zorsh.zorshDeltarune.utils.runLater
 import kotlinx.coroutines.CoroutineScope
@@ -233,7 +234,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                 getBattlePlayers().mapNotNull { it.player },
                 data = FakeDisplayData(
                     Transformation(
-                        Vector3f(0f),
+                        Vector3f(0f, 0f, 20f / 16f),
                         AxisAngle4f(),
                         Vector3f(2.5f * scaling.first / 8f, 2.5f * scaling.second / 8f, 1f),
                         AxisAngle4f()
@@ -316,11 +317,18 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         val sizeX = 78f
         val sizeZ = 78f
         val scale = 1 / 16.0 / 8.0
-        val playerWidth = 0.297
+        val playerWidth = 0.3
         val soulWidth = 0.0
-        val shulkScale = ceil(sizeX * scale)
-        val loc = battleCenterLocation + Vector3d(0.0, 0.0, sizeZ * scale + shulkScale * 0.5 + playerWidth - soulWidth)
-        newHitboxEntity(loc, shulkScale)
+        val shulkScaleZ = ceil(sizeX * scale)
+        val shulkScaleX = ceil(sizeZ * scale)
+        val loc1 = battleCenterLocation + Vector3d(0.0, 0.0, sizeZ * scale + shulkScaleZ * 0.5 + playerWidth - soulWidth)
+        newHitboxEntity(loc1, shulkScaleZ)
+        val loc2 = battleCenterLocation - Vector3d(0.0, 0.0, sizeZ * scale + shulkScaleZ * 0.5 + playerWidth - soulWidth)
+        newHitboxEntity(loc2, shulkScaleZ)
+        val loc3 = battleCenterLocation + Vector3d(sizeX * scale + shulkScaleX * 0.5 + playerWidth - soulWidth, 0.0, 0.0)
+        newHitboxEntity(loc3, shulkScaleX)
+        val loc4 = battleCenterLocation - Vector3d(sizeX * scale + shulkScaleX * 0.5 + playerWidth - soulWidth, 0.0, 0.0)
+        newHitboxEntity(loc4, shulkScaleX)
     }
 
     private suspend fun battleBoxClose() {
