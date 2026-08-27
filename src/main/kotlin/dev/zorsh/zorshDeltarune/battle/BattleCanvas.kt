@@ -24,8 +24,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                 16,
                 enemy.value.canvasSprite,
                 "#ffffff",
-                "enemy_${enemy.index}",
-                player = null
+                "enemy_${enemy.index}"
             ) {
                 runLater(10 + enemy.index.toLong() * 1L) {
                     runRepeating(10) { t ->
@@ -45,8 +44,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             -2,
             CanvasSprite.SQUARE,
             "#000000",
-            "fg_slider_1",
-            null
+            "fg_slider_1"
         ) {
             runRepeating(30) { i ->
                 if (i > 19) {
@@ -67,8 +65,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             -2,
             CanvasSprite.SQUARE,
             "#000000",
-            "fg_slider_2",
-            null
+            "fg_slider_2"
         ) {
             runRepeating(30) { i ->
                 if (i > 19) {
@@ -89,8 +86,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             -1,
             CanvasSprite.SQUARE,
             "#ffffff",
-            "fg_slider_3",
-            null
+            "fg_slider_3"
         ) {
             runRepeating(30) { i ->
                 if (i > 19) {
@@ -111,8 +107,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             -1,
             CanvasSprite.SQUARE,
             "#ffffff",
-            "fg_slider_4",
-            null
+            "fg_slider_4"
         ) {
             runRepeating(30) { i ->
                 if (i > 19) {
@@ -132,9 +127,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             800f,
             128,
             CanvasSprite.SQUARE,
-            "#fd0100",
-            null,
-            null
+            "#fd0100"
         )
 
         myCanvas.drawSprite(
@@ -144,9 +137,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             400f,
             64,
             CanvasSprite.SQUARE,
-            "#000000",
-            null,
-            null
+            "#000000"
         )
 
         myCanvas.drawSprite(
@@ -156,9 +147,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             1f,
             63,
             CanvasSprite.SQUARE,
-            "#2e1e25",
-            null,
-            null
+            "#2e1e25"
         )
 
         myCanvas.drawSprite(
@@ -168,9 +157,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             1f,
             63,
             CanvasSprite.SQUARE,
-            "#2e1e25",
-            null,
-            null
+            "#2e1e25"
         )
 
         myCanvas.drawSprite(
@@ -180,9 +167,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             80f,
             60,
             CanvasSprite.SQUARE,
-            "#00c400",
-            null,
-            null
+            "#00c400"
         )
 
         myCanvas.drawSprite(
@@ -192,9 +177,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             78f,
             59,
             CanvasSprite.SQUARE,
-            "#000000",
-            null,
-            null
+            "#000000"
         )
 
         val dPlayers = battle.getBattlePlayers().filter { it.player != null && it.player?.isOnline == true }
