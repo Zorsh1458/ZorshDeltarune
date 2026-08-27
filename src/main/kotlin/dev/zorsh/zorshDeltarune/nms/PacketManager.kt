@@ -575,8 +575,8 @@ class PacketManager {
                     scale,
                     listOf()
                 )
-                packet.integers.write(0, entityIdShulker)
-                packet.modifier.write(1, listOf(data).toCollection(ArrayList()))
+                packetScale.integers.write(0, entityIdShulker)
+                packetScale.modifier.write(1, listOf(data).toCollection(ArrayList()))
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -584,10 +584,8 @@ class PacketManager {
             for (player in players.filter { it.isOnline }) {
                 protocolManager.sendServerPacket(player, packetShulker)
                 protocolManager.sendServerPacket(player, packetScale)
-                runLater(20) {
-                    protocolManager.sendServerPacket(player, packetAnchor)
-                    protocolManager.sendServerPacket(player, packet)
-                }
+                protocolManager.sendServerPacket(player, packetAnchor)
+                protocolManager.sendServerPacket(player, packet)
             }
 
             afterSpawned(entityIdAnchor, entityIdShulker)
