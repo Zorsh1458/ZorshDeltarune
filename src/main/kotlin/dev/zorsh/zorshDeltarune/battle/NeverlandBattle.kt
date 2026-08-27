@@ -1,6 +1,7 @@
 package dev.zorsh.zorshDeltarune.battle
 
 import dev.zorsh.zorshDeltarune.nms.FakeDisplay
+import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
 import dev.zorsh.zorshDeltarune.nms.PacketManager
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.utils.FakeDisplayData
@@ -48,17 +49,20 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
     private val shulkerHitboxes = mutableSetOf<Int>()
     private val spawnedEntities = mutableSetOf<FakeDisplay>()
 
+    private var theSoul: FakeTextDisplay? = null
+
     object BattleLocation {
         val TEST = Location(Bukkit.getWorld("world"), 8.0, 100.0, 8.1)
-        val UNDER_STATION = Location(Bukkit.getWorld("moon"), 952.0, 99.5, 1101.0)
+        val UNDER_STATION = Location(Bukkit.getWorld("moon"), 952.0, 99.6, 1101.0)
     }
+
     private val battleCenterLocation = BattleLocation.UNDER_STATION
 
     var playersTurn = false
 
     private fun newShaderEffector(
         loc: Location,
-        playerToShow: List<Player> = players.mapNotNull { it.player }
+        playerToShow: List<Player> = players.mapNotNull { it.player },
     ) {
         PacketManager.spawnShaderEffector(
             loc,
@@ -72,7 +76,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
     private fun newHitboxEntity(
         loc: Location,
         scale: Double,
-        playerToShow: List<Player> = players.mapNotNull { it.player }
+        playerToShow: List<Player> = players.mapNotNull { it.player },
     ) {
         PacketManager.spawnHitbox(loc, scale, playerToShow) { anchor, shulker ->
             shulkerHitboxes += anchor
@@ -84,13 +88,15 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         for (pl in players) {
             try {
                 pl.freeFromBattle()
-            } catch (_: Exception) {}
+            } catch (_: Exception) {
+            }
         }
         val toDestroy = spawnedEntities.toList()
         for (ent in toDestroy) {
             try {
                 ent.destroy()
-            } catch (_: Exception) {}
+            } catch (_: Exception) {
+            }
         }
         spawnedEntities.clear()
         if (loopTask?.isCancelled == false) {
@@ -102,7 +108,8 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         for (ent in shulkerHitboxes) {
             try {
                 PacketManager.removeEntity(ent, getBattlePlayers().mapNotNull { it.player })
-            } catch (_: Exception) {}
+            } catch (_: Exception) {
+            }
         }
         shulkerHitboxes.clear()
         scope.cancel()
@@ -157,18 +164,23 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
             battleCanvas.setupLayout()
         }
 
-        runLater(200) {
-            endBattle()
-        }
-
         runLater(20) {
             CoroutineScope(Dispatchers.IO).launch {
                 val job = scope.launch {
-                    battleBoxOpen()
+                    repeat(3) {
+                        battleBoxOpen()
+                        delay(500)
+                        unlockSouls()
+                        delay(5000)
+                        lockSouls()
+                        battleBoxClose()
+                        delay(500)
+                        delay(1000)
+                    }
                 }
                 battleJob = job
                 job.join()
-//                endBattle()
+                endBattle()
             }
         }
 
@@ -227,7 +239,6 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 
         runLater(3) {
             val sprite = CanvasSprite.SOUL
-            val scaling = sprite.getSizeRatios()
             PacketManager.spawnTextDisplay(
                 loc,
                 sprite.toTextValue().color("#ff2222"),
@@ -236,7 +247,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                     Transformation(
                         Vector3f(0f, 20f / 16f / 8f, 0f),
                         AxisAngle4f(),
-                        Vector3f(2.5f * scaling.first / 8f, 2.5f * scaling.second / 8f, 1f),
+                        Vector3f(0f, 0f, 1f),
                         AxisAngle4f()
                     ),
                     opacity = 251.toByte()
@@ -247,60 +258,36 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                 isShadowed = false
             ) { ent ->
                 spawnedEntities += ent
+                theSoul = ent
             }
         }
     }
 
     private fun unlockSouls() {
-        for (dPlayer in players) {
-            dPlayer.canMoveSoul = true
-            dPlayer.soul?.changeTransformation(
-                Transformation(
-                    dPlayer.soul!!.transformation.translation,
-                    AxisAngle4f(),
-                    Vector3f(10f),
-                    AxisAngle4f()
-                )
+        val soul = theSoul ?: return
+        val scaling = CanvasSprite.SOUL.getSizeRatios()
+        theSoul?.changeOnlyTransformation(
+            Transformation(
+                soul.transformation.translation,
+                soul.transformation.leftRotation,
+                Vector3f(2.5f * scaling.first / 8f, 2.5f * scaling.second / 8f, 1f),
+                soul.transformation.rightRotation
             )
-            if (dPlayer.soulForOthers != null) {
-                val soulForOthers = dPlayer.soulForOthers!!
-                val trans = soulForOthers.transformation
-                soulForOthers.changeTransformation(
-                    Transformation(
-                        trans.translation,
-                        trans.leftRotation,
-                        Vector3f(1f),
-                        trans.rightRotation
-                    )
-                )
-            }
-        }
+        )
+        getBattlePlayers().forEach { it.canMoveSoul = true }
     }
 
     private fun lockSouls() {
-        for (dPlayer in players) {
-            dPlayer.canMoveSoul = false
-            dPlayer.soul?.changeTransformation(
-                Transformation(
-                    dPlayer.soul!!.transformation.translation,
-                    AxisAngle4f(),
-                    Vector3f(0f),
-                    AxisAngle4f()
-                )
+        val soul = theSoul ?: return
+        theSoul?.changeOnlyTransformation(
+            Transformation(
+                soul.transformation.translation,
+                soul.transformation.leftRotation,
+                Vector3f(0f, 0f, 1f),
+                soul.transformation.rightRotation
             )
-            if (dPlayer.soulForOthers != null) {
-                val soulForOthers = dPlayer.soulForOthers!!
-                val trans = soulForOthers.transformation
-                soulForOthers.changeTransformation(
-                    Transformation(
-                        Vector3f(0f, 1f, 0.001f),
-                        trans.leftRotation,
-                        Vector3f(0f),
-                        trans.rightRotation
-                    )
-                )
-            }
-        }
+        )
+        getBattlePlayers().forEach { it.canMoveSoul = false }
     }
 
     private fun battleBoxOpen() {
@@ -318,13 +305,17 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         val soulWidth = 9.0 * scale
         val shulkScaleZ = ceil(sizeX * scale)
         val shulkScaleX = ceil(sizeZ * scale)
-        val loc1 = battleCenterLocation + Vector3d(0.0, 0.0, sizeZ * scale + shulkScaleZ * 0.5 + playerWidth - soulWidth)
+        val loc1 =
+            battleCenterLocation + Vector3d(0.0, 0.0, sizeZ * scale + shulkScaleZ * 0.5 + playerWidth - soulWidth)
         newHitboxEntity(loc1, shulkScaleZ)
-        val loc2 = battleCenterLocation - Vector3d(0.0, 0.0, sizeZ * scale + shulkScaleZ * 0.5 + playerWidth - soulWidth)
+        val loc2 =
+            battleCenterLocation - Vector3d(0.0, 0.0, sizeZ * scale + shulkScaleZ * 0.5 + playerWidth - soulWidth)
         newHitboxEntity(loc2, shulkScaleZ)
-        val loc3 = battleCenterLocation + Vector3d(sizeX * scale + shulkScaleX * 0.5 + playerWidth - soulWidth, 0.0, 0.0)
+        val loc3 =
+            battleCenterLocation + Vector3d(sizeX * scale + shulkScaleX * 0.5 + playerWidth - soulWidth, 0.0, 0.0)
         newHitboxEntity(loc3, shulkScaleX)
-        val loc4 = battleCenterLocation - Vector3d(sizeX * scale + shulkScaleX * 0.5 + playerWidth - soulWidth, 0.0, 0.0)
+        val loc4 =
+            battleCenterLocation - Vector3d(sizeX * scale + shulkScaleX * 0.5 + playerWidth - soulWidth, 0.0, 0.0)
         newHitboxEntity(loc4, shulkScaleX)
     }
 

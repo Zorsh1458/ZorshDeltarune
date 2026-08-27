@@ -193,7 +193,6 @@ class DeltarunePlayer(private val uuid: UUID) {
         perPlayerEntities.clear()
         playerButtonTexts.clear()
         playerSelectedButton = 0
-        //player?.flySpeed = 0.1f
         runSync {
             if (player != null) {
                 Bukkit.dispatchCommand(
@@ -222,92 +221,66 @@ class DeltarunePlayer(private val uuid: UUID) {
             initialLocation = myPlayer.location
             myPlayer.teleport(location)
             myPlayer.isGliding = true
-            PacketManager.setAttribute(
-                net.minecraft.world.entity.ai.attributes.Attributes.JUMP_STRENGTH,
-                0.0,
-                myPlayer.entityId,
-                listOf(myPlayer)
-            )
             gameMode = myPlayer.gameMode
             myPlayer.gameMode = GameMode.ADVENTURE
             locked = true
             myPlayer.hideFromEveryone()
-            var startTranslation = soulForOthers?.transformation?.translation
-            var counter = 0L
-            object : BukkitRunnable() {
-                override fun run() {
-                    if (!myPlayer.isOnline) {
-                        locked = false
+            runInfinite(1) { i, action ->
+                if (!myPlayer.isOnline) {
+                    locked = false
+                }
+
+                if (myBattleUUID == null || !BattleManager.hasBattle(myBattleUUID!!)) {
+                    locked = false
+                }
+
+                if (!locked) {
+                    action.cancel()
+                    freeFromBattle()
+                } else {
+                    if (i % 20 == 0) {
+                        myPlayer.hideFromEveryone()
+                        PacketManager.setAttribute(
+                            net.minecraft.world.entity.ai.attributes.Attributes.JUMP_STRENGTH,
+                            0.0,
+                            myPlayer.entityId,
+                            listOf(myPlayer)
+                        )
+                    }
+                    if (tpGain > 0) {
+                        tpGain--
+                        tpAmount = min(tpAmount + 0.5, 100.0)
+                        updateTpCounter()
                     }
 
-                    if (myBattleUUID == null || !BattleManager.hasBattle(myBattleUUID!!)) {
-                        locked = false
-                    }
-
-                    if (!locked) {
-                        cancel()
-                        freeFromBattle()
+                    if (shakingTime > 0) {
+                        PacketManager.playerLookAt(
+                            myPlayer.location + Vector3d(ZorshDeltarune.random.nextDouble() * shakingTime * shakingMult * ((shakingTime % 2) * 2 - 1), 0.0, ZorshDeltarune.random.nextDouble() * shakingTime * shakingMult * 1000000) + Vector3d(0.0, -1000000000.0, 100.0),
+                            listOf(myPlayer)
+                        )
                     } else {
-                        counter++
-                        if (counter % 20L == 0L) {
-                            myPlayer.hideFromEveryone()
-                        }
-                        if (tpGain > 0) {
-                            tpGain--
-                            tpAmount = min(tpAmount + 0.5, 100.0)
-                            updateTpCounter()
-                        }
+                        PacketManager.playerLookAt(
+                            myPlayer.location + Vector3d(0.0, -1000000000.0, 100.0),
+                            listOf(myPlayer)
+                        )
+                    }
 
-                        if (shakingTime > 0) {
-                            PacketManager.playerLookAt(
-                                myPlayer.location + Vector3d(ZorshDeltarune.random.nextDouble() * shakingTime * shakingMult * ((shakingTime % 2) * 2 - 1), 0.0, ZorshDeltarune.random.nextDouble() * shakingTime * shakingMult * 1000000) + Vector3d(0.0, -1000000000.0, 100.0),
-                                listOf(myPlayer)
-                            )
-                        } else {
-                            PacketManager.playerLookAt(
-                                myPlayer.location + Vector3d(0.0, -1000000000.0, 100.0),
-                                listOf(myPlayer)
-                            )
+                    if (shakingTime > 0) {
+                        shakingTime--
+                    }
+
+                    val target = location
+                    target.y = myPlayer.location.y
+                    val playerOffset = myPlayer.location - target
+
+                    if (!canMoveSoul) {
+                        if (target.distance(myPlayer.location) > 0.02) {
+                            val v = Vector(playerOffset.x * -0.15, playerOffset.y * -0.15, playerOffset.z * -0.15)
+                            myPlayer.velocity = v
                         }
-
-                        if (shakingTime > 0) {
-                            shakingTime--
-                        }
-
-                        val target = location
-                        target.y = myPlayer.location.y
-                        val playerOffset = myPlayer.location - target
-
-                        if (!canMoveSoul && soul != null) {
-                            if (target.distance(myPlayer.location) > 0.02) {
-                                val v = Vector(playerOffset.x * -0.15, playerOffset.y * -0.15, playerOffset.z * -0.15)
-                                myPlayer.velocity = v
-                            }
-                        }
-
-                        try {
-                            if (canMoveSoul && soulForOthers != null) {
-                                if (startTranslation == null) {
-                                    startTranslation = soulForOthers!!.transformation.translation
-                                }
-                                val trans = soulForOthers!!.transformation
-                                soulForOthers!!.changeTransformation(
-                                    Transformation(
-                                        startTranslation + Vector3d(
-                                            playerOffset.x * 0.098f,
-                                            playerOffset.z * -0.098f,
-                                            0.0
-                                        ),
-                                        trans.leftRotation,
-                                        trans.scale,
-                                        trans.rightRotation
-                                    )
-                                )
-                            }
-                        } catch (ignored: Exception) {}
                     }
                 }
-            }.runTaskTimer(ZorshDeltarune.instance, 1L, 1L)
+            }
         }
     }
 
