@@ -159,7 +159,7 @@ void main() {
             float z = control.z * 1.0;
             vec2 uv = gl_FragCoord.xy / ScreenSize;
 
-            vec3 col = deltaruneBg(uv, 13500.0 / 16383.0);
+            vec3 col = deltaruneBg(uv, 14000.0 / 16383.0);
             fragColor = vec4(mix(col, vec3(0.0), z / 255.0), 1.0);
             fragColor = REMOVE_BLUE(fragColor);
             return;
