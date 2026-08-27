@@ -21,7 +21,7 @@ class ZorshDeltarune : JavaPlugin() {
         lateinit var instance: ZorshDeltarune
         val protocolManager: ProtocolManager by lazy { ProtocolLibrary.getProtocolManager() }
 
-        val random = Random(1488)
+        val random = Random(1458)
 
         var deltarunePlayer = mutableMapOf<UUID, DeltarunePlayer>()
 
@@ -38,8 +38,6 @@ class ZorshDeltarune : JavaPlugin() {
         protocolManager.addPacketListener(PacketListenerEntityDestroy())
         protocolManager.addPacketListener(PacketListenerEntityMetadata())
         protocolManager.addPacketListener(PacketListenerSpawnEntity())
-//        protocolManager.addPacketListener(PacketListenerUpdateAttributes())
-//        protocolManager.addPacketListener(PacketListenerUpdateTime())
         server.pluginManager.registerEvents(DeltaruneListener(), this)
         getCommand("deltarunebattle")?.setExecutor(DeltaruneBattleCommand())
         getCommand("deltarunebattle")?.tabCompleter = DeltaruneBattleCommand()

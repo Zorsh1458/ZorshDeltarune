@@ -131,14 +131,14 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                     Times.times(Duration.ZERO, Duration.ofMillis(1200), Duration.ZERO)
                 )
             )
-//            runLater(24) {
-//                if (pl.player != null) {
-//                    Bukkit.dispatchCommand(
-//                        Bukkit.getServer().consoleSender,
-//                        "sendshaderdata ${pl.player!!.name} 1"
-//                    )
-//                }
-//            }
+            runLater(24) {
+                if (pl.player != null) {
+                    Bukkit.dispatchCommand(
+                        Bukkit.getServer().consoleSender,
+                        "sendshaderdata ${pl.player!!.name} 1"
+                    )
+                }
+            }
             pl.lockInBattle(battleCenterLocation)
             pl.player?.playSound(pl.player!!, "encounter", 1f, 1f)
             runLater(20) {
