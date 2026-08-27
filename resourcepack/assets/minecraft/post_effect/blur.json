@@ -4,15 +4,30 @@
     },
     "passes": [
         {
-            "vertex_shader": "minecraft:post/sobel",
+            "vertex_shader": "minecraft:post/blur",
             "fragment_shader": "minecraft:post/nv_menu_bg",
             "inputs": [
                 {
                     "sampler_name": "In",
-                    "target": "minecraft:main"
+                    "target": "minecraft:main",
+                    "bilinear": true
                 }
             ],
-            "output": "swap"
+            "output": "swap",
+            "uniforms": {
+                "BlurConfig": [
+                    {
+                        "name": "BlurDir",
+                        "type": "vec2",
+                        "value": [ 1.0, 0.0 ]
+                    },
+                    {
+                        "name": "Radius",
+                        "type": "float",
+                        "value": 0.0
+                    }
+                ]
+            }
         },
         {
             "vertex_shader": "minecraft:post/blit",
@@ -20,7 +35,8 @@
             "inputs": [
                 {
                     "sampler_name": "In",
-                    "target": "swap"
+                    "target": "swap",
+                    "bilinear": true
                 }
             ],
             "uniforms": {
