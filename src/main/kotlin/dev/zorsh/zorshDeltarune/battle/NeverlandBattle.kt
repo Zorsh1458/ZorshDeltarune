@@ -305,14 +305,14 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 
     private fun battleBoxOpen() {
         val availableSizes = enemies.map { it.askBoxSize() }
-        var sizeX = 30f
-        var sizeZ = 30f
+        var sizeX = 60f
+        var sizeZ = 60f
         if (availableSizes.isNotEmpty()) {
             val rand = availableSizes.toSet().random()
             sizeX = rand.first
             sizeZ = rand.second
         }
-        battleCanvas.openBattleBox(0f, 0f, sizeX, sizeZ)
+        battleCanvas.openBattleBox(0f, 20f, sizeX, sizeZ)
         val scale = 1 / 16.0 / 8.0
         val playerWidth = 0.3
         val soulWidth = 9.0 * scale
