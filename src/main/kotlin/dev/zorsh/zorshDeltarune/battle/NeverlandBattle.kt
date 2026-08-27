@@ -318,8 +318,9 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         val scale = 1 / 16.0 / 8.0
         val playerWidth = 0.297
         val soulWidth = 0.0
-        val loc = battleCenterLocation + Vector3d(0.0, 0.0, sizeZ * scale + sizeX * scale * 0.5 + playerWidth - soulWidth)
-        newHitboxEntity(loc, sizeX * scale)
+        val shulkScale = ceil(sizeX * scale)
+        val loc = battleCenterLocation + Vector3d(0.0, 0.0, sizeZ * scale + shulkScale * 0.5 + playerWidth - soulWidth)
+        newHitboxEntity(loc, shulkScale)
     }
 
     private suspend fun battleBoxClose() {
