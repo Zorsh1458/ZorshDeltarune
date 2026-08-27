@@ -234,7 +234,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                 getBattlePlayers().mapNotNull { it.player },
                 data = FakeDisplayData(
                     Transformation(
-                        Vector3f(0f, 20f / 16f, 0f),
+                        Vector3f(0f, 20f / 16f / 8f, 0f),
                         AxisAngle4f(),
                         Vector3f(2.5f * scaling.first / 8f, 2.5f * scaling.second / 8f, 1f),
                         AxisAngle4f()
@@ -318,7 +318,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         val sizeZ = 78f
         val scale = 1 / 16.0 / 8.0
         val playerWidth = 0.3
-        val soulWidth = 10.0 / 16.0
+        val soulWidth = 10.0 * scale
         val shulkScaleZ = ceil(sizeX * scale)
         val shulkScaleX = ceil(sizeZ * scale)
         val loc1 = battleCenterLocation + Vector3d(0.0, 0.0, sizeZ * scale + shulkScaleZ * 0.5 + playerWidth - soulWidth)
