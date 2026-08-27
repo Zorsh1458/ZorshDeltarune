@@ -97,7 +97,7 @@ vec3 deltaruneBgPart(vec2 uv, vec2 dir, vec2 offset, float time) {
 
 vec3 deltaruneBg( vec2 uv, float timeOffset )
 {
-    float time = min(iTime, 14000.0 / 16383.0) + timeOffset * 1000.0;
+    float time = (min(mod(GameTime * 16383.0, 32.0), 14.0) / 16383.0 + timeOffset) * 1000.0;
     vec3 col1 = deltaruneBgPart(uv, vec2(0.5, -0.5), vec2(0.0), time);
     vec3 col2 = deltaruneBgPart(uv, vec2(-0.5, 0.5), vec2(-0.2), time);
     vec3 col = mix(col1, col2, 0.25);
