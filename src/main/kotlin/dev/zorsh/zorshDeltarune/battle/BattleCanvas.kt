@@ -88,7 +88,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             800f,
             -1,
             CanvasSprite.SQUARE,
-            "#000000",
+            "#ffffff",
             "fg_slider_3",
             null
         ) {
@@ -110,7 +110,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             800f,
             -1,
             CanvasSprite.SQUARE,
-            "#000000",
+            "#ffffff",
             "fg_slider_4",
             null
         ) {
