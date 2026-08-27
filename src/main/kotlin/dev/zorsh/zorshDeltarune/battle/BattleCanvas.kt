@@ -19,8 +19,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             myCanvas.drawSprite(
                 320f,
                 20f - (spritedEnemies.size - 1) * 24f + enemy.index * 72f,
-                0f,
-                0f,
+                10f,
+                10f,
                 16,
                 enemy.value.canvasSprite,
                 "#ffffff",
@@ -28,7 +28,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                 player = null
             ) {
                 runLater(10 + enemy.index.toLong() * 1L) {
-                    runRepeating(10) { i ->
+                    runRepeating(10) { t ->
+                        val i = t + 1
                         myCanvas.setScale(i / 10f, i / 10f, "enemy_${enemy.index}")
                         myCanvas.move(-20f + i * 2f, 0f, "enemy_${enemy.index}")
                     }
