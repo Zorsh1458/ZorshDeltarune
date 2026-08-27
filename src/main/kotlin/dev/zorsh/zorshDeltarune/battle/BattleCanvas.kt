@@ -19,8 +19,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             myCanvas.drawSprite(
                 320f,
                 20f - (spritedEnemies.size - 1) * 24f + enemy.index * 72f,
-                10f,
-                10f,
+                0f,
+                0f,
                 16,
                 enemy.value.canvasSprite,
                 "#ffffff",
@@ -34,6 +34,44 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         myCanvas.move(-20f + i * 2f, 0f, "enemy_${enemy.index}")
                     }
                 }
+            }
+        }
+
+        myCanvas.drawSprite(
+            800f,
+            0f,
+            800f,
+            800f,
+            64,
+            CanvasSprite.SQUARE,
+            "#000000",
+            "fg_slider_1",
+            null
+        ) {
+            runRepeating(10) { _ ->
+                myCanvas.move(80f, 0f, "fg_slider_1")
+            }
+            runLater(11) {
+                myCanvas.remove("fg_slider_1")
+            }
+        }
+
+        myCanvas.drawSprite(
+            -800f,
+            0f,
+            800f,
+            800f,
+            64,
+            CanvasSprite.SQUARE,
+            "#000000",
+            "fg_slider_2",
+            null
+        ) {
+            runRepeating(10) { _ ->
+                myCanvas.move(-80f, 0f, "fg_slider_2")
+            }
+            runLater(11) {
+                myCanvas.remove("fg_slider_2")
             }
         }
 
