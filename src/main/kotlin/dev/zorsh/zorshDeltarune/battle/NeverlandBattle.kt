@@ -131,7 +131,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                     Times.times(Duration.ZERO, Duration.ofMillis(1200), Duration.ZERO)
                 )
             )
-            runLater(24) {
+            runLater(10) {
                 if (pl.player != null) {
                     Bukkit.dispatchCommand(
                         Bukkit.getServer().consoleSender,

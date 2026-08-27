@@ -42,14 +42,14 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             0f,
             800f,
             800f,
-            64,
+            -1,
             CanvasSprite.SQUARE,
             "#000000",
             "fg_slider_1",
             null
         ) {
             runRepeating(10) { _ ->
-                myCanvas.move(80f, 0f, "fg_slider_1")
+                myCanvas.move(20f, 0f, "fg_slider_1")
             }
             runLater(11) {
                 myCanvas.remove("fg_slider_1")
@@ -61,14 +61,14 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             0f,
             800f,
             800f,
-            64,
+            -1,
             CanvasSprite.SQUARE,
             "#000000",
             "fg_slider_2",
             null
         ) {
             runRepeating(10) { _ ->
-                myCanvas.move(-80f, 0f, "fg_slider_2")
+                myCanvas.move(-20f, 0f, "fg_slider_2")
             }
             runLater(11) {
                 myCanvas.remove("fg_slider_2")
