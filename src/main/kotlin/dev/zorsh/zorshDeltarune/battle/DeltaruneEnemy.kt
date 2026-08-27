@@ -13,7 +13,7 @@ abstract class DeltaruneEnemy(
     var isAlive = true
 
     open fun askBoxSize(): Pair<Float, Float> {
-        return 30f to 30f
+        return 60f to 60f
     }
 
     abstract suspend fun attack(onAttackEnds: () -> Unit = {})
