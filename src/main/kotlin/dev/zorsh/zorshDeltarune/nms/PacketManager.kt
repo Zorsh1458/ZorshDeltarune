@@ -585,7 +585,7 @@ class PacketManager {
                 protocolManager.sendServerPacket(player, packetShulker)
                 protocolManager.sendServerPacket(player, packetScale)
                 protocolManager.sendServerPacket(player, packetAnchor)
-                protocolManager.sendServerPacket(player, packet)
+                //protocolManager.sendServerPacket(player, packet)
             }
 
             afterSpawned(entityIdAnchor, entityIdShulker)
