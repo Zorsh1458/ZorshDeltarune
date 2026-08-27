@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title.Times
 import net.kyori.adventure.title.Title.title
@@ -156,6 +157,17 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 
         runLater(200) {
             endBattle()
+        }
+
+        runLater(20) {
+            CoroutineScope(Dispatchers.IO).launch {
+                val job = scope.launch {
+                    battleBoxOpen()
+                }
+                battleJob = job
+                job.join()
+                endBattle()
+            }
         }
 
 //        runLater(20) {
@@ -302,9 +314,9 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 //        battleBox.openAnimation()
         val sizeX = 30f
         val sizeZ = 30f
-        val scale = 0.02
+        val scale = 1 / 16.0
         val playerShulkerWidth = 0.797
-        val soulWidth = 0.06
+        val soulWidth = 0.0
         repeat(ceil(sizeX * scale * 2).toInt()) { x ->
             val loc =
                 battleCenterLocation + Vector3d(x - sizeX * scale, 0.0, sizeZ * scale + playerShulkerWidth - soulWidth)
@@ -334,7 +346,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         }
         shulkerHitboxes.clear()
 //        battleBox.closeAnimation()
-        delay(900)
+//        delay(900)
     }
 
     private suspend fun showPlayersOptions() {
