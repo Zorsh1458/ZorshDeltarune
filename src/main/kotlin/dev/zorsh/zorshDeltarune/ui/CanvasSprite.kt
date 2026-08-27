@@ -31,9 +31,17 @@ enum class CanvasSprite {
         UNKNOWN -> 64 to 32
     }
 
+    fun applyScaling() = when (this) {
+        SQUARE -> false
+        else -> true
+    }
+
     fun getSizeRatios(): Pair<Float, Float> {
-        val size = getSize()
-        return size.first.toFloat() / max(1, size.first - 1) to size.second.toFloat() / max(1, size.second - 1)
+        if (applyScaling()) {
+            val size = getSize()
+            return size.first.toFloat() / max(1, size.first - 1) to size.second.toFloat() / max(1, size.second - 1)
+        }
+        return 1f to 1f
     }
 
     fun isSpriteWidthEven() = getSize().first % 2 == 0
