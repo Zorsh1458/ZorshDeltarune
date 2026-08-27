@@ -126,7 +126,7 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
         loc: Location,
         playerToShow: List<Player> = players.mapNotNull { it.player }
     ) {
-        PacketManager.spawnHitbox(loc, playerToShow) { anchor, shulker ->
+        PacketManager.spawnHitbox(loc, 1.0, playerToShow) { anchor, shulker ->
             shulkerHitboxes += anchor
             shulkerHitboxes += shulker
         }

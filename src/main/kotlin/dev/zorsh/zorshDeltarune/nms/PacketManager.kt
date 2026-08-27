@@ -529,6 +529,7 @@ class PacketManager {
         @JvmStatic
         fun spawnHitbox(
             location: Location,
+            scale: Double,
             players: List<Player>,
             afterSpawned: (Int, Int) -> Unit
         ) {
@@ -567,10 +568,24 @@ class PacketManager {
                 e.printStackTrace()
             }
 
+            val packetScale = PacketContainer(PacketType.Play.Server.UPDATE_ATTRIBUTES)
+            try {
+                val data = ClientboundUpdateAttributesPacket.AttributeSnapshot(
+                    net.minecraft.world.entity.ai.attributes.Attributes.SCALE,
+                    scale,
+                    listOf()
+                )
+                packet.integers.write(0, entityIdShulker)
+                packet.modifier.write(1, listOf(data).toCollection(ArrayList()))
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
             for (player in players.filter { it.isOnline }) {
                 protocolManager.sendServerPacket(player, packetAnchor)
                 protocolManager.sendServerPacket(player, packetShulker)
                 protocolManager.sendServerPacket(player, packet)
+                protocolManager.sendServerPacket(player, packetScale)
             }
 
             afterSpawned(entityIdAnchor, entityIdShulker)

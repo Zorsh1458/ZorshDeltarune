@@ -70,9 +70,10 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 
     private fun newHitboxEntity(
         loc: Location,
+        scale: Double,
         playerToShow: List<Player> = players.mapNotNull { it.player }
     ) {
-        PacketManager.spawnHitbox(loc, playerToShow) { anchor, shulker ->
+        PacketManager.spawnHitbox(loc, scale, playerToShow) { anchor, shulker ->
             shulkerHitboxes += anchor
             shulkerHitboxes += shulker
         }
@@ -312,31 +313,13 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 //            battleBox.sizeY = rand.second
 //        }
 //        battleBox.openAnimation()
-        val sizeX = 30f
-        val sizeZ = 30f
+        val sizeX = 78f
+        val sizeZ = 78f
         val scale = 1 / 16.0
-        val playerShulkerWidth = 0.797
+        val playerWidth = 0.297
         val soulWidth = 0.0
-        repeat(ceil(sizeX * scale * 2).toInt()) { x ->
-            val loc =
-                battleCenterLocation + Vector3d(x - sizeX * scale, 0.0, sizeZ * scale + playerShulkerWidth - soulWidth)
-            newHitboxEntity(loc)
-        }
-        repeat(ceil(sizeX * scale * 2).toInt()) { x ->
-            val loc =
-                battleCenterLocation + Vector3d(x - sizeX * scale, 0.0, -sizeZ * scale - playerShulkerWidth + soulWidth)
-            newHitboxEntity(loc)
-        }
-        repeat(ceil(sizeZ * scale * 2).toInt()) { z ->
-            val loc =
-                battleCenterLocation + Vector3d(sizeX * scale + playerShulkerWidth - soulWidth, 0.0, z - sizeZ * scale)
-            newHitboxEntity(loc)
-        }
-        repeat(ceil(sizeZ * scale * 2).toInt()) { z ->
-            val loc =
-                battleCenterLocation + Vector3d(-sizeX * scale - playerShulkerWidth + soulWidth, 0.0, z - sizeZ * scale)
-            newHitboxEntity(loc)
-        }
+        val loc = battleCenterLocation + Vector3d(0.0, 0.0, sizeZ * scale + sizeX * scale * 0.5 + playerWidth - soulWidth)
+        newHitboxEntity(loc, sizeX * scale)
     }
 
     private suspend fun battleBoxClose() {
