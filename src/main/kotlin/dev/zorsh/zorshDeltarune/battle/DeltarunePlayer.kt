@@ -31,6 +31,8 @@ class DeltarunePlayer(private val uuid: UUID) {
 
     var locked = false
 
+    var initialLocation: Location? = null
+
     var hp = 1000
     var maxhp = 1000
 
@@ -208,12 +210,16 @@ class DeltarunePlayer(private val uuid: UUID) {
         ))
         runLater(6) {
             player?.gameMode = gameMode
+            if (initialLocation != null) {
+                player?.teleport(initialLocation!!)
+            }
         }
     }
 
     fun lockInBattle(location: Location) {
         if (player != null) {
             val myPlayer = player!!
+            initialLocation = myPlayer.location
             myPlayer.teleport(location)
             myPlayer.isGliding = true
             PacketManager.setAttribute(
