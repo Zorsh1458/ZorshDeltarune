@@ -48,13 +48,13 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             "fg_slider_1",
             null
         ) {
-            runRepeating(20) { i ->
-                if (i > 9) {
-                    val t = i - 9
+            runRepeating(30) { i ->
+                if (i > 19) {
+                    val t = i - 19
                     myCanvas.move(160f - t * 16f, 0f, "fg_slider_1")
                 }
             }
-            runLater(21) {
+            runLater(31) {
                 myCanvas.remove("fg_slider_1")
             }
         }
@@ -70,13 +70,13 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             "fg_slider_2",
             null
         ) {
-            runRepeating(20) { i ->
-                if (i > 9) {
-                    val t = i - 9
+            runRepeating(30) { i ->
+                if (i > 19) {
+                    val t = i - 19
                     myCanvas.move(-160f + t * 16f, 0f, "fg_slider_2")
                 }
             }
-            runLater(21) {
+            runLater(31) {
                 myCanvas.remove("fg_slider_2")
             }
         }
@@ -92,13 +92,13 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             "fg_slider_3",
             null
         ) {
-            runRepeating(20) { i ->
-                if (i > 9) {
-                    val t = i - 9
+            runRepeating(30) { i ->
+                if (i > 19) {
+                    val t = i - 19
                     myCanvas.move(160f - t * 16f, 0f, "fg_slider_3")
                 }
             }
-            runLater(21) {
+            runLater(31) {
                 myCanvas.remove("fg_slider_3")
             }
         }
@@ -114,13 +114,13 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             "fg_slider_4",
             null
         ) {
-            runRepeating(20) { i ->
-                if (i > 9) {
-                    val t = i - 9
+            runRepeating(30) { i ->
+                if (i > 19) {
+                    val t = i - 19
                     myCanvas.move(-160f + t * 16f, 0f, "fg_slider_4")
                 }
             }
-            runLater(21) {
+            runLater(31) {
                 myCanvas.remove("fg_slider_4")
             }
         }

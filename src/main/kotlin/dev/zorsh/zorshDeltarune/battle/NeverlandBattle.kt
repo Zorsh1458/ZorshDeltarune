@@ -151,7 +151,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
             }
         }
 
-        runLater(10) {
+        runLater(2) {
             prepareBattle()
             battleCanvas.initCanvas()
             battleCanvas.setupLayout()
