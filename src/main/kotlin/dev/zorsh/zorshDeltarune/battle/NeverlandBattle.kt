@@ -121,7 +121,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         battleUUID = uuid
     }
 
-    override fun getBattleInitialPlayers() = players.filter { it.player?.isOnline == true }
+    override fun getBattleInitialPlayers() = players
 
     override fun getBattlePlayers() = players.filter { it.player?.isOnline == true && it.myBattleUUID == battleUUID }
 

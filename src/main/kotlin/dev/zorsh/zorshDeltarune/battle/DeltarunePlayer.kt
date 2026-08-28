@@ -28,6 +28,10 @@ class DeltarunePlayer(val uuid: UUID) {
 
     var player: Player? = null
 
+    init {
+        player = Bukkit.getPlayer(uuid)
+    }
+
     var myBattleUUID: UUID? = null
 
     var locked = false
