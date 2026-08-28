@@ -23,8 +23,15 @@ void main() {
     vec4 col = texture(InSampler, texCoord);
     col.rgb *= 0.5;
     if (getTimeData() == 1) {
-        vec4 cMenu = texture(MenuUISampler, mod(gl_FragCoord.xy, 64) / 64.0);
-        col.rgb = mix(col.rgb, cMenu.rgb, cMenu.a);
+        vec2 uv = gl_FragCoord.xy;
+        uv.y = ScreenSize.y - uv.y;
+        uv -= 32;
+        uv *= 0.5;
+        vec2 size = textureSize(MenuUISampler, 0);
+        if (uv.x > 0 && uv.x < size.x && uv.y > 0 && uv.y < size.y) {
+            vec4 cMenu = texture(MenuUISampler, mod(gl_FragCoord.xy, size) / size);
+            col.rgb = mix(col.rgb, cMenu.rgb, cMenu.a);
+        }
     }
     fragColor = vec4(col.rgb, 1.0);
 }
