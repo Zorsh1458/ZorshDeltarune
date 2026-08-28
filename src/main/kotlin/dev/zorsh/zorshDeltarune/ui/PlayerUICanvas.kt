@@ -324,7 +324,7 @@ class PlayerUICanvas {
         sy: Float,
         z: Int,
         text: Component,
-        color: ShaderTextColor,
+        color: ShaderTextColor?,
         alignment: TextDisplay.TextAlignment = TextDisplay.TextAlignment.CENTER,
         lineWidth: Int = 1000,
         saveAs: String? = null,
@@ -339,7 +339,7 @@ class PlayerUICanvas {
             loc.pitch = 0f
             PacketManager.spawnTextDisplay(
                 loc,
-                text,
+                if (color != null) text.color(color.value) else text,
                 players,
                 FakeDisplayData(
                     Transformation(
