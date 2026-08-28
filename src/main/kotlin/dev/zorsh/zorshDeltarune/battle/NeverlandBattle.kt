@@ -242,7 +242,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
             val sprite = CanvasSprite.SOUL
             PacketManager.spawnTextDisplay(
                 loc,
-                sprite.toTextValue().color(ShaderTextColor.pure("#ff2222").value),
+                sprite.toTextValue().color(ShaderTextColor.pure("#ff0000").value),
                 getBattlePlayers().mapNotNull { it.player },
                 data = FakeDisplayData(
                     Transformation(

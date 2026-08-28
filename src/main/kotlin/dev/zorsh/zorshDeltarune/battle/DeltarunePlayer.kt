@@ -290,7 +290,7 @@ class DeltarunePlayer(private val uuid: UUID) {
         }
     }
 
-    val savedSouls = mutableMapOf<String, Player>()
+    val savedSouls = mutableMapOf<String, UUID>()
     fun unlockSoul(canvas: BattleCanvas, players: List<Player>) {
         canMoveSoul = true
         players.forEach { pl ->
@@ -299,9 +299,9 @@ class DeltarunePlayer(private val uuid: UUID) {
                 0f, 20f, 1f, 1f, -5,
                 CanvasSprite.SOUL, ShaderTextColor.pure("00ff00"), "soul_for_others_$uuid", pl
             )
-            savedSouls["soul_for_others_$uuid"] = pl
+            savedSouls["soul_for_others_$uuid"] = pl.uniqueId
         }
-        val list = savedSouls.keys
+        val list = savedSouls.toList()
         runInfinite(1) { _, action ->
             if (!locked || !canMoveSoul || battleCenterLoc == null || player == null) {
                 action.cancel()
@@ -309,8 +309,8 @@ class DeltarunePlayer(private val uuid: UUID) {
                 val pos = player!!.location - battleCenterLoc!!
                 val x = pos.x.toFloat() / 16f / 8f
                 val y = pos.z.toFloat() / 16f / 8f
-                list.forEach { name ->
-                    canvas.myCanvas.setPosition(x, y,name)
+                list.forEach { (name, uuid) ->
+                    canvas.myCanvas.setPosition(x, y,name, uuid)
                 }
             }
         }
@@ -318,8 +318,8 @@ class DeltarunePlayer(private val uuid: UUID) {
 
     fun lockSoul(canvas: BattleCanvas) {
         canMoveSoul = false
-        savedSouls.forEach { (name, pl) ->
-            canvas.myCanvas.remove(name, pl)
+        savedSouls.forEach { (name, uuid) ->
+            canvas.myCanvas.remove(name, uuid)
         }
         savedSouls.clear()
     }

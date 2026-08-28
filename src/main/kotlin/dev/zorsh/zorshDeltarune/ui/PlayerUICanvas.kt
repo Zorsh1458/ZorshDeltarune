@@ -76,25 +76,25 @@ class PlayerUICanvas {
         }
     }
 
-    fun remove(objName: String, player: Player? = null) {
-        if (player == null) {
+    fun remove(objName: String, playerUUID: UUID? = null) {
+        if (playerUUID == null) {
             val pair = savedObjects[objName] ?: return
             val obj = pair.entity
             objects.remove(obj)
             savedObjects.remove(objName)
             obj.destroy()
         } else {
-            val pair = savedObjectsPerPlayer[player.uniqueId]?.get(objName) ?: return
+            val pair = savedObjectsPerPlayer[playerUUID]?.get(objName) ?: return
             val obj = pair.entity
-            objectsPerPlayer[player.uniqueId]?.remove(obj)
-            savedObjectsPerPlayer[player.uniqueId]?.remove(objName)
+            objectsPerPlayer[playerUUID]?.remove(obj)
+            savedObjectsPerPlayer[playerUUID]?.remove(objName)
             obj.destroy()
         }
     }
 
-    fun setZ(z: Int, objName: String, player: Player? = null) {
+    fun setZ(z: Int, objName: String, playerUUID: UUID? = null) {
         fun getObj() =
-            if (player == null) savedObjects[objName]?.entity else savedObjectsPerPlayer[player.uniqueId]?.get(objName)?.entity
+            if (playerUUID == null) savedObjects[objName]?.entity else savedObjectsPerPlayer[playerUUID]?.get(objName)?.entity
 
         val obj = getObj() ?: return
         obj.changeOnlyTransformation(
@@ -107,9 +107,9 @@ class PlayerUICanvas {
         )
     }
 
-    fun setScale(sx: Float, sy: Float, objName: String, player: Player? = null) {
+    fun setScale(sx: Float, sy: Float, objName: String, playerUUID: UUID? = null) {
         val holder =
-            (if (player == null) savedObjects[objName] else savedObjectsPerPlayer[player.uniqueId]?.get(objName)) ?: return
+            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName)) ?: return
 
         val obj = holder.entity
         val scaling = holder.scaling
@@ -123,9 +123,9 @@ class PlayerUICanvas {
         )
     }
 
-    fun getScale(objName: String, player: Player? = null): Pair<Float, Float> {
+    fun getScale(objName: String, playerUUID: UUID? = null): Pair<Float, Float> {
         val holder =
-            (if (player == null) savedObjects[objName] else savedObjectsPerPlayer[player.uniqueId]?.get(objName)) ?: throw IllegalStateException("Object $objName not found")
+            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName)) ?: throw IllegalStateException("Object $objName not found")
 
         val obj = holder.entity
         val scaling = holder.scaling
@@ -133,9 +133,9 @@ class PlayerUICanvas {
         return obj.transformation.scale.x / scaling.first / 2.5f to obj.transformation.scale.y / scaling.second / 2.5f
     }
 
-    fun setPosition(px: Float, py: Float, objName: String, player: Player? = null) {
+    fun setPosition(px: Float, py: Float, objName: String, playerUUID: UUID? = null) {
         fun getObj() =
-            if (player == null) savedObjects[objName]?.entity else savedObjectsPerPlayer[player.uniqueId]?.get(objName)?.entity
+            if (playerUUID == null) savedObjects[objName]?.entity else savedObjectsPerPlayer[playerUUID]?.get(objName)?.entity
 
         val obj = getObj() ?: return
         obj.changeOnlyTransformation(
@@ -148,9 +148,9 @@ class PlayerUICanvas {
         )
     }
 
-    fun move(ox: Float, oy: Float, objName: String, player: Player? = null) {
+    fun move(ox: Float, oy: Float, objName: String, playerUUID: UUID? = null) {
         fun getObj() =
-            if (player == null) savedObjects[objName]?.entity else savedObjectsPerPlayer[player.uniqueId]?.get(objName)?.entity
+            if (playerUUID == null) savedObjects[objName]?.entity else savedObjectsPerPlayer[playerUUID]?.get(objName)?.entity
 
         val obj = getObj() ?: return
         obj.changeOnlyTransformation(
