@@ -4,6 +4,8 @@ import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.nms.FakeDisplay
 import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
 import dev.zorsh.zorshDeltarune.nms.PacketManager
+import dev.zorsh.zorshDeltarune.ui.CanvasSprite
+import dev.zorsh.zorshDeltarune.ui.ShaderTextColor
 import dev.zorsh.zorshDeltarune.utils.*
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.Style
@@ -15,6 +17,7 @@ import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.Input
+import org.bukkit.entity.Player
 import org.bukkit.util.Transformation
 import org.bukkit.util.Vector
 import org.joml.Vector3d
@@ -215,6 +218,8 @@ class DeltarunePlayer(private val uuid: UUID) {
         }
     }
 
+    var battleCenterLoc: Location? = null
+
     fun lockInBattle(location: Location) {
         if (player != null) {
             val myPlayer = player!!
@@ -225,6 +230,7 @@ class DeltarunePlayer(private val uuid: UUID) {
             myPlayer.gameMode = GameMode.ADVENTURE
             locked = true
             myPlayer.hideFromEveryone()
+            battleCenterLoc = location
             runInfinite(1) { i, action ->
                 if (!myPlayer.isOnline) {
                     locked = false
@@ -282,6 +288,40 @@ class DeltarunePlayer(private val uuid: UUID) {
                 }
             }
         }
+    }
+
+    val savedSouls = mutableMapOf<String, Player>()
+    fun unlockSoul(canvas: BattleCanvas, players: List<Player>) {
+        canMoveSoul = true
+        players.forEach { pl ->
+            val uuid = UUID.randomUUID()
+            canvas.myCanvas.drawSprite(
+                0f, 20f, 1f, 1f, -5,
+                CanvasSprite.SOUL, ShaderTextColor.pure("00ff00"), "soul_for_others_$uuid", pl
+            )
+            savedSouls["soul_for_others_$uuid"] = pl
+        }
+        val list = savedSouls.keys
+        runInfinite(1) { _, action ->
+            if (!locked || !canMoveSoul || battleCenterLoc == null || player == null) {
+                action.cancel()
+            } else {
+                val pos = player!!.location - battleCenterLoc!!
+                val x = pos.x.toFloat() / 16f / 8f
+                val y = pos.z.toFloat() / 16f / 8f
+                list.forEach { name ->
+                    canvas.myCanvas.setPosition(x, y,name)
+                }
+            }
+        }
+    }
+
+    fun lockSoul(canvas: BattleCanvas) {
+        canMoveSoul = false
+        savedSouls.forEach { (name, pl) ->
+            canvas.myCanvas.remove(name, pl)
+        }
+        savedSouls.clear()
     }
 
     private var inputCallbacksLeft = mutableListOf<() -> Unit>()

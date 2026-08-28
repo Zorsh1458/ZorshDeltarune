@@ -275,7 +275,9 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                 soul.transformation.rightRotation
             )
         )
-        getBattlePlayers().forEach { it.canMoveSoul = true }
+        getBattlePlayers().forEach {
+            it.unlockSoul(battleCanvas, getBattlePlayers().mapNotNull { dp -> dp.player })
+        }
     }
 
     private fun lockSouls() {
@@ -288,7 +290,9 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                 soul.transformation.rightRotation
             )
         )
-        getBattlePlayers().forEach { it.canMoveSoul = false }
+        getBattlePlayers().forEach {
+            it.lockSoul(battleCanvas)
+        }
     }
 
     private fun battleBoxOpen() {
