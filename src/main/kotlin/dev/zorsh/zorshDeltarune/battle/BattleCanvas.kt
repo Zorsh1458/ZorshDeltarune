@@ -295,8 +295,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                     )
 
                     myCanvas.drawSprite(
-                        -55f,
-                        -96f,
+                        -58f,
+                        -100f,
                         20f,
                         4f,
                         58,
@@ -307,13 +307,13 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                     )
 
                     myCanvas.drawSprite(
-                        -60f,
-                        -96f,
+                        -63f,
+                        -100f,
                         15f,
                         4f,
                         57,
                         CanvasSprite.SQUARE,
-                        ShaderTextColor.pure("#31f745"),
+                        ShaderTextColor.pure("#1bf230"),
                         null,
                         dPlayer.player!!
                     )
