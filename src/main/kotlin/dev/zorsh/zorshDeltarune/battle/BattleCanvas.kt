@@ -234,8 +234,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
             // Name
             myCanvas.drawText(
-                -40f,
-                -90f,
+                -41f,
+                -91f,
                 1.2f,
                 1.2f,
                 57,
@@ -249,8 +249,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
             // Name background
             myCanvas.drawText(
-                -40f + 1f,
-                -90f - 1f,
+                -41f + 1f,
+                -91f - 1f,
                 1.2f,
                 1.2f,
                 58,
@@ -263,9 +263,9 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             )
 
             myCanvas.drawText(
-                -40f,
-                -110f,
-                1f,
+                -41f,
+                -106f,
+                1.2f,
                 1.2f,
                 58,
                 Component.text("                       \nHP"),
