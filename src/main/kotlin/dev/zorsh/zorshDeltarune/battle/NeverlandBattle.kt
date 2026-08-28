@@ -130,11 +130,14 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
     override fun startBattle(onEnded: () -> Unit) {
         onEndedAction = onEnded
 
+        for (pl in players) {
+            pl.updatePlayer()
+        }
+
         Bukkit.broadcast(Component.text("Debug: Starting battle $battleUUID"))
         Bukkit.broadcast(Component.text("Debug: Players: ${getBattlePlayers().map { it.player?.name }}"))
 
         for (pl in getBattlePlayers()) {
-            pl.updatePlayer()
             pl.player?.showTitle(
                 title(
                     fontText("\uD701", "#000000", "space:default"),
