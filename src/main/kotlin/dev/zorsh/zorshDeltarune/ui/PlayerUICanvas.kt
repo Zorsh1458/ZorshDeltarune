@@ -326,7 +326,6 @@ class PlayerUICanvas {
         text: Component,
         color: ShaderTextColor,
         alignment: TextDisplay.TextAlignment = TextDisplay.TextAlignment.CENTER,
-        isShadowed: Boolean = false,
         lineWidth: Int = 1000,
         saveAs: String? = null,
         player: Player? = null,
@@ -354,7 +353,7 @@ class PlayerUICanvas {
                 false,
                 alignment,
                 lineWidth,
-                isShadowed
+                false
             ) { ent ->
                 after(ent)
             }
