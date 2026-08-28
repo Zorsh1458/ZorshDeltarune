@@ -29,7 +29,7 @@ void main() {
         uv *= 0.5;
         vec2 size = textureSize(MenuUISampler, 0);
         if (uv.x > 0 && uv.x < size.x && uv.y > 0 && uv.y < size.y) {
-            vec4 cMenu = texture(MenuUISampler, mod(gl_FragCoord.xy, size) / size);
+            vec4 cMenu = texture(MenuUISampler, uv / size);
             col.rgb = mix(col.rgb, cMenu.rgb, cMenu.a);
         }
     }
