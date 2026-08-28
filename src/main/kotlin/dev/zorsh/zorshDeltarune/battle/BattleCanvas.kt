@@ -234,9 +234,9 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
             myCanvas.drawText(
                 0f,
-                -96f,
-                1f,
-                1f,
+                -104f,
+                2f,
+                2f,
                 58,
                 Component.text(dPlayer.player!!.name),
                 ShaderTextColor.pure("#ffffff"),
