@@ -107,6 +107,39 @@ class PlayerUICanvas {
         )
     }
 
+    fun setRotation(angle: Float, objName: String, playerUUID: UUID? = null) {
+        val holder =
+            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName)) ?: return
+
+        val obj = holder.entity
+        val scaling = holder.scaling
+        obj.changeOnlyTransformation(
+            Transformation(
+                obj.transformation.translation,
+                AxisAngle4f(angle, 0f, 0f, 1f),
+                obj.transformation.scale,
+                AxisAngle4f(obj.transformation.rightRotation)
+            )
+        )
+    }
+
+    fun rotate(angle: Float, objName: String, playerUUID: UUID? = null) {
+        val holder =
+            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName)) ?: return
+
+        val obj = holder.entity
+        val scaling = holder.scaling
+        val currentAngle = AxisAngle4f(obj.transformation.leftRotation).angle
+        obj.changeOnlyTransformation(
+            Transformation(
+                obj.transformation.translation,
+                AxisAngle4f(currentAngle + angle, 0f, 0f, 1f),
+                obj.transformation.scale,
+                AxisAngle4f(obj.transformation.rightRotation)
+            )
+        )
+    }
+
     fun setScale(sx: Float, sy: Float, objName: String, playerUUID: UUID? = null) {
         val holder =
             (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName)) ?: return

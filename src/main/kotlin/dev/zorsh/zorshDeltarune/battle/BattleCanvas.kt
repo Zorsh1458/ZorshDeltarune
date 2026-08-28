@@ -16,12 +16,20 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         myCanvas.initialize(players)
     }
 
+    private fun section(name: String, active: Boolean, action: () -> Unit) {
+        if (active) {
+            action()
+        }
+    }
+
     fun closeBattleBox() {
         val scale = myCanvas.getScale("battle_box_inner")
         runRepeating(10) { t ->
             val i = 9 - t
             myCanvas.setScale(i * 0.1f * scale.first, i * 0.1f * scale.second, "battle_box_inner")
             myCanvas.setScale(i * 0.1f * scale.first + 2, i * 0.1f * scale.second + 2, "battle_box_outer")
+            myCanvas.rotate(6.283f / 10f, "battle_box_inner")
+            myCanvas.rotate(6.283f / 10f, "battle_box_outer")
         }
         runLater(12) {
             myCanvas.remove("battle_box_inner")
@@ -30,38 +38,36 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
     }
 
     fun openBattleBox(px: Float, py: Float, sx: Float, sy: Float) {
-        myCanvas.drawSprite(
-            px,
-            py,
-            0f,
-            0f,
-            60,
-            CanvasSprite.SQUARE,
-            ShaderTextColor.pure("#00c400"),
-            "battle_box_outer"
-        )
+        section("BATTLE_BOX", true) {
+            myCanvas.drawSprite(
+                px,
+                py,
+                0f,
+                0f,
+                60,
+                CanvasSprite.SQUARE,
+                ShaderTextColor.pure("#00c400"),
+                "battle_box_outer"
+            )
 
-        myCanvas.drawSprite(
-            px,
-            py,
-            0f,
-            0f,
-            59,
-            CanvasSprite.SQUARE,
-            ShaderTextColor.pure("#000000"),
-            "battle_box_inner"
-        )
+            myCanvas.drawSprite(
+                px,
+                py,
+                0f,
+                0f,
+                59,
+                CanvasSprite.SQUARE,
+                ShaderTextColor.pure("#000000"),
+                "battle_box_inner"
+            )
 
-        runRepeating(10) { t ->
-            val i = t + 1
-            myCanvas.setScale(i * 0.1f * sx, i * 0.1f * sy, "battle_box_inner")
-            myCanvas.setScale(i * 0.1f * sx + 2, i * 0.1f * sy + 2, "battle_box_outer")
-        }
-    }
-
-    private fun section(name: String, active: Boolean, action: () -> Unit) {
-        if (active) {
-            action()
+            runRepeating(10) { t ->
+                val i = t + 1
+                myCanvas.setScale(i * 0.1f * sx, i * 0.1f * sy, "battle_box_inner")
+                myCanvas.setScale(i * 0.1f * sx + 2, i * 0.1f * sy + 2, "battle_box_outer")
+                myCanvas.rotate(6.283f / 10f, "battle_box_inner")
+                myCanvas.rotate(6.283f / 10f, "battle_box_outer")
+            }
         }
     }
 
