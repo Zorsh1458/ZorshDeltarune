@@ -6,6 +6,7 @@ import dev.zorsh.zorshDeltarune.battle.DeltarunePlayer
 import dev.zorsh.zorshDeltarune.battle.NeverlandBattle
 import dev.zorsh.zorshDeltarune.battle.TestEnemy
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
+import dev.zorsh.zorshDeltarune.ui.ShaderTextColor
 import dev.zorsh.zorshDeltarune.utils.runLater
 import dev.zorsh.zorshDeltarune.utils.runRepeating
 import net.kyori.adventure.text.Component
@@ -64,7 +65,7 @@ class NeverlandTestCommand : CommandExecutor, TabCompleter {
                     val dy = args[5].toFloat()
                     val z = args[6].toInt()
                     val color = args[7]
-                    canvas.drawRect(sx, sy, dx, dy, z, color)
+                    canvas.drawRect(sx, sy, dx, dy, z, ShaderTextColor.pure(color))
                 }
                 if (args[1] == "drawSprite") {
                     val canvas = ZorshDeltarune.UIManager.getCanvas(player) ?: return true
@@ -78,7 +79,7 @@ class NeverlandTestCommand : CommandExecutor, TabCompleter {
                     val uuid = UUID.randomUUID()
                     canvas.drawSprite(
                         px, py, sx, sy, z,
-                        CanvasSprite.valueOf(sprite.uppercase()), color,
+                        CanvasSprite.valueOf(sprite.uppercase()), ShaderTextColor.pure(color),
                         "sprite_$uuid"
                     ) {
                         runRepeating(60) { i ->
@@ -99,7 +100,7 @@ class NeverlandTestCommand : CommandExecutor, TabCompleter {
                         val uuid = UUID.randomUUID()
                         canvas.drawSprite(
                             px, py, 1f, 1f, z,
-                            CanvasSprite.valueOf(sprite.uppercase()), "#ffffff",
+                            CanvasSprite.valueOf(sprite.uppercase()), ShaderTextColor.pure("#ffffff"),
                             "sprite_$uuid"
                         ) {
                             runRepeating(60) { i ->
