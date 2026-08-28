@@ -16,6 +16,7 @@ import org.bukkit.entity.TextDisplay.TextAlignment
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Transformation
 import org.joml.*
+import java.util.UUID
 
 @Deprecated("Deprecated in favor of INeverlandBattle")
 abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: List<DeltaruneEnemy>) {
@@ -88,7 +89,7 @@ abstract class DeltaruneBattle(val players: List<DeltarunePlayer>, val enemies: 
         }
         for (pl in players) {
             try {
-                pl.freeFromBattle()
+                pl.freeFromBattle(UUID.randomUUID())
             } catch (ignored: Exception) {}
         }
         destroyBattle()

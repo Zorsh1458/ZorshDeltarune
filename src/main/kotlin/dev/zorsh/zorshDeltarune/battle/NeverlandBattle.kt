@@ -88,7 +88,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
     override fun destroyBattle() {
         for (pl in players) {
             try {
-                pl.freeFromBattle()
+                pl.freeFromBattle(battleUUID)
             } catch (_: Exception) {
             }
         }

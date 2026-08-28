@@ -123,6 +123,7 @@ class DeltarunePlayer(val uuid: UUID) {
     }
 
     fun damage(amount: Int) {
+        if (myBattleUUID == null) return
         player?.playSound(player!!, "soul_hurt", 1f, 1f)
         hp = max(hp - amount, 0)
         onHpUpdated(hp)
@@ -132,7 +133,7 @@ class DeltarunePlayer(val uuid: UUID) {
                 .append(Component.text(" ".repeat(maxhp-hp)).style(Style.style(TextDecoration.UNDERLINED)).color("#aa0000"))
         )
         if (hp == 0) {
-            freeFromBattle()
+            freeFromBattle(myBattleUUID!!)
         }
         noDamageTicks = 40
         runRepeating(40) { i, _ ->
@@ -163,8 +164,9 @@ class DeltarunePlayer(val uuid: UUID) {
         }
     }
 
-    fun freeFromBattle() {
+    fun freeFromBattle(targetUUID: UUID) {
         if (myBattleUUID == null) return
+        if (myBattleUUID != targetUUID) return
         player?.sendMessage(Component.text("Freeing from battle $myBattleUUID"))
         myBattleUUID = null
         locked = false
@@ -230,8 +232,9 @@ class DeltarunePlayer(val uuid: UUID) {
     var battleCenterLoc: Location? = null
 
     fun lockInBattle(location: Location) {
+        val uuid = myBattleUUID ?: return
         if (player != null) {
-            player?.sendMessage(Component.text("Locking to battle $myBattleUUID"))
+            player?.sendMessage(Component.text("Locking to battle $uuid"))
             val myPlayer = player!!
             initialLocation = myPlayer.location
             myPlayer.teleport(location)
@@ -252,7 +255,7 @@ class DeltarunePlayer(val uuid: UUID) {
 
                 if (!locked) {
                     action.cancel()
-                    freeFromBattle()
+                    freeFromBattle(uuid)
                 } else {
                     if (i % 20 == 0) {
                         myPlayer.hideFromEveryone()
