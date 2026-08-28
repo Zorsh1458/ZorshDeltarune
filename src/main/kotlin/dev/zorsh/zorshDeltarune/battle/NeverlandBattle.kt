@@ -134,6 +134,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         Bukkit.broadcast(Component.text("Debug: Players: ${getBattlePlayers().map { it.player?.name }}"))
 
         for (pl in getBattlePlayers()) {
+            pl.updatePlayer()
             pl.player?.showTitle(
                 title(
                     fontText("\uD701", "#000000", "space:default"),

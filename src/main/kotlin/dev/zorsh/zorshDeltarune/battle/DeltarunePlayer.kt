@@ -26,7 +26,7 @@ import kotlin.math.min
 
 class DeltarunePlayer(val uuid: UUID) {
 
-    val player by lazy { Bukkit.getPlayer(uuid) }
+    var player: Player? = null
 
     var myBattleUUID: UUID? = null
 
@@ -76,6 +76,10 @@ class DeltarunePlayer(val uuid: UUID) {
     var battleInfoText: FakeTextDisplay? = null
     var moveMenuTexts: MutableList<FakeDisplay> = mutableListOf()
     var menuSelectorHeart: MenuSelectorHeart? = null
+
+    fun updatePlayer() {
+        player = Bukkit.getPlayer(uuid)
+    }
 
     fun clearMenu() {
         moveMenuTexts.forEach { it.destroy() }
