@@ -160,6 +160,7 @@ class DeltarunePlayer(val uuid: UUID) {
 
     fun freeFromBattle() {
         locked = false
+        myBattleUUID = null
         player?.stopAllSounds()
         inputCallbacksLeft.clear()
         inputCallbacksRight.clear()

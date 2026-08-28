@@ -28,8 +28,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             val i = 9 - t
             myCanvas.setScale(i * 0.1f * scale.first, i * 0.1f * scale.second, "battle_box_inner")
             myCanvas.setScale(i * 0.1f * scale.first + 2, i * 0.1f * scale.second + 2, "battle_box_outer")
-            myCanvas.rotate(6.283f / 10f, "battle_box_inner")
-            myCanvas.rotate(6.283f / 10f, "battle_box_outer")
+            myCanvas.rotate(3.1415f / 10f, "battle_box_inner")
+            myCanvas.rotate(3.1415f / 10f, "battle_box_outer")
         }
         runLater(12) {
             myCanvas.remove("battle_box_inner")
@@ -60,14 +60,14 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                 ShaderTextColor.pure("#000000"),
                 "battle_box_inner"
             )
+        }
 
-            runRepeating(10) { t ->
-                val i = t + 1
-                myCanvas.setScale(i * 0.1f * sx, i * 0.1f * sy, "battle_box_inner")
-                myCanvas.setScale(i * 0.1f * sx + 2, i * 0.1f * sy + 2, "battle_box_outer")
-                myCanvas.rotate(6.283f / 10f, "battle_box_inner")
-                myCanvas.rotate(6.283f / 10f, "battle_box_outer")
-            }
+        runRepeating(10) { t ->
+            val i = t + 1
+            myCanvas.setScale(i * 0.1f * sx, i * 0.1f * sy, "battle_box_inner")
+            myCanvas.setScale(i * 0.1f * sx + 2, i * 0.1f * sy + 2, "battle_box_outer")
+            myCanvas.rotate(3.1415f / 10f, "battle_box_inner")
+            myCanvas.rotate(3.1415f / 10f, "battle_box_outer")
         }
     }
 
