@@ -235,8 +235,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             // Name
             myCanvas.drawText(
                 -40f,
-                -100f,
-                1f,
+                -90f,
+                1.2f,
                 1.2f,
                 57,
                 Component.text("                       \n${dPlayer.player!!.name}"),
@@ -250,8 +250,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             // Name background
             myCanvas.drawText(
                 -40f + 1f,
-                -100f - 1f,
-                1f,
+                -90f - 1f,
+                1.2f,
                 1.2f,
                 58,
                 Component.text("                       \n${dPlayer.player!!.name}"),
