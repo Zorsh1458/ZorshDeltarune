@@ -316,4 +316,50 @@ class PlayerUICanvas {
 
         handleDraw(::drawToPlayers, scaling, saveAs, player, afterSpawn)
     }
+
+    fun drawText(
+        px: Float,
+        py: Float,
+        sx: Float,
+        sy: Float,
+        z: Int,
+        text: Component,
+        color: ShaderTextColor,
+        alignment: TextDisplay.TextAlignment = TextDisplay.TextAlignment.CENTER,
+        isShadowed: Boolean = false,
+        lineWidth: Int = 1000,
+        saveAs: String? = null,
+        player: Player? = null,
+        afterSpawn: () -> Unit = {},
+    ) {
+        fun drawToPlayers(players: List<Player>, after: (FakeTextDisplay) -> Unit) {
+            if (players.isEmpty()) return
+            val actualPlayer = players[0]
+            val loc = actualPlayer.eyeLocation.clone()
+            loc.yaw = 0f
+            loc.pitch = 0f
+            PacketManager.spawnTextDisplay(
+                loc,
+                text,
+                players,
+                FakeDisplayData(
+                    Transformation(
+                        Vector3f(px / 16f, py / 16f + TRANSLATION_BIAS, z / 255f),
+                        AxisAngle4f(),
+                        Vector3f(2.5f * sx, 2.5f * sy, 1f),
+                        AxisAngle4f()
+                    ),
+                    opacity = 253.toByte()
+                ),
+                false,
+                alignment,
+                lineWidth,
+                isShadowed
+            ) { ent ->
+                after(ent)
+            }
+        }
+
+        handleDraw(::drawToPlayers, 1f to 1f, saveAs, player, afterSpawn)
+    }
 }

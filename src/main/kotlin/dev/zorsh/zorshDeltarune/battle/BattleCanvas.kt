@@ -5,7 +5,9 @@ import dev.zorsh.zorshDeltarune.ui.PlayerUICanvas
 import dev.zorsh.zorshDeltarune.ui.ShaderTextColor
 import dev.zorsh.zorshDeltarune.utils.runLater
 import dev.zorsh.zorshDeltarune.utils.runRepeating
+import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
+import org.bukkit.entity.TextDisplay
 
 class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
     val myCanvas = PlayerUICanvas()
@@ -226,6 +228,21 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                 59,
                 CanvasSprite.SQUARE,
                 ShaderTextColor.pure("#000000"),
+                null,
+                dPlayer.player!!
+            )
+
+            myCanvas.drawText(
+                0f,
+                -96f,
+                1f,
+                1f,
+                58,
+                Component.text(dPlayer.player!!.name),
+                ShaderTextColor.pure("#ffffff"),
+                TextDisplay.TextAlignment.CENTER,
+                true,
+                1000,
                 null,
                 dPlayer.player!!
             )
