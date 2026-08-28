@@ -15,21 +15,18 @@ import net.kyori.adventure.title.Title.title
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Location
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.Input
 import org.bukkit.entity.Player
-import org.bukkit.util.Transformation
 import org.bukkit.util.Vector
 import org.joml.Vector3d
 import java.time.Duration
 import java.util.UUID
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.round
 
 class DeltarunePlayer(val uuid: UUID) {
 
-    val player by lazy {  Bukkit.getPlayer(uuid) }
+    val player by lazy { Bukkit.getPlayer(uuid) }
 
     var myBattleUUID: UUID? = null
 
@@ -160,6 +157,7 @@ class DeltarunePlayer(val uuid: UUID) {
 
     fun freeFromBattle() {
         locked = false
+        player?.sendMessage(Component.text("Freeing from battle $myBattleUUID"))
         myBattleUUID = null
         player?.stopAllSounds()
         inputCallbacksLeft.clear()
@@ -224,6 +222,7 @@ class DeltarunePlayer(val uuid: UUID) {
 
     fun lockInBattle(location: Location) {
         if (player != null) {
+            player?.sendMessage(Component.text("Locking to battle $myBattleUUID"))
             val myPlayer = player!!
             initialLocation = myPlayer.location
             myPlayer.teleport(location)
