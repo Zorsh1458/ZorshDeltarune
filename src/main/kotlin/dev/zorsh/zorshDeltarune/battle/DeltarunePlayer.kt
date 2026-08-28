@@ -298,7 +298,7 @@ class DeltarunePlayer(private val uuid: UUID) {
             val uuid = UUID.randomUUID()
             canvas.myCanvas.drawSprite(
                 0f, 20f, 0.5f, 0.5f, -5,
-                CanvasSprite.SOUL, ShaderTextColor.pure("ff0000"), "soul_for_others_$uuid", pl
+                CanvasSprite.SOUL, ShaderTextColor.pure("#00ff00"), "soul_for_others_$uuid", pl
             )
             savedSouls["soul_for_others_$uuid"] = pl.uniqueId
         }
@@ -312,7 +312,7 @@ class DeltarunePlayer(private val uuid: UUID) {
                 val y = pos.z.toFloat() * 16f * 8f
                 Bukkit.broadcast(Component.text("DEBUG: X: ${round(x)} | Y: ${round(y)}"))
                 list.forEach { (name, uuid) ->
-                    canvas.myCanvas.setPosition(x, y,name, uuid)
+                    canvas.myCanvas.setPosition(x, y + 20f,name, uuid)
                 }
             }
         }
