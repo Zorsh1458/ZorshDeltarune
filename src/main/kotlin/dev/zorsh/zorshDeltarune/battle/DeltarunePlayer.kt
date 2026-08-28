@@ -297,8 +297,8 @@ class DeltarunePlayer(private val uuid: UUID) {
         players.forEach { pl ->
             val uuid = UUID.randomUUID()
             canvas.myCanvas.drawSprite(
-                0f, 20f, 0.5f, 0.5f, -5,
-                CanvasSprite.SOUL, ShaderTextColor.pure("#00ff00"), "soul_for_others_$uuid", pl
+                0f, 20f, 1f, 1f, 5,
+                CanvasSprite.SOUL, ShaderTextColor.pure("#880000"), "soul_for_others_$uuid", pl
             )
             savedSouls["soul_for_others_$uuid"] = pl.uniqueId
         }
