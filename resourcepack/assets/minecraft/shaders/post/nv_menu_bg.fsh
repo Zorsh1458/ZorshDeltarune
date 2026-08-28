@@ -26,7 +26,7 @@ void main() {
         vec2 uv = gl_FragCoord.xy;
         uv.y = ScreenSize.y - uv.y;
         uv -= 32;
-        uv *= 0.5;
+        uv *= 0.333;
         vec2 size = textureSize(MenuUISampler, 0);
         if (uv.x > 0 && uv.x < size.x && uv.y > 0 && uv.y < size.y) {
             vec4 cMenu = texture(MenuUISampler, uv / size);
