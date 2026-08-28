@@ -25,6 +25,7 @@ import java.time.Duration
 import java.util.UUID
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.round
 
 class DeltarunePlayer(private val uuid: UUID) {
 
@@ -296,19 +297,20 @@ class DeltarunePlayer(private val uuid: UUID) {
         players.forEach { pl ->
             val uuid = UUID.randomUUID()
             canvas.myCanvas.drawSprite(
-                0f, 20f, 1f, 1f, -5,
-                CanvasSprite.SOUL, ShaderTextColor.pure("00ff00"), "soul_for_others_$uuid", pl
+                0f, 20f, 0.5f, 0.5f, -5,
+                CanvasSprite.SOUL, ShaderTextColor.pure("ff0000"), "soul_for_others_$uuid", pl
             )
             savedSouls["soul_for_others_$uuid"] = pl.uniqueId
         }
-        val list = savedSouls.toList()
+        val list = savedSouls.toMap()
         runInfinite(1) { _, action ->
             if (!locked || !canMoveSoul || battleCenterLoc == null || player == null) {
                 action.cancel()
             } else {
                 val pos = player!!.location - battleCenterLoc!!
-                val x = pos.x.toFloat() / 16f / 8f
-                val y = pos.z.toFloat() / 16f / 8f
+                val x = pos.x.toFloat() * 16f * 8f
+                val y = pos.z.toFloat() * 16f * 8f
+                Bukkit.broadcast(Component.text("DEBUG: X: ${round(x)} | Y: ${round(y)}"))
                 list.forEach { (name, uuid) ->
                     canvas.myCanvas.setPosition(x, y,name, uuid)
                 }
