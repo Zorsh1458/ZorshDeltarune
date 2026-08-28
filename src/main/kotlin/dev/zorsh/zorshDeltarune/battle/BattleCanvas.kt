@@ -234,13 +234,13 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
             myCanvas.drawText(
                 0f,
-                -104f,
-                2f,
-                2f,
+                -92f,
+                1f,
+                1f,
                 58,
-                Component.text(dPlayer.player!!.name),
+                Component.text("                    \n${dPlayer.player!!.name}"),
                 ShaderTextColor.pure("#ffffff"),
-                TextDisplay.TextAlignment.CENTER,
+                TextDisplay.TextAlignment.LEFT,
                 1000,
                 null,
                 dPlayer.player!!
