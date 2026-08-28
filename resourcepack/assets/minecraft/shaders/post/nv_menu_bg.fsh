@@ -23,6 +23,7 @@ void main() {
     vec4 col = texture(InSampler, texCoord);
     col.rgb *= 0.5;
     if (getTimeData() == 1) {
+        col.rgb *= 0.5;
         vec2 uv = gl_FragCoord.xy;
         uv.y = ScreenSize.y - uv.y;
         uv -= 32;
