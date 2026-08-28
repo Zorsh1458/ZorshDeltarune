@@ -308,9 +308,8 @@ class DeltarunePlayer(private val uuid: UUID) {
                 action.cancel()
             } else {
                 val pos = player!!.location - battleCenterLoc!!
-                val x = pos.x.toFloat() * 16f * 8f
+                val x = -pos.x.toFloat() * 16f * 8f
                 val y = pos.z.toFloat() * 16f * 8f
-                Bukkit.broadcast(Component.text("DEBUG: X: ${round(x)} | Y: ${round(y)}"))
                 list.forEach { (name, uuid) ->
                     canvas.myCanvas.setPosition(x, y + 20f,name, uuid)
                 }
