@@ -198,7 +198,7 @@ class PlayerUICanvas {
         dx: Float,
         dy: Float,
         z: Int,
-        hexColor: String,
+        color: ShaderTextColor,
         saveAs: String? = null,
         player: Player? = null,
         afterSpawn: () -> Unit = {},
@@ -213,7 +213,7 @@ class PlayerUICanvas {
             val scaleY = dy - sy + 1
             PacketManager.spawnTextDisplay(
                 loc,
-                Component.text("\uF001").font("space:dbattle").color(hexColor),
+                Component.text("\uF001").font("space:dbattle").color(color.value),
                 players,
                 FakeDisplayData(
                     Transformation(
@@ -280,7 +280,7 @@ class PlayerUICanvas {
         sy: Float,
         z: Int,
         sprite: CanvasSprite,
-        hexColor: String,
+        color: ShaderTextColor,
         saveAs: String? = null,
         player: Player? = null,
         afterSpawn: () -> Unit = {},
@@ -294,7 +294,7 @@ class PlayerUICanvas {
             loc.pitch = 0f
             PacketManager.spawnTextDisplay(
                 loc,
-                sprite.toTextValue().color(hexColor),
+                sprite.toTextValue().color(color.value),
                 players,
                 FakeDisplayData(
                     Transformation(

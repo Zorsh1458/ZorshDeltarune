@@ -154,24 +154,6 @@ void main() {
         fragColor = vec4(0.0, 1.0, 0.0, 1.0);
     }
 
-    if (control.x == 253) {
-        if (control.y == 1) {
-            float z = control.z * 1.0;
-            vec2 uv = gl_FragCoord.xy / ScreenSize;
-
-            vec3 col = deltaruneBg(uv, 0.8333);
-            fragColor = vec4(mix(col, vec3(0.0), z / 255.0), 1.0);
-            fragColor = REMOVE_BLUE(fragColor);
-            return;
-        }
-        if (control.y == 2) {
-            vec4 def = apply_fog(texture(Sampler0, texCoord0) * ColorModulator, sphericalVertexDistance, cylindricalVertexDistance, FogEnvironmentalStart, FogEnvironmentalEnd, FogRenderDistanceStart, FogRenderDistanceEnd, FogColor);
-            fragColor = mix(def, vec4(1.0), sin(GameTime * 16383.0 / 14.0 * 6.283 * 2.0) * 0.5 + 0.5);
-            fragColor = REMOVE_BLUE(fragColor);
-            return;
-        }
-    }
-
     // RED (x):
     //     EVEN = LEAVE COLOR
     //     ODD = EFFECT CLASS
@@ -248,6 +230,21 @@ void main() {
                 }
             }
             fragColor.a *= vertexColor.a;
+        }
+        if (EFFECT == 4) {
+            float z = PARAMETER;
+            vec2 uv = gl_FragCoord.xy / ScreenSize;
+
+            vec3 col = deltaruneBg(uv, 0.8333);
+            fragColor = vec4(mix(col, vec3(0.0), z / 255.0), 1.0);
+            fragColor = REMOVE_BLUE(fragColor);
+            return;
+        }
+        if (EFFECT == 5) {
+            vec4 def = texture(Sampler0, texCoord0);
+            fragColor = mix(def, vec4(1.0), sin(GameTime * 16383.0 / 14.0 * 6.283 * 2.0) * 0.5 + 0.5);
+            fragColor = REMOVE_BLUE(fragColor);
+            return;
         }
     }
 

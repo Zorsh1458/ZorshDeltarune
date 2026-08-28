@@ -2,6 +2,7 @@ package dev.zorsh.zorshDeltarune.battle
 
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.ui.PlayerUICanvas
+import dev.zorsh.zorshDeltarune.ui.ShaderTextColor
 import dev.zorsh.zorshDeltarune.utils.runLater
 import dev.zorsh.zorshDeltarune.utils.runRepeating
 import org.bukkit.entity.Player
@@ -20,7 +21,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             myCanvas.setScale(i * 0.1f * scale.first, i * 0.1f * scale.second, "battle_box_inner")
             myCanvas.setScale(i * 0.1f * scale.first + 2, i * 0.1f * scale.second + 2, "battle_box_outer")
         }
-        runLater(11) {
+        runLater(12) {
             myCanvas.remove("battle_box_inner")
             myCanvas.remove("battle_box_outer")
         }
@@ -34,7 +35,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             0f,
             60,
             CanvasSprite.SQUARE,
-            "#00c400",
+            ShaderTextColor.pure("#00c400"),
             "battle_box_outer"
         )
 
@@ -45,7 +46,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             0f,
             59,
             CanvasSprite.SQUARE,
-            "#000000",
+            ShaderTextColor.pure("#000000"),
             "battle_box_inner"
         )
 
@@ -66,7 +67,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                 0f,
                 16,
                 enemy.value.canvasSprite,
-                "#ffffff",
+                ShaderTextColor.pure("#ffffff"),
                 "enemy_${enemy.index}"
             ) {
                 runLater(10 + enemy.index.toLong() * 1L) {
@@ -86,7 +87,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             800f,
             -2,
             CanvasSprite.SQUARE,
-            "#000000",
+            ShaderTextColor.pure("#000000"),
             "fg_slider_1"
         ) {
             runRepeating(30) { i ->
@@ -107,7 +108,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             800f,
             -2,
             CanvasSprite.SQUARE,
-            "#000000",
+            ShaderTextColor.pure("#000000"),
             "fg_slider_2"
         ) {
             runRepeating(30) { i ->
@@ -128,7 +129,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             800f,
             -1,
             CanvasSprite.SQUARE,
-            "#ffffff",
+            ShaderTextColor.pure("#ffffff"),
             "fg_slider_3"
         ) {
             runRepeating(30) { i ->
@@ -149,7 +150,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             800f,
             -1,
             CanvasSprite.SQUARE,
-            "#ffffff",
+            ShaderTextColor.pure("#ffffff"),
             "fg_slider_4"
         ) {
             runRepeating(30) { i ->
@@ -170,7 +171,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             800f,
             128,
             CanvasSprite.SQUARE,
-            "#fd0100"
+            ShaderTextColor.effect(1, 4, 0)
         )
 
         myCanvas.drawSprite(
@@ -180,7 +181,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             400f,
             64,
             CanvasSprite.SQUARE,
-            "#000000"
+            ShaderTextColor.pure("#000000")
         )
 
         myCanvas.drawSprite(
@@ -190,7 +191,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             1f,
             63,
             CanvasSprite.SQUARE,
-            "#2e1e25"
+            ShaderTextColor.pure("#2e1e25")
         )
 
         myCanvas.drawSprite(
@@ -200,7 +201,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             1f,
             63,
             CanvasSprite.SQUARE,
-            "#2e1e25"
+            ShaderTextColor.pure("#2e1e25")
         )
 
         val dPlayers = battle.getBattlePlayers().filter { it.player != null && it.player?.isOnline == true }
