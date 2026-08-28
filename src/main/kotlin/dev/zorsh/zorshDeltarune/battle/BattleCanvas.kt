@@ -59,222 +59,266 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         }
     }
 
+    private fun section(name: String, active: Boolean, action: () -> Unit) {
+        if (active) {
+            action()
+        }
+    }
+
     fun setupLayout() {
-        val spritedEnemies = battle.getBattleEnemies().filterIsInstance<SpritedEnemy>()
-        for (enemy in spritedEnemies.reversed().withIndex()) {
-            myCanvas.drawSprite(
-                320f,
-                20f - (spritedEnemies.size - 1) * 24f + enemy.index * 72f,
-                0f,
-                0f,
-                16,
-                enemy.value.canvasSprite,
-                ShaderTextColor.pure("#ffffff"),
-                "enemy_${enemy.index}"
-            ) {
-                runLater(10 + enemy.index.toLong() * 1L) {
-                    runRepeating(10) { t ->
-                        val i = t + 1
-                        myCanvas.setScale(i / 10f, i / 10f, "enemy_${enemy.index}")
-                        myCanvas.move(-20f + i * 2f, 0f, "enemy_${enemy.index}")
+        section("ENEMIES", true) {
+            val spritedEnemies = battle.getBattleEnemies().filterIsInstance<SpritedEnemy>()
+            for (enemy in spritedEnemies.reversed().withIndex()) {
+                myCanvas.drawSprite(
+                    320f,
+                    20f - (spritedEnemies.size - 1) * 24f + enemy.index * 72f,
+                    0f,
+                    0f,
+                    16,
+                    enemy.value.canvasSprite,
+                    ShaderTextColor.pure("#ffffff"),
+                    "enemy_${enemy.index}"
+                ) {
+                    runLater(10 + enemy.index.toLong() * 1L) {
+                        runRepeating(10) { t ->
+                            val i = t + 1
+                            myCanvas.setScale(i / 10f, i / 10f, "enemy_${enemy.index}")
+                            myCanvas.move(-20f + i * 2f, 0f, "enemy_${enemy.index}")
+                        }
                     }
                 }
             }
         }
 
-        myCanvas.drawSprite(
-            790f,
-            0f,
-            800f,
-            800f,
-            -2,
-            CanvasSprite.SQUARE,
-            ShaderTextColor.pure("#000000"),
-            "fg_slider_1"
-        ) {
-            runRepeating(30) { i ->
-                if (i > 19) {
-                    val t = i - 19
-                    myCanvas.move(160f - t * 16f, 0f, "fg_slider_1")
-                }
-            }
-            runLater(31) {
-                myCanvas.remove("fg_slider_1")
-            }
-        }
-
-        myCanvas.drawSprite(
-            -790f,
-            0f,
-            800f,
-            800f,
-            -2,
-            CanvasSprite.SQUARE,
-            ShaderTextColor.pure("#000000"),
-            "fg_slider_2"
-        ) {
-            runRepeating(30) { i ->
-                if (i > 19) {
-                    val t = i - 19
-                    myCanvas.move(-160f + t * 16f, 0f, "fg_slider_2")
-                }
-            }
-            runLater(31) {
-                myCanvas.remove("fg_slider_2")
-            }
-        }
-
-        myCanvas.drawSprite(
-            790f,
-            0f,
-            801f,
-            800f,
-            -1,
-            CanvasSprite.SQUARE,
-            ShaderTextColor.pure("#ffffff"),
-            "fg_slider_3"
-        ) {
-            runRepeating(30) { i ->
-                if (i > 19) {
-                    val t = i - 19
-                    myCanvas.move(160f - t * 16f, 0f, "fg_slider_3")
-                }
-            }
-            runLater(31) {
-                myCanvas.remove("fg_slider_3")
-            }
-        }
-
-        myCanvas.drawSprite(
-            -790f,
-            0f,
-            801f,
-            800f,
-            -1,
-            CanvasSprite.SQUARE,
-            ShaderTextColor.pure("#ffffff"),
-            "fg_slider_4"
-        ) {
-            runRepeating(30) { i ->
-                if (i > 19) {
-                    val t = i - 19
-                    myCanvas.move(-160f + t * 16f, 0f, "fg_slider_4")
-                }
-            }
-            runLater(31) {
-                myCanvas.remove("fg_slider_4")
-            }
-        }
-
-        myCanvas.drawSprite(
-            0f,
-            0f,
-            800f,
-            800f,
-            128,
-            CanvasSprite.SQUARE,
-            ShaderTextColor.effect(1, 4, 0)
-        )
-
-        myCanvas.drawSprite(
-            0f,
-            -478f,
-            800f,
-            400f,
-            64,
-            CanvasSprite.SQUARE,
-            ShaderTextColor.pure("#000000")
-        )
-
-        myCanvas.drawSprite(
-            0f,
-            -78f,
-            800f,
-            1f,
-            32,
-            CanvasSprite.SQUARE,
-            ShaderTextColor.pure("#2e1e25")
-        )
-
-        myCanvas.drawSprite(
-            0f,
-            -114f,
-            800f,
-            1f,
-            32,
-            CanvasSprite.SQUARE,
-            ShaderTextColor.pure("#2e1e25")
-        )
-
-        val dPlayers = battle.getBattlePlayers().filter { it.player != null && it.player?.isOnline == true }
-        for (dPlayer in dPlayers) {
+        section("BG_SLIDER", true) {
             myCanvas.drawSprite(
+                790f,
                 0f,
-                -96f,
-                100f,
-                19f,
-                60,
-                CanvasSprite.SQUARE,
-                ShaderTextColor.pure("#00ffff"),
-                null,
-                dPlayer.player!!
-            )
-
-            myCanvas.drawSprite(
-                0f,
-                -96f,
-                98f,
-                17f,
-                59,
+                800f,
+                800f,
+                -2,
                 CanvasSprite.SQUARE,
                 ShaderTextColor.pure("#000000"),
-                null,
-                dPlayer.player!!
-            )
+                "fg_slider_1"
+            ) {
+                runRepeating(30) { i ->
+                    if (i > 19) {
+                        val t = i - 19
+                        myCanvas.move(160f - t * 16f, 0f, "fg_slider_1")
+                    }
+                }
+                runLater(31) {
+                    myCanvas.remove("fg_slider_1")
+                }
+            }
 
-            // Name
-            myCanvas.drawText(
-                -41f,
-                -92f,
-                1.2f,
-                1.2f,
-                57,
-                Component.text("                       \n${dPlayer.player!!.name}"),
+            myCanvas.drawSprite(
+                -790f,
+                0f,
+                800f,
+                800f,
+                -2,
+                CanvasSprite.SQUARE,
+                ShaderTextColor.pure("#000000"),
+                "fg_slider_2"
+            ) {
+                runRepeating(30) { i ->
+                    if (i > 19) {
+                        val t = i - 19
+                        myCanvas.move(-160f + t * 16f, 0f, "fg_slider_2")
+                    }
+                }
+                runLater(31) {
+                    myCanvas.remove("fg_slider_2")
+                }
+            }
+
+            myCanvas.drawSprite(
+                790f,
+                0f,
+                801f,
+                800f,
+                -1,
+                CanvasSprite.SQUARE,
                 ShaderTextColor.pure("#ffffff"),
-                TextDisplay.TextAlignment.LEFT,
-                1000,
-                null,
-                dPlayer.player!!
-            )
+                "fg_slider_3"
+            ) {
+                runRepeating(30) { i ->
+                    if (i > 19) {
+                        val t = i - 19
+                        myCanvas.move(160f - t * 16f, 0f, "fg_slider_3")
+                    }
+                }
+                runLater(31) {
+                    myCanvas.remove("fg_slider_3")
+                }
+            }
 
-            // Name background
-            myCanvas.drawText(
-                -41f + 1f,
-                -92f - 1f,
-                1.2f,
-                1.2f,
-                58,
-                Component.text("                       \n${dPlayer.player!!.name}"),
-                ShaderTextColor.pure("#444444"),
-                TextDisplay.TextAlignment.LEFT,
-                1000,
-                null,
-                dPlayer.player!!
-            )
-
-            myCanvas.drawText(
-                -41f,
-                -107f,
-                1.2f,
-                1.2f,
-                58,
-                Component.text("                       \nHP"),
+            myCanvas.drawSprite(
+                -790f,
+                0f,
+                801f,
+                800f,
+                -1,
+                CanvasSprite.SQUARE,
                 ShaderTextColor.pure("#ffffff"),
-                TextDisplay.TextAlignment.LEFT,
-                1000,
-                null,
-                dPlayer.player!!
+                "fg_slider_4"
+            ) {
+                runRepeating(30) { i ->
+                    if (i > 19) {
+                        val t = i - 19
+                        myCanvas.move(-160f + t * 16f, 0f, "fg_slider_4")
+                    }
+                }
+                runLater(31) {
+                    myCanvas.remove("fg_slider_4")
+                }
+            }
+        }
+
+        section("BATTLE_FIELD_BG", true) {
+            myCanvas.drawSprite(
+                0f,
+                0f,
+                800f,
+                800f,
+                128,
+                CanvasSprite.SQUARE,
+                ShaderTextColor.effect(1, 4, 0)
             )
+
+            myCanvas.drawSprite(
+                0f,
+                -478f,
+                800f,
+                400f,
+                64,
+                CanvasSprite.SQUARE,
+                ShaderTextColor.pure("#000000")
+            )
+
+            myCanvas.drawSprite(
+                0f,
+                -78f,
+                800f,
+                1f,
+                32,
+                CanvasSprite.SQUARE,
+                ShaderTextColor.pure("#2e1e25")
+            )
+
+            myCanvas.drawSprite(
+                0f,
+                -114f,
+                800f,
+                1f,
+                32,
+                CanvasSprite.SQUARE,
+                ShaderTextColor.pure("#2e1e25")
+            )
+        }
+
+        section("PLAYER_STUFF", true) {
+            val dPlayers = battle.getBattlePlayers().filter { it.player != null && it.player?.isOnline == true }
+            for (dPlayer in dPlayers) {
+                section("SELECTION_BOX_DECORATION", true) {
+                    myCanvas.drawSprite(
+                        0f,
+                        -96f,
+                        100f,
+                        19f,
+                        60,
+                        CanvasSprite.SQUARE,
+                        ShaderTextColor.pure("#00ffff"),
+                        null,
+                        dPlayer.player!!
+                    )
+
+                    myCanvas.drawSprite(
+                        0f,
+                        -96f,
+                        98f,
+                        17f,
+                        59,
+                        CanvasSprite.SQUARE,
+                        ShaderTextColor.pure("#000000"),
+                        null,
+                        dPlayer.player!!
+                    )
+                }
+
+                section("PLAYER_NAME", true) {
+                    // Name
+                    myCanvas.drawText(
+                        -41f,
+                        -92f,
+                        1.2f,
+                        1.2f,
+                        57,
+                        Component.text("                       \n${dPlayer.player!!.name}"),
+                        ShaderTextColor.pure("#ffffff"),
+                        TextDisplay.TextAlignment.LEFT,
+                        1000,
+                        null,
+                        dPlayer.player!!
+                    )
+
+                    // Name background
+                    myCanvas.drawText(
+                        -41f + 1f,
+                        -92f - 1f,
+                        1.2f,
+                        1.2f,
+                        58,
+                        Component.text("                       \n${dPlayer.player!!.name}"),
+                        ShaderTextColor.pure("#444444"),
+                        TextDisplay.TextAlignment.LEFT,
+                        1000,
+                        null,
+                        dPlayer.player!!
+                    )
+                }
+
+                section("HEALTH_BAR", true) {
+                    myCanvas.drawText(
+                        -41f,
+                        -107f,
+                        1.2f,
+                        1.2f,
+                        58,
+                        Component.text("                       \nHP"),
+                        ShaderTextColor.pure("#ffffff"),
+                        TextDisplay.TextAlignment.LEFT,
+                        1000,
+                        null,
+                        dPlayer.player!!
+                    )
+
+                    myCanvas.drawSprite(
+                        -41f,
+                        -107f,
+                        20f,
+                        4f,
+                        58,
+                        CanvasSprite.SQUARE,
+                        ShaderTextColor.pure("#6b0e19"),
+                        null,
+                        dPlayer.player!!
+                    )
+
+                    myCanvas.drawSprite(
+                        -46f,
+                        -107f,
+                        15f,
+                        4f,
+                        57,
+                        CanvasSprite.SQUARE,
+                        ShaderTextColor.pure("#31f745"),
+                        null,
+                        dPlayer.player!!
+                    )
+                }
+            }
         }
     }
 }
