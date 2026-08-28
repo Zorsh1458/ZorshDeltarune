@@ -156,9 +156,10 @@ class DeltarunePlayer(val uuid: UUID) {
     }
 
     fun freeFromBattle() {
-        locked = false
+        if (myBattleUUID == null) return
         player?.sendMessage(Component.text("Freeing from battle $myBattleUUID"))
         myBattleUUID = null
+        locked = false
         player?.stopAllSounds()
         inputCallbacksLeft.clear()
         inputCallbacksRight.clear()
