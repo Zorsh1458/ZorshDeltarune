@@ -125,6 +125,15 @@
             "chars": [
                 "\uF00C"
             ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/soul_other.png",
+            "height": 20,
+            "ascent": 8,
+            "chars": [
+                "\uF00D"
+            ]
         }
     ]
 }

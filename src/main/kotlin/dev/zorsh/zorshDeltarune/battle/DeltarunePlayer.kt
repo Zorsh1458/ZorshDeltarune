@@ -27,7 +27,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.round
 
-class DeltarunePlayer(private val uuid: UUID) {
+class DeltarunePlayer(val uuid: UUID) {
 
     val player by lazy {  Bukkit.getPlayer(uuid) }
 
@@ -298,13 +298,17 @@ class DeltarunePlayer(private val uuid: UUID) {
             val uuid = UUID.randomUUID()
             canvas.myCanvas.drawSprite(
                 0f, 20f, 1f, 1f, 5,
-                CanvasSprite.SOUL, ShaderTextColor.pure("#880000"), "soul_for_others_$uuid", pl
+                CanvasSprite.SOUL_OTHER, ShaderTextColor.pure("#880000"), "soul_for_others_$uuid", pl
             )
             savedSouls["soul_for_others_$uuid"] = pl.uniqueId
         }
         val list = savedSouls.toMap()
         runInfinite(1) { _, action ->
             if (!locked || !canMoveSoul || battleCenterLoc == null || player == null) {
+                savedSouls.forEach { (name, uuid) ->
+                    canvas.myCanvas.remove(name, uuid)
+                }
+                savedSouls.clear()
                 action.cancel()
             } else {
                 val pos = player!!.location - battleCenterLoc!!
@@ -317,12 +321,8 @@ class DeltarunePlayer(private val uuid: UUID) {
         }
     }
 
-    fun lockSoul(canvas: BattleCanvas) {
+    fun lockSoul() {
         canMoveSoul = false
-        savedSouls.forEach { (name, uuid) ->
-            canvas.myCanvas.remove(name, uuid)
-        }
-        savedSouls.clear()
     }
 
     private var inputCallbacksLeft = mutableListOf<() -> Unit>()

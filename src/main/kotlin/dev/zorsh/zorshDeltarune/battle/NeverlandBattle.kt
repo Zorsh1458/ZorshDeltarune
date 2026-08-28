@@ -275,8 +275,8 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                 soul.transformation.rightRotation
             )
         )
-        getBattlePlayers().forEach {
-            it.unlockSoul(battleCanvas, getBattlePlayers().mapNotNull { dp -> dp.player })
+        getBattlePlayers().forEach { battlePlayer ->
+            battlePlayer.unlockSoul(battleCanvas, getBattlePlayers().mapNotNull { dp -> dp.player }.filter { pl -> pl.uniqueId != battlePlayer.uuid })
         }
     }
 
@@ -291,7 +291,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
             )
         )
         getBattlePlayers().forEach {
-            it.lockSoul(battleCanvas)
+            it.lockSoul()
         }
     }
 

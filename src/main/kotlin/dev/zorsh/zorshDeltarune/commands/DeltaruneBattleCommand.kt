@@ -18,9 +18,7 @@ class DeltaruneBattleCommand : CommandExecutor, TabCompleter {
                 .mapNotNull { Bukkit.getPlayer(it) }
                 .filter { ZorshDeltarune.getDPlayer(it.uniqueId)?.locked != true }
                 .map {
-                    val dPlayer = DeltarunePlayer(it.uniqueId)
-                    ZorshDeltarune.deltarunePlayer[it.uniqueId] = dPlayer
-                    dPlayer
+                    ZorshDeltarune.getDPlayer(it.uniqueId) ?: (DeltarunePlayer(it.uniqueId).also { dp -> ZorshDeltarune.deltarunePlayer[it.uniqueId] = dp })
                 }
             if (dPlayers.isNotEmpty()) {
                 val battle = NeverlandBattle(
