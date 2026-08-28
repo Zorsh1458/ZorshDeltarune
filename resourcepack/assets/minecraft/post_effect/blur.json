@@ -11,6 +11,12 @@
                     "sampler_name": "In",
                     "target": "minecraft:main",
                     "bilinear": true
+                },
+                {
+                    "sampler_name": "MenuUI",
+                    "location": "minecraft:menu_ui",
+                    "width": 64.0,
+                    "height": 64.0
                 }
             ],
             "output": "swap",
