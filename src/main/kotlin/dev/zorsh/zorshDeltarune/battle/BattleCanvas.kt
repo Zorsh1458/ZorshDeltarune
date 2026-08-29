@@ -225,6 +225,16 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
             myCanvas.drawSprite(
                 0f,
+                -514f,
+                800f,
+                400f,
+                32,
+                CanvasSprite.SQUARE,
+                ShaderTextColor.pure("#000000")
+            )
+
+            myCanvas.drawSprite(
+                0f,
                 -78f,
                 800f,
                 1f,
@@ -238,7 +248,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                 -114f,
                 800f,
                 1f,
-                32,
+                31,
                 CanvasSprite.SQUARE,
                 ShaderTextColor.pure("#2e1e25")
             )
@@ -359,17 +369,73 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
                 section("BUTTONS", true) {
                     myCanvas.drawSprite(
+                        -70f,
+                        -132.5f,
+                        1f,
+                        1f,
+                        57,
+                        CanvasSprite.DBUTTON_FIGHT,
+                        ShaderTextColor.pure("#cccccc"),
+                        "player_button_fight",
+                        dPlayer.player!!
+                    ) {
+                        playerOptionsObjectNames += "player_button_fight"
+                    }
+
+                    myCanvas.drawSprite(
+                        -35f,
+                        -132.5f,
+                        1f,
+                        1f,
+                        57,
+                        CanvasSprite.DBUTTON_ACT,
+                        ShaderTextColor.pure("#cccccc"),
+                        "player_button_act",
+                        dPlayer.player!!
+                    ) {
+                        playerOptionsObjectNames += "player_button_act"
+                    }
+
+                    myCanvas.drawSprite(
                         0f,
                         -132.5f,
                         1f,
                         1f,
                         57,
                         CanvasSprite.DBUTTON_ITEM,
-                        ShaderTextColor.pure("#ff8800"),
+                        ShaderTextColor.pure("#cccccc"),
                         "player_button_item",
                         dPlayer.player!!
                     ) {
                         playerOptionsObjectNames += "player_button_item"
+                    }
+
+                    myCanvas.drawSprite(
+                        35f,
+                        -132.5f,
+                        1f,
+                        1f,
+                        57,
+                        CanvasSprite.DBUTTON_MERCY,
+                        ShaderTextColor.pure("#cccccc"),
+                        "player_button_mercy",
+                        dPlayer.player!!
+                    ) {
+                        playerOptionsObjectNames += "player_button_mercy"
+                    }
+
+                    myCanvas.drawSprite(
+                        70f,
+                        -132.5f,
+                        1f,
+                        1f,
+                        57,
+                        CanvasSprite.DBUTTON_DEFEND,
+                        ShaderTextColor.pure("#cccccc"),
+                        "player_button_defend",
+                        dPlayer.player!!
+                    ) {
+                        playerOptionsObjectNames += "player_button_defend"
                     }
                 }
             }
