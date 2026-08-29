@@ -125,7 +125,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 
     override fun getBattleEnemies() = enemies
 
-    override fun createProjectile(px: Float, py: Float, projectileData: ProjectileData, afterCreated: (PlayerUICanvas, String) -> Unit) {
+    override fun createProjectile(px: Float, py: Float, projectileData: ProjectileData, afterCreated: (PlayerUICanvas, String, () -> Unit) -> Unit) {
         val projId = UUID.randomUUID()
         battleCanvas.myCanvas.drawSprite(px, py, 1f, 1f, 48, projectileData.sprites.first(), ShaderTextColor.pure("#ffffff"), "projectile_$projId") {
             if (projectileData.framesPerSprite != null) {
@@ -136,7 +136,23 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                     stoppingCondition = { return@animateSprite !isActive() || !battleCanvas.myCanvas.hasObject("projectile_$projId") }
                 )
             }
-            afterCreated(battleCanvas.myCanvas, "projectile_$projId")
+            afterCreated(battleCanvas.myCanvas, "projectile_$projId") {
+                getBattlePlayers().filter { it.initialLocation != null }.forEach { pl ->
+                    var px = pl.player!!.x - pl.initialLocation!!.x
+                    var py = pl.player!!.z - pl.initialLocation!!.z
+                    px *= -1f
+                    px *= 16f * 8f
+                    py *= 16f * 8f
+                    val projPosition = battleCanvas.myCanvas.getPosition("projectile_$projId")
+                    px -= projPosition.first
+                    py -= projPosition.second
+                    if (projectileData.hitbox.isIn(px.toFloat(), py.toFloat(), 6f) && pl.noDamageTicks <= 0) {
+                        pl.damage(projectileData.damage) { hp ->
+                            battleCanvas.updateHealthbar(hp, pl.maxhp, pl.player!!.uniqueId)
+                        }
+                    }
+                }
+            }
         }
     }
 

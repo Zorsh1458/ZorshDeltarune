@@ -41,8 +41,8 @@ class DeltarunePlayer(val uuid: UUID) {
 
     var initialLocation: Location? = null
 
-    var hp = 1000
-    var maxhp = 1000
+    var hp = 100
+    var maxhp = 100
 
     private var passengers = mutableListOf<FakeDisplay>()
 
@@ -71,13 +71,10 @@ class DeltarunePlayer(val uuid: UUID) {
 
     var soul: FakeTextDisplay? = null
     var soulOutline: FakeTextDisplay? = null
-    var soulForOthers: FakeTextDisplay? = null
 
     var canMoveSoul = false
 
     private var gameMode = GameMode.SURVIVAL
-
-    var onHpUpdated: (Int) -> Unit = {}
 
     var actionStage = PlayerActionStage.SELECT_BUTTON
     var battleInfoText: FakeTextDisplay? = null
@@ -90,14 +87,6 @@ class DeltarunePlayer(val uuid: UUID) {
     fun clearMenu() {
         moveMenuTexts.forEach { it.destroy() }
         moveMenuTexts.clear()
-    }
-
-    fun mountEntity(ent: FakeDisplay) {
-        if (player != null) {
-            passengers.removeIf { !it.exists }
-            passengers += ent
-            PacketManager.mountEntities(player!!.entityId, passengers.map { it.entityId }, listOf(player!!))
-        }
     }
 
     fun updateTpCounter() {
@@ -124,30 +113,20 @@ class DeltarunePlayer(val uuid: UUID) {
         }
     }
 
-    fun damage(amount: Int) {
+    fun damage(amount: Int, afterHpCalculated: (Int) -> Unit) {
         if (myBattleUUID == null) return
         player?.playSound(player!!, "soul_hurt", 1f, 1f)
         hp = max(hp - amount, 0)
-        onHpUpdated(hp)
-        healthCounter?.changeTransformation(healthCounter!!.transformation, Component.text("$hp / $maxhp"))
-        healthBar?.changeTransformation(healthBar!!.transformation,
-            Component.text(" ".repeat(hp)).style(Style.style(TextDecoration.UNDERLINED)).color("#00ff00")
-                .append(Component.text(" ".repeat(maxhp-hp)).style(Style.style(TextDecoration.UNDERLINED)).color("#aa0000"))
-        )
+
+        afterHpCalculated(hp)
+
         if (hp == 0) {
             freeFromBattle(myBattleUUID!!)
         }
+
         noDamageTicks = 40
-        runRepeating(40) { i, _ ->
+        runRepeating(40) { _, _ ->
             noDamageTicks--
-            if ((i / 4) % 2 == 0) {
-                soul?.changeTransformation(soul!!.transformation, fontText("❤", "#772222", "space:default"))
-            } else {
-                soul?.changeTransformation(soul!!.transformation, fontText("❤", "#ff2222", "space:default"))
-            }
-        }
-        runLater(41) {
-            soul?.changeTransformation(soul!!.transformation, fontText("❤", "#ff2222", "space:default"))
         }
     }
 

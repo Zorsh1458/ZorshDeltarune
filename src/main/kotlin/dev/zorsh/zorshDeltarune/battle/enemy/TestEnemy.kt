@@ -39,17 +39,18 @@ class TestEnemy(
                 null,
                 CircleHitbox(5f)
             )
-        ) { canvas, registryName ->
-            runRepeating(20) {
+        ) { canvas, registryName, dealDamage ->
+            runRepeating(15) {
                 canvas.move(0f, -4f, registryName)
             }
-            runRepeating(60) {
+            runRepeating(120) {
                 canvas.rotate(3.1415f / 5f, registryName)
+                dealDamage()
             }
-            runLater(61) {
+            runLater(121) {
                 canvas.remove(registryName)
             }
         }
-        delay(3000)
+        delay(6000)
     }
 }

@@ -10,6 +10,7 @@ import dev.zorsh.zorshDeltarune.utils.runRepeating
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 import org.bukkit.entity.TextDisplay
+import java.util.UUID
 
 class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
     val myCanvas = PlayerUICanvas()
@@ -105,6 +106,12 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                 objName
             )
         }
+    }
+
+    fun updateHealthbar(hp: Int, maxHp: Int, playerId: UUID) {
+        val offsetPercentage = hp.toFloat() / maxHp.toFloat()
+        myCanvas.setPosition(-38f + offsetPercentage * 20f, myCanvas.getPosition("player_hp_bar_green", playerId).second, "player_hp_bar_green", playerId)
+        myCanvas.setScale(offsetPercentage * 20f, 4f, "player_hp_bar_green", playerId)
     }
 
     val playerOptionsObjectNames = mutableSetOf<String>()
@@ -377,9 +384,9 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                     }
 
                     myCanvas.drawSprite(
-                        -63f,
+                        -58f,
                         -100f,
-                        15f,
+                        20f,
                         4f,
                         57,
                         CanvasSprite.SQUARE,

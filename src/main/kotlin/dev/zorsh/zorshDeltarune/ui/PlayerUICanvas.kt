@@ -156,6 +156,14 @@ class PlayerUICanvas {
         setScale(size.first, size.second, objName, playerUUID)
     }
 
+    fun hasObject(objName: String, playerUUID: UUID? = null): Boolean {
+        if (playerUUID == null) {
+            return savedObjects.contains(objName)
+        } else {
+            return savedObjectsPerPlayer[playerUUID]?.contains(objName) == true
+        }
+    }
+
     fun setScale(sx: Float, sy: Float, objName: String, playerUUID: UUID? = null) {
         val holder =
             (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName)) ?: return
@@ -170,14 +178,6 @@ class PlayerUICanvas {
                 obj.transformation.rightRotation
             )
         )
-    }
-
-    fun hasObject(objName: String, playerUUID: UUID? = null): Boolean {
-        if (playerUUID == null) {
-            return savedObjects.contains(objName)
-        } else {
-            return savedObjectsPerPlayer[playerUUID]?.contains(objName) == true
-        }
     }
 
     fun getScale(objName: String, playerUUID: UUID? = null): Pair<Float, Float> {
@@ -203,6 +203,15 @@ class PlayerUICanvas {
                 obj.transformation.rightRotation
             )
         )
+    }
+
+    fun getPosition(objName: String, playerUUID: UUID? = null): Pair<Float, Float> {
+        val holder =
+            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName)) ?: throw IllegalStateException("Object $objName not found")
+
+        val obj = holder.entity
+
+        return obj.transformation.translation.x * 16f to obj.transformation.translation.y * 16f
     }
 
     fun move(ox: Float, oy: Float, objName: String, playerUUID: UUID? = null) {

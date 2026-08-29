@@ -19,5 +19,5 @@ interface INeverlandBattle {
     fun getBattlePlayers(): List<DeltarunePlayer>
     fun getBattleEnemies(): List<DeltaruneEnemy>
 
-    fun createProjectile(px: Float, py: Float, projectileData: ProjectileData, afterCreated: (PlayerUICanvas, String) -> Unit)
+    fun createProjectile(px: Float, py: Float, projectileData: ProjectileData, afterCreated: (PlayerUICanvas, String, () -> Unit) -> Unit)
 }
