@@ -288,6 +288,16 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         section("PLAYER_STUFF", true) {
             val dPlayers = battle.getBattlePlayers()
             dPlayers.forEach { dPlayer ->
+                section("DEBUG", true) {
+                    myCanvas.drawText(0f, 160f, 2f, 2f, 48,
+                        Component.text("Debug:"),
+                        ShaderTextColor.pure("#ffffff"),
+                        TextDisplay.TextAlignment.CENTER,
+                        1000,
+                        "debug_info"
+                    )
+                }
+
                 section("SELECTION_BOX_DECORATION", true) {
                     myCanvas.drawSprite(
                         0f,

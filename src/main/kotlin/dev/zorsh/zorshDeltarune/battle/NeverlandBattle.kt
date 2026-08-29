@@ -14,7 +14,6 @@ import dev.zorsh.zorshDeltarune.utils.FakeDisplayData
 import dev.zorsh.zorshDeltarune.utils.fontText
 import dev.zorsh.zorshDeltarune.utils.minus
 import dev.zorsh.zorshDeltarune.utils.plus
-import dev.zorsh.zorshDeltarune.utils.runInfinite
 import dev.zorsh.zorshDeltarune.utils.runLater
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,6 +37,7 @@ import org.joml.Vector3f
 import java.time.Duration
 import java.util.UUID
 import kotlin.math.ceil
+import kotlin.math.round
 
 class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<DeltaruneEnemy>) : INeverlandBattle {
 
@@ -146,9 +146,10 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                     val projPosition = battleCanvas.myCanvas.getPosition("projectile_$projId")
                     px -= projPosition.first
                     py -= projPosition.second
+                    battleCanvas.myCanvas.setText(Component.text("PX: ${round(px)} | PY: ${round(py)}"), "debug_info", pl.uuid)
                     if (projectileData.hitbox.isIn(px.toFloat(), py.toFloat(), 6f) && pl.noDamageTicks <= 0) {
                         pl.damage(projectileData.damage) { hp ->
-                            battleCanvas.updateHealthbar(hp, pl.maxhp, pl.player!!.uniqueId)
+                            battleCanvas.updateHealthbar(hp, pl.maxhp, pl.uuid)
                         }
                     }
                 }

@@ -156,6 +156,22 @@ class PlayerUICanvas {
         setScale(size.first, size.second, objName, playerUUID)
     }
 
+    fun setText(text: Component, objName: String, playerUUID: UUID? = null) {
+        val holder =
+            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName)) ?: return
+
+        val obj = holder.entity
+        val scaling = holder.scaling
+        val size = getScale(objName, playerUUID)
+        obj.changeText(text)
+        if (playerUUID == null) {
+            savedObjects[objName] = SpriteScalingHolder(obj, 1f to 1f)
+        } else {
+            savedObjectsPerPlayer[playerUUID]?.set(objName, SpriteScalingHolder(obj, 1f to 1f))
+        }
+        setScale(size.first, size.second, objName, playerUUID)
+    }
+
     fun hasObject(objName: String, playerUUID: UUID? = null): Boolean {
         if (playerUUID == null) {
             return savedObjects.contains(objName)
