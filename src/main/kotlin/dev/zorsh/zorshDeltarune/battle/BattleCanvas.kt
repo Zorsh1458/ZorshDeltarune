@@ -110,7 +110,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
     fun updateHealthbar(hp: Int, maxHp: Int, playerId: UUID) {
         val offsetPercentage = hp.toFloat() / maxHp.toFloat()
-        //myCanvas.setPosition(-38f + offsetPercentage * 20f, myCanvas.getPosition("player_hp_bar_green", playerId).second, "player_hp_bar_green", playerId)
+        val py = myCanvas.getPosition("player_hp_bar_green", playerId).second
+        myCanvas.setPosition(-38f + offsetPercentage * 20f, py, "player_hp_bar_green", playerId)
         myCanvas.setScale(offsetPercentage * 20f, 4f, "player_hp_bar_green", playerId)
     }
 

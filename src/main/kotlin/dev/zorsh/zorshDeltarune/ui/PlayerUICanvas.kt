@@ -227,7 +227,7 @@ class PlayerUICanvas {
 
         val obj = holder.entity
 
-        return obj.transformation.translation.x * 16f to obj.transformation.translation.y * 16f
+        return obj.transformation.translation.x * 16f to (obj.transformation.translation.y - TRANSLATION_BIAS) * 16f
     }
 
     fun move(ox: Float, oy: Float, objName: String, playerUUID: UUID? = null) {
