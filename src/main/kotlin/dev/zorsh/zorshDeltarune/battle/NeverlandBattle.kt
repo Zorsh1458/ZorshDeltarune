@@ -175,6 +175,10 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 
         active = true
 
+        enemies.forEach { enemy ->
+            enemy.myBattle = this
+        }
+
         runLater(2) {
             prepareBattle()
             battleCanvas.initCanvas()
