@@ -35,7 +35,7 @@ import kotlin.math.ceil
 
 class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<DeltaruneEnemy>) : INeverlandBattle {
 
-    var isActive = false
+    var active = false
 
     lateinit var battleUUID: UUID
 
@@ -63,7 +63,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 
     var playersTurn = false
 
-    override fun isActive() = isActive
+    override fun isActive() = active
 
     private fun newHitboxEntity(
         loc: Location,
@@ -77,7 +77,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
     }
 
     override fun destroyBattle() {
-        isActive = false
+        active = false
         for (pl in players) {
             try {
                 pl.freeFromBattle(battleUUID)
@@ -134,14 +134,14 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                     Times.times(Duration.ZERO, Duration.ofMillis(1200), Duration.ZERO)
                 )
             )
-//            runLater(3) {
-//                if (pl.player != null) {
-//                    Bukkit.dispatchCommand(
-//                        Bukkit.getServer().consoleSender,
-//                        "sendshaderdata ${pl.player!!.name} 1"
-//                    )
-//                }
-//            }
+            runLater(3) {
+                if (pl.player != null) {
+                    Bukkit.dispatchCommand(
+                        Bukkit.getServer().consoleSender,
+                        "sendshaderdata ${pl.player!!.name} 1"
+                    )
+                }
+            }
             pl.lockInBattle(battleCenterLocation)
             pl.player?.playSound(pl.player!!, "encounter", 1f, 1f)
             runLater(20) {
@@ -152,7 +152,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
             }
         }
 
-        isActive = true
+        active = true
 
         runLater(2) {
             prepareBattle()
