@@ -90,7 +90,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         }
     }
 
-    val playerOptionsObjectNames = mutableListOf<String>()
+    val playerOptionsObjectNames = mutableSetOf<String>()
     fun setupLayout() {
         playerOptionsObjectNames.clear()
         section("ENEMIES", true) {
