@@ -294,7 +294,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         ShaderTextColor.pure("#ffffff"),
                         TextDisplay.TextAlignment.CENTER,
                         1000,
-                        "debug_info"
+                        "debug_info",
+                        dPlayer.player!!
                     )
                 }
 

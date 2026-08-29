@@ -137,7 +137,6 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                 )
             }
             afterCreated(battleCanvas.myCanvas, "projectile_$projId") {
-                Bukkit.broadcast(Component.text("Dealing damage to: ${getBattlePlayers().filter { it.initialLocation != null }.map { it.player?.name }}"))
                 getBattlePlayers().filter { it.initialLocation != null }.forEach { pl ->
                     var px = pl.player!!.x - pl.initialLocation!!.x
                     var py = pl.player!!.z - pl.initialLocation!!.z
