@@ -285,7 +285,7 @@ class DeltarunePlayer(val uuid: UUID) {
     }
 
     val savedSouls = mutableMapOf<String, UUID>()
-    fun unlockSoul(canvas: BattleCanvas, players: List<Player>) {
+    fun unlockSoul(battleBoxLocation: Pair<Float, Float>, canvas: BattleCanvas, players: List<Player>) {
         canMoveSoul = true
         players.forEach { pl ->
             val uuid = UUID.randomUUID()
@@ -308,7 +308,7 @@ class DeltarunePlayer(val uuid: UUID) {
                 val x = -pos.x.toFloat() * 16f * 8f
                 val y = pos.z.toFloat() * 16f * 8f
                 list.forEach { (name, uuid) ->
-                    canvas.myCanvas.setPosition(x, y + 20f,name, uuid)
+                    canvas.myCanvas.setPosition(x + battleBoxLocation.first, y + battleBoxLocation.second,name, uuid)
                 }
             }
         }

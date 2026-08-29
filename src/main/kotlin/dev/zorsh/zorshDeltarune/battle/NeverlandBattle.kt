@@ -69,6 +69,8 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 
     var playersTurn = false
 
+    var battleBoxLocation = 0f to 20f
+
     override fun isActive() = active
 
     private fun newHitboxEntity(
@@ -143,6 +145,8 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                     px *= -1f
                     px *= 16f * 8f
                     py *= 16f * 8f
+                    px += battleBoxLocation.first
+                    py += battleBoxLocation.second
                     val projPosition = battleCanvas.myCanvas.getPosition("projectile_$projId")
                     px -= projPosition.first
                     py -= projPosition.second
@@ -292,7 +296,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                 getBattlePlayers().mapNotNull { it.player },
                 data = FakeDisplayData(
                     Transformation(
-                        Vector3f(0f, 20f / 16f / 8f, 0f),
+                        Vector3f(battleBoxLocation.first / 16f / 8f, battleBoxLocation.second / 16f / 8f, 0f),
                         AxisAngle4f(),
                         Vector3f(0f, 0f, 1f),
                         AxisAngle4f()
@@ -322,7 +326,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
             )
         )
         getBattlePlayers().forEach { battlePlayer ->
-            battlePlayer.unlockSoul(battleCanvas, getBattlePlayers().mapNotNull { dp -> dp.player }.filter { pl -> pl.uniqueId != battlePlayer.uuid })
+            battlePlayer.unlockSoul(battleBoxLocation, battleCanvas, getBattlePlayers().mapNotNull { dp -> dp.player }.filter { pl -> pl.uniqueId != battlePlayer.uuid })
         }
     }
 
