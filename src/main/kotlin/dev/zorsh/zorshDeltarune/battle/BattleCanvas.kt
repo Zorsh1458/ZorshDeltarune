@@ -71,7 +71,27 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         }
     }
 
+    fun showPlayerOptions() {
+        val dPlayers = battle.getBattlePlayers()
+        dPlayers.forEach { dPlayer ->
+            playerOptionsObjectNames.forEach { objName ->
+                myCanvas.move(0f, 36f, objName, dPlayer.player!!.uniqueId)
+            }
+        }
+    }
+
+    fun hidePlayerOptions() {
+        val dPlayers = battle.getBattlePlayers()
+        dPlayers.forEach { dPlayer ->
+            playerOptionsObjectNames.forEach { objName ->
+                myCanvas.move(0f, -36f, objName, dPlayer.player!!.uniqueId)
+            }
+        }
+    }
+
+    val playerOptionsObjectNames = mutableListOf<String>()
     fun setupLayout() {
+        playerOptionsObjectNames.clear()
         section("ENEMIES", true) {
             val spritedEnemies = battle.getBattleEnemies().filterIsInstance<SpritedEnemy>()
             for (enemy in spritedEnemies.reversed().withIndex()) {
@@ -225,8 +245,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         }
 
         section("PLAYER_STUFF", true) {
-            val dPlayers = battle.getBattlePlayers().filter { it.player != null && it.player?.isOnline == true }
-            for (dPlayer in dPlayers) {
+            val dPlayers = battle.getBattlePlayers()
+            dPlayers.forEach { dPlayer ->
                 section("SELECTION_BOX_DECORATION", true) {
                     myCanvas.drawSprite(
                         0f,
@@ -236,9 +256,11 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         60,
                         CanvasSprite.SQUARE,
                         ShaderTextColor.pure("#00ffff"),
-                        null,
+                        "selection_box_outline",
                         dPlayer.player!!
-                    )
+                    ) {
+                        playerOptionsObjectNames += "selection_box_outline"
+                    }
 
                     myCanvas.drawSprite(
                         0f,
@@ -248,13 +270,14 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         59,
                         CanvasSprite.SQUARE,
                         ShaderTextColor.pure("#000000"),
-                        null,
+                        "selection_box_inner",
                         dPlayer.player!!
-                    )
+                    ) {
+                        playerOptionsObjectNames += "selection_box_inner"
+                    }
                 }
 
                 section("PLAYER_NAME", true) {
-                    // Name
                     myCanvas.drawText(
                         -41f,
                         -93f,
@@ -265,11 +288,12 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         ShaderTextColor.pure("#ffffff"),
                         TextDisplay.TextAlignment.LEFT,
                         1000,
-                        null,
+                        "player_name",
                         dPlayer.player!!
-                    )
+                    ) {
+                        playerOptionsObjectNames += "player_name"
+                    }
 
-                    // Name background
                     myCanvas.drawText(
                         -41f + 1f,
                         -93f - 1f,
@@ -280,9 +304,11 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         ShaderTextColor.pure("#444444"),
                         TextDisplay.TextAlignment.LEFT,
                         1000,
-                        null,
+                        "player_name_shadow",
                         dPlayer.player!!
-                    )
+                    ) {
+                        playerOptionsObjectNames += "player_name_shadow"
+                    }
                 }
 
                 section("HEALTH_BAR", true) {
@@ -296,9 +322,11 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         ShaderTextColor.pure("#ffffff"),
                         TextDisplay.TextAlignment.LEFT,
                         1000,
-                        null,
+                        "player_hp_text",
                         dPlayer.player!!
-                    )
+                    ) {
+                        playerOptionsObjectNames += "player_hp_text"
+                    }
 
                     myCanvas.drawSprite(
                         -58f,
@@ -308,9 +336,11 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         58,
                         CanvasSprite.SQUARE,
                         ShaderTextColor.pure("#6b0e19"),
-                        null,
+                        "player_hp_bar_red",
                         dPlayer.player!!
-                    )
+                    ) {
+                        playerOptionsObjectNames += "player_hp_bar_red"
+                    }
 
                     myCanvas.drawSprite(
                         -63f,
@@ -320,9 +350,11 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         57,
                         CanvasSprite.SQUARE,
                         ShaderTextColor.pure("#1bf230"),
-                        null,
+                        "player_hp_bar_green",
                         dPlayer.player!!
-                    )
+                    ) {
+                        playerOptionsObjectNames += "player_hp_bar_green"
+                    }
                 }
             }
         }

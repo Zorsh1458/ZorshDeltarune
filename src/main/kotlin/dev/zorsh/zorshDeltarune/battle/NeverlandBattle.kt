@@ -173,6 +173,8 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
             CoroutineScope(Dispatchers.IO).launch {
                 val job = scope.launch {
                     repeat(3) {
+                        battleCanvas.showPlayerOptions()
+                        delay(3000)
                         battleBoxOpen()
                         delay(500)
                         unlockSouls()
@@ -180,7 +182,6 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                         lockSouls()
                         battleBoxClose()
                         delay(500)
-                        delay(1000)
                     }
                 }
                 battleJob = job
