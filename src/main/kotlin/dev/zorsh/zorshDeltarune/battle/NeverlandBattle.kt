@@ -169,12 +169,13 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
             battleCanvas.setupLayout()
         }
 
-        runLater(20) {
+        runLater(40) {
             CoroutineScope(Dispatchers.IO).launch {
                 val job = scope.launch {
                     repeat(3) {
                         battleCanvas.showPlayerOptions()
                         delay(3000)
+                        battleCanvas.hidePlayerOptions()
                         battleBoxOpen()
                         delay(500)
                         unlockSouls()
