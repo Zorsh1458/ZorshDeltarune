@@ -124,8 +124,8 @@ class DeltarunePlayer(val uuid: UUID) {
             freeFromBattle(myBattleUUID!!)
         }
 
-        noDamageTicks = 40
-        runRepeating(40) { _, _ ->
+        noDamageTicks = 10
+        runRepeating(10) { _, _ ->
             noDamageTicks--
         }
     }

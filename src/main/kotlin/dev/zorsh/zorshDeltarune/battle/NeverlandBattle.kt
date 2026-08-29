@@ -1,5 +1,6 @@
 package dev.zorsh.zorshDeltarune.battle
 
+import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.enemy.DeltaruneEnemy
 import dev.zorsh.zorshDeltarune.battle.player.DeltarunePlayer
 import dev.zorsh.zorshDeltarune.battle.player.PlayerActionStage
@@ -29,6 +30,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.entity.TextDisplay
+import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.Transformation
 import org.joml.AxisAngle4f
@@ -150,10 +152,10 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                     val projPosition = battleCanvas.myCanvas.getPosition("projectile_$projId")
                     px -= projPosition.first
                     py -= projPosition.second
-                    battleCanvas.myCanvas.setText(Component.text("PX: ${round(px)} | PY: ${round(py)}"), "debug_info", pl.uuid)
                     if (projectileData.hitbox.isIn(px.toFloat(), py.toFloat(), 6f) && pl.noDamageTicks <= 0) {
                         pl.damage(projectileData.damage) { hp ->
                             battleCanvas.updateHealthbar(hp, pl.maxhp, pl.uuid)
+                            battleCanvas.myCanvas.setText(Component.text("Scale: ${hp.toFloat() / pl.maxhp.toFloat()}"), "debug_info", pl.uuid)
                         }
                     }
                 }
@@ -235,39 +237,9 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
             }
         }
 
-//        runLater(20) {
-//            CoroutineScope(Dispatchers.IO).launch {
-//                delay(250)
-//                val job = scope.launch {
-//                    repeat(5) {
-//                        delay(100L)
-//                        showPlayersOptions()
-//                        delay(5000L)
-//                        playersTurn = false
-//                        hidePlayersOptions()
-//                        battleBoxOpen()
-//                        unlockSouls()
-//                        val jobs = mutableListOf<Job>()
-//                        for (enemy in enemies) {
-//                            jobs += launch {
-//                                enemy.attack()
-//                            }
-//                        }
-//                        jobs.joinAll()
-//                        delay(200L)
-//                        lockSouls()
-//                        battleBoxClose()
-//                        delay(100L)
-//                    }
-//                }
-//                battleJob = job
-//                job.join()
-//                endBattle()
-//            }
-//
 //            loopTask = object : BukkitRunnable() {
 //                override fun run() {
-//                    if (players.all { !it.locked }) {
+//                    if (players.all { !it.locked || it.myBattleUUID != battleUUID }) {
 //                        if (battleJob?.isCancelled == false) {
 //                            battleJob?.cancel()
 //                        }
@@ -275,7 +247,6 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 //                    }
 //                }
 //            }.runTaskTimer(ZorshDeltarune.instance, 1L, 1L)
-//        }
     }
 
     override fun endBattle() {
