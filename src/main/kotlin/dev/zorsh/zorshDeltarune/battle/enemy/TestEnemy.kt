@@ -37,7 +37,7 @@ class TestEnemy(
                 10,
                 listOf(CanvasSprite.SOUL),
                 null,
-                CircleHitbox(5f)
+                CircleHitbox(8f)
             )
         ) { canvas, registryName, dealDamage ->
             runRepeating(15) {
