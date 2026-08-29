@@ -1,5 +1,6 @@
 package dev.zorsh.zorshDeltarune.battle
 
+import dev.zorsh.zorshDeltarune.battle.enemy.SpritedEnemy
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.ui.PlayerUICanvas
 import dev.zorsh.zorshDeltarune.ui.ShaderTextColor
@@ -90,6 +91,22 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         }
     }
 
+    fun animateSprite(spriteList: List<CanvasSprite>, framesPerSprite: Int, objName: String, stoppingCondition: () -> Boolean) {
+        runInfinite(1) { i, action ->
+            if (stoppingCondition()) {
+                action.cancel()
+                return@runInfinite
+            }
+
+            val currentSprite = spriteList[(i / framesPerSprite) % spriteList.size]
+            myCanvas.setSprite(
+                currentSprite,
+                ShaderTextColor.pure("#ffffff"),
+                objName
+            )
+        }
+    }
+
     val playerOptionsObjectNames = mutableSetOf<String>()
     fun setupLayout() {
         playerOptionsObjectNames.clear()
@@ -113,20 +130,12 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             myCanvas.move(-20f + i * 2f, 0f, "enemy_${enemy.index}")
                         }
                     }
-                    val spriteList = enemy.value.canvasSprites
-                    runInfinite(1) { i, action ->
-                        if (!battle.isActive()) {
-                            action.cancel()
-                            return@runInfinite
-                        }
-
-                        val currentSprite = spriteList[(i / enemy.value.framesPerSprite) % spriteList.size]
-                        myCanvas.setSprite(
-                            currentSprite,
-                            ShaderTextColor.pure("#ffffff"),
-                            "enemy_${enemy.index}"
-                        )
-                    }
+                    animateSprite(
+                        enemy.value.canvasSprites,
+                        enemy.value.framesPerSprite,
+                        "enemy_${enemy.index}",
+                        { return@animateSprite !battle.isActive() || !enemy.value.isAlive }
+                    )
                 }
             }
         }

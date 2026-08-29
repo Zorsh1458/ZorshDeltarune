@@ -2,9 +2,9 @@ package dev.zorsh.zorshDeltarune.commands
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.BattleCanvas
-import dev.zorsh.zorshDeltarune.battle.DeltarunePlayer
+import dev.zorsh.zorshDeltarune.battle.player.DeltarunePlayer
 import dev.zorsh.zorshDeltarune.battle.NeverlandBattle
-import dev.zorsh.zorshDeltarune.battle.TestEnemy
+import dev.zorsh.zorshDeltarune.battle.enemy.TestEnemy
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.ui.ShaderTextColor
 import dev.zorsh.zorshDeltarune.utils.runLater

@@ -2,6 +2,8 @@ package dev.zorsh.zorshDeltarune.commands
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.*
+import dev.zorsh.zorshDeltarune.battle.enemy.TestEnemy
+import dev.zorsh.zorshDeltarune.battle.player.DeltarunePlayer
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.command.Command

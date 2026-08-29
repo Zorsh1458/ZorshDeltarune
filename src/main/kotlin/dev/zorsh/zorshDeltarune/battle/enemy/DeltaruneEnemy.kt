@@ -1,5 +1,6 @@
-package dev.zorsh.zorshDeltarune.battle
+package dev.zorsh.zorshDeltarune.battle.enemy
 
+import dev.zorsh.zorshDeltarune.battle.INeverlandBattle
 import net.kyori.adventure.text.Component
 
 abstract class DeltaruneEnemy(

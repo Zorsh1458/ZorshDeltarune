@@ -1,21 +1,27 @@
 package dev.zorsh.zorshDeltarune.battle
 
+import dev.zorsh.zorshDeltarune.battle.enemy.DeltaruneEnemy
+import dev.zorsh.zorshDeltarune.battle.player.DeltarunePlayer
+import dev.zorsh.zorshDeltarune.battle.player.PlayerActionStage
+import dev.zorsh.zorshDeltarune.battle.projectile.ProjectileData
 import dev.zorsh.zorshDeltarune.nms.FakeDisplay
 import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
 import dev.zorsh.zorshDeltarune.nms.PacketManager
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
+import dev.zorsh.zorshDeltarune.ui.PlayerUICanvas
 import dev.zorsh.zorshDeltarune.ui.ShaderTextColor
 import dev.zorsh.zorshDeltarune.utils.FakeDisplayData
-import dev.zorsh.zorshDeltarune.utils.color
 import dev.zorsh.zorshDeltarune.utils.fontText
 import dev.zorsh.zorshDeltarune.utils.minus
 import dev.zorsh.zorshDeltarune.utils.plus
+import dev.zorsh.zorshDeltarune.utils.runInfinite
 import dev.zorsh.zorshDeltarune.utils.runLater
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title.Times
@@ -119,6 +125,21 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 
     override fun getBattleEnemies() = enemies
 
+    override fun createProjectile(px: Float, py: Float, projectileData: ProjectileData, afterCreated: (PlayerUICanvas, String) -> Unit) {
+        val projId = UUID.randomUUID()
+        battleCanvas.myCanvas.drawSprite(px, py, 1f, 1f, 48, projectileData.sprites.first(), ShaderTextColor.pure("#ffffff"), "projectile_$projId") {
+            if (projectileData.framesPerSprite != null) {
+                battleCanvas.animateSprite(
+                    projectileData.sprites,
+                    projectileData.framesPerSprite,
+                    "projectile_$projId",
+                    stoppingCondition = { return@animateSprite !isActive() || !battleCanvas.myCanvas.hasObject("projectile_$projId") }
+                )
+            }
+            afterCreated(battleCanvas.myCanvas, "projectile_$projId")
+        }
+    }
+
     override fun startBattle(onEnded: () -> Unit) {
         onEndedAction = onEnded
 
@@ -170,7 +191,14 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                         battleBoxOpen()
                         delay(500)
                         unlockSouls()
-                        delay(5000)
+                        val jobs = mutableListOf<Job>()
+                        for (enemy in enemies) {
+                            jobs += launch {
+                                enemy.attack()
+                            }
+                        }
+                        jobs.joinAll()
+                        delay(200)
                         lockSouls()
                         battleBoxClose()
                         delay(500)
@@ -364,57 +392,6 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         playersTurn = true
     }
 
-    private suspend fun hidePlayersOptions() {
-        playersTurn = false
-//        for (enemy in enemies.filterIsInstance<SpritedEnemy>()) {
-//            enemy.mySprite.glowTo.clear()
-//        }
-        for (dPlayer in players) {
-            runLater(2L) {
-                dPlayer.clearMenu()
-                dPlayer.menuSelectorHeart?.hide()
-                val infoEnt = dPlayer.battleInfoText
-                infoEnt?.changeOnlyTransformation(
-                    Transformation(
-                        infoEnt.transformation.translation,
-                        infoEnt.transformation.leftRotation,
-                        Vector3f(1.8f, 2f, 1f),
-                        infoEnt.transformation.rightRotation
-                    )
-                )
-            }
-
-            val index = dPlayer.playerSelectedButton
-            val buttonEntity = dPlayer.playerButtonTexts[index]
-            val transform = buttonEntity.transformation
-            buttonEntity.changeTransformation(
-                Transformation(
-                    transform.translation,
-                    transform.leftRotation,
-                    Vector3f(0f, transform.scale.y, 1f),
-                    transform.rightRotation
-                )
-            )
-        }
-        delay(150)
-        repeat(2) {
-            for (dPlayer in players) {
-                for (entity in dPlayer.perPlayerEntities) {
-                    val transform = entity.transformation
-                    entity.changeTransformation(
-                        Transformation(
-                            transform.translation + Vector3f(0f, -0.44f, 0f),
-                            transform.leftRotation,
-                            transform.scale,
-                            transform.rightRotation
-                        )
-                    )
-                }
-            }
-            delay(50)
-        }
-    }
-
     private fun proceedPlayerSubmit(dPlayer: DeltarunePlayer) {
         if (playersTurn) {
             when (dPlayer.actionStage) {
@@ -466,7 +443,6 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                 PlayerActionStage.FIGHT_SELECT_ENEMY -> {
                     dPlayer.actionStage = PlayerActionStage.NONE
                     dPlayer.clearMenu()
-                    dPlayer.menuSelectorHeart?.hide()
                 }
 
                 else -> {}
@@ -475,8 +451,6 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
     }
 
     private fun showEnemiesSelection(dPlayer: DeltarunePlayer) {
-        dPlayer.menuSelectorHeart?.setPosition(0, 0)
-        dPlayer.menuSelectorHeart?.setBounds(1, enemies.size)
         val loc = battleCenterLocation
         loc.yaw = 180f
         loc.pitch = -90f
@@ -508,13 +482,5 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 //            }
             offset += 0.7f
         }
-        dPlayer.menuSelectorHeart?.show()
-//        runInfinite(1) { _, task ->
-//            if (enemies.isNotEmpty() && dPlayer.player != null && dPlayer.actionStage == PlayerActionStage.FIGHT_SELECT_ENEMY && dPlayer.menuSelectorHeart != null && dPlayer.locked && playersTurn) {
-//                val enemy = enemies.getOrNull(dPlayer.menuSelectorHeart!!.myY)
-//            } else {
-//                task.cancel()
-//            }
-//        }
     }
 }

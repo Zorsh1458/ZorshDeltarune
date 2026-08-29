@@ -1,6 +1,8 @@
-package dev.zorsh.zorshDeltarune.battle
+package dev.zorsh.zorshDeltarune.battle.player
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
+import dev.zorsh.zorshDeltarune.battle.BattleCanvas
+import dev.zorsh.zorshDeltarune.battle.BattleManager
 import dev.zorsh.zorshDeltarune.nms.FakeDisplay
 import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
 import dev.zorsh.zorshDeltarune.nms.PacketManager
@@ -12,6 +14,7 @@ import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title.Times
 import net.kyori.adventure.title.Title.title
+import net.minecraft.world.entity.ai.attributes.Attributes
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -79,7 +82,6 @@ class DeltarunePlayer(val uuid: UUID) {
     var actionStage = PlayerActionStage.SELECT_BUTTON
     var battleInfoText: FakeTextDisplay? = null
     var moveMenuTexts: MutableList<FakeDisplay> = mutableListOf()
-    var menuSelectorHeart: MenuSelectorHeart? = null
 
     fun updatePlayer() {
         player = Bukkit.getPlayer(uuid)
@@ -195,7 +197,7 @@ class DeltarunePlayer(val uuid: UUID) {
             if (player != null) {
                 player?.showToEveryone()
                 PacketManager.setAttribute(
-                    net.minecraft.world.entity.ai.attributes.Attributes.JUMP_STRENGTH,
+                    Attributes.JUMP_STRENGTH,
                     0.42,
                     player!!.entityId,
                     listOf(player!!)
@@ -249,7 +251,7 @@ class DeltarunePlayer(val uuid: UUID) {
                     locked = false
                 }
 
-                if (myBattleUUID == null || !BattleManager.hasBattle(myBattleUUID!!)) {
+                if (myBattleUUID == null || !BattleManager.Companion.hasBattle(myBattleUUID!!)) {
                     locked = false
                 }
 
@@ -260,7 +262,7 @@ class DeltarunePlayer(val uuid: UUID) {
                     if (i % 20 == 0) {
                         myPlayer.hideFromEveryone()
                         PacketManager.setAttribute(
-                            net.minecraft.world.entity.ai.attributes.Attributes.JUMP_STRENGTH,
+                            Attributes.JUMP_STRENGTH,
                             0.0,
                             myPlayer.entityId,
                             listOf(myPlayer)
@@ -377,19 +379,15 @@ class DeltarunePlayer(val uuid: UUID) {
         val newInput = InputHolder(input)
         if (newInput.left && !prevInput.left) {
             inputCallbacksLeft.forEach { it() }
-            menuSelectorHeart?.offset(-1, 0)
         }
         if (newInput.right && !prevInput.right) {
             inputCallbacksRight.forEach { it() }
-            menuSelectorHeart?.offset(1, 0)
         }
         if (newInput.forward && !prevInput.forward) {
             inputCallbacksForward.forEach { it() }
-            menuSelectorHeart?.offset(0, -1)
         }
         if (newInput.backward && !prevInput.backward) {
             inputCallbacksBackward.forEach { it() }
-            menuSelectorHeart?.offset(0, 1)
         }
         if (newInput.jump && !prevInput.jump) {
             inputCallbacksJump.forEach { it() }

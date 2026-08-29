@@ -172,6 +172,14 @@ class PlayerUICanvas {
         )
     }
 
+    fun hasObject(objName: String, playerUUID: UUID? = null): Boolean {
+        if (playerUUID == null) {
+            return savedObjects.contains(objName)
+        } else {
+            return savedObjectsPerPlayer[playerUUID]?.contains(objName) == true
+        }
+    }
+
     fun getScale(objName: String, playerUUID: UUID? = null): Pair<Float, Float> {
         val holder =
             (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName)) ?: throw IllegalStateException("Object $objName not found")

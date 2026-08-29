@@ -1,4 +1,4 @@
-package dev.zorsh.zorshDeltarune.battle
+package dev.zorsh.zorshDeltarune.battle.enemy
 
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import net.kyori.adventure.text.Component

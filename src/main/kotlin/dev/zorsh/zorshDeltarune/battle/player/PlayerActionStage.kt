@@ -1,4 +1,4 @@
-package dev.zorsh.zorshDeltarune.battle
+package dev.zorsh.zorshDeltarune.battle.player
 
 enum class PlayerActionStage {
     SELECT_BUTTON,
