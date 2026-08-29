@@ -3,6 +3,7 @@ package dev.zorsh.zorshDeltarune.battle
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.ui.PlayerUICanvas
 import dev.zorsh.zorshDeltarune.ui.ShaderTextColor
+import dev.zorsh.zorshDeltarune.utils.runInfinite
 import dev.zorsh.zorshDeltarune.utils.runLater
 import dev.zorsh.zorshDeltarune.utils.runRepeating
 import net.kyori.adventure.text.Component
@@ -101,7 +102,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                     0f,
                     0f,
                     16,
-                    enemy.value.canvasSprite,
+                    enemy.value.canvasSprites.first(),
                     ShaderTextColor.pure("#ffffff"),
                     "enemy_${enemy.index}"
                 ) {
@@ -111,6 +112,20 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             myCanvas.setScale(i / 10f, i / 10f, "enemy_${enemy.index}")
                             myCanvas.move(-20f + i * 2f, 0f, "enemy_${enemy.index}")
                         }
+                    }
+                    val spriteList = enemy.value.canvasSprites
+                    runInfinite(1) { i, action ->
+                        if (!battle.isActive()) {
+                            action.cancel()
+                            return@runInfinite
+                        }
+
+                        val currentSprite = spriteList[(i / enemy.value.framesPerSprite) % spriteList.size]
+                        myCanvas.setSprite(
+                            currentSprite,
+                            ShaderTextColor.pure("#ffffff"),
+                            "enemy_${enemy.index}"
+                        )
                     }
                 }
             }

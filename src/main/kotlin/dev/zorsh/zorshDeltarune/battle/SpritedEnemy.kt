@@ -7,7 +7,8 @@ abstract class SpritedEnemy(
     name: Component,
     hitpoints: Int,
     encounterMessages: List<Component>,
-    val canvasSprite: CanvasSprite
+    val canvasSprites: List<CanvasSprite>,
+    val framesPerSprite: Int
 ) : DeltaruneEnemy(
     name,
     hitpoints,

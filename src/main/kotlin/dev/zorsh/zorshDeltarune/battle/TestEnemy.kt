@@ -15,12 +15,16 @@ class TestEnemy(
 ) : SpritedEnemy(
     name,
     hitpoints,
-    encounterMessages = listOf(
+    listOf(
         Component.text("Это что еще за балбес"),
         Component.text("Тестовый враг встал у вас на пути!"),
         Component.text("Полный скебоб..")
     ),
-    CanvasSprite.SLIME_SPRITE_1
+    listOf(
+        CanvasSprite.SLIME_SPRITE_1,
+        CanvasSprite.SLIME_SPRITE_2
+    ),
+    4
 ) {
 
     private var attackCount = 0

@@ -140,6 +140,22 @@ class PlayerUICanvas {
         )
     }
 
+    fun setSprite(sprite: CanvasSprite, color: ShaderTextColor, objName: String, playerUUID: UUID? = null) {
+        val holder =
+            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName)) ?: return
+
+        val obj = holder.entity
+        val scaling = holder.scaling
+        val size = getScale(objName, playerUUID)
+        obj.changeText(sprite.toTextValue().color(color.value))
+        if (playerUUID == null) {
+            savedObjects[objName] = SpriteScalingHolder(obj, sprite.getSizeRatios())
+        } else {
+            savedObjectsPerPlayer[playerUUID]?.set(objName, SpriteScalingHolder(obj, sprite.getSizeRatios()))
+        }
+        setScale(size.first, size.second, objName, playerUUID)
+    }
+
     fun setScale(sx: Float, sy: Float, objName: String, playerUUID: UUID? = null) {
         val holder =
             (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName)) ?: return

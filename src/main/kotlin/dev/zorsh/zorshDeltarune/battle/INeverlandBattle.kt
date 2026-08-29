@@ -7,6 +7,8 @@ interface INeverlandBattle {
     fun endBattle()
     fun destroyBattle()
 
+    fun isActive(): Boolean
+
     fun setUUID(uuid: UUID)
 
     fun getBattleInitialPlayers(): List<DeltarunePlayer>

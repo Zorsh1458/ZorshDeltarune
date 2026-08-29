@@ -35,6 +35,8 @@ import kotlin.math.ceil
 
 class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<DeltaruneEnemy>) : INeverlandBattle {
 
+    var isActive = false
+
     lateinit var battleUUID: UUID
 
     private var onEndedAction = {}
@@ -61,18 +63,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 
     var playersTurn = false
 
-    private fun newShaderEffector(
-        loc: Location,
-        playerToShow: List<Player> = players.mapNotNull { it.player },
-    ) {
-        PacketManager.spawnShaderEffector(
-            loc,
-            playerToShow,
-        ) { entity ->
-            spawnedEntities += entity
-            entity.holder = spawnedEntities
-        }
-    }
+    override fun isActive() = isActive
 
     private fun newHitboxEntity(
         loc: Location,
@@ -134,9 +125,6 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
             pl.updatePlayer()
         }
 
-        Bukkit.broadcast(Component.text("Debug: Starting battle $battleUUID"))
-        Bukkit.broadcast(Component.text("Debug: Players: ${getBattlePlayers().map { it.player?.name }}"))
-
         for (pl in getBattlePlayers()) {
             pl.player?.showTitle(
                 title(
@@ -162,6 +150,8 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                 pl.player?.playSound(pl.player!!, "battle", 1f, 1f)
             }
         }
+
+        isActive = true
 
         runLater(2) {
             prepareBattle()
