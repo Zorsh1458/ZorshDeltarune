@@ -5,6 +5,7 @@ import dev.zorsh.zorshDeltarune.utils.runRepeating
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.ShadowColor
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.util.Transformation
@@ -30,7 +31,8 @@ class FakeTextDisplay(
     holder
 ) {
     fun changeText(newText: Component, playerOverride: List<Player>? = null) {
-        if (playerOverride != emptyList<Player>()) {
+        Bukkit.broadcast(newText)
+        if (playerOverride?.isNotEmpty() ?: true) {
             PacketManager.setTextDisplayMetadata(
                 entityId,
                 newText,
