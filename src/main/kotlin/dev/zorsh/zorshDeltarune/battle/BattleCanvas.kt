@@ -356,6 +356,22 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         playerOptionsObjectNames += "player_hp_bar_green"
                     }
                 }
+
+                section("BUTTONS", true) {
+                    myCanvas.drawSprite(
+                        0f,
+                        -130f,
+                        1f,
+                        1f,
+                        57,
+                        CanvasSprite.DBUTTON_ITEM,
+                        ShaderTextColor.pure("#ff8800"),
+                        "player_button_item",
+                        dPlayer.player!!
+                    ) {
+                        playerOptionsObjectNames += "player_button_item"
+                    }
+                }
             }
         }
     }
