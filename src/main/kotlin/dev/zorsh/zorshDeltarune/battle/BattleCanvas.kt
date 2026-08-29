@@ -260,9 +260,9 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                 section("SELECTION_BOX_DECORATION", true) {
                     myCanvas.drawSprite(
                         0f,
-                        -96f,
+                        -115f,
                         100f,
-                        19f,
+                        38f,
                         60,
                         CanvasSprite.SQUARE,
                         ShaderTextColor.pure("#00ffff"),
@@ -274,9 +274,9 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
                     myCanvas.drawSprite(
                         0f,
-                        -96f,
+                        -115f,
                         98f,
-                        17f,
+                        36f,
                         59,
                         CanvasSprite.SQUARE,
                         ShaderTextColor.pure("#000000"),
