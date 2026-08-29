@@ -24,7 +24,7 @@ class TestEnemy(
         CanvasSprite.SLIME_SPRITE_1,
         CanvasSprite.SLIME_SPRITE_2
     ),
-    4
+    6
 ) {
 
     private var attackCount = 0

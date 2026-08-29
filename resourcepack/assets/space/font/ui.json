@@ -112,7 +112,7 @@
             "type": "bitmap",
             "file": "space:font/ui/slime_2.png",
             "height": 34,
-            "ascent": 15,
+            "ascent": 17,
             "chars": [
                 "\uF00B"
             ]
