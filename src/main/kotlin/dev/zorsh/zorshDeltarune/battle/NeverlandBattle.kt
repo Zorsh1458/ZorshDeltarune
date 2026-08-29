@@ -137,9 +137,9 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                 )
             }
             afterCreated(battleCanvas.myCanvas, "projectile_$projId") {
-                getBattlePlayers().filter { it.initialLocation != null }.forEach { pl ->
-                    var px = pl.player!!.x - pl.initialLocation!!.x
-                    var py = pl.player!!.z - pl.initialLocation!!.z
+                getBattlePlayers().forEach { pl ->
+                    var px = pl.player!!.x - battleCenterLocation.x
+                    var py = pl.player!!.z - battleCenterLocation.z
                     px *= -1f
                     px *= 16f * 8f
                     py *= 16f * 8f
