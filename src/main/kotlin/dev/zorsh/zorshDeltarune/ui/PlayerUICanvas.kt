@@ -54,12 +54,12 @@ class PlayerUICanvas {
         savedObjectsPerPlayer.clear()
     }
 
-    fun clearPlayer(player: Player) {
-        objectsPerPlayer[player.uniqueId]?.forEach {
+    fun clearPlayer(playerUUID: UUID) {
+        objectsPerPlayer[playerUUID]?.forEach {
             it.destroy()
         }
-        objectsPerPlayer[player.uniqueId]?.clear()
-        savedObjectsPerPlayer[player.uniqueId]?.clear()
+        objectsPerPlayer[playerUUID]?.clear()
+        savedObjectsPerPlayer[playerUUID]?.clear()
     }
 
     fun updateCanvas(player: Player) {

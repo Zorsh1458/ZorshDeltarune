@@ -120,10 +120,6 @@ class DeltarunePlayer(val uuid: UUID) {
 
         afterHpCalculated(hp)
 
-        if (hp == 0) {
-            freeFromBattle(myBattleUUID!!)
-        }
-
         noDamageTicks = 10
         runRepeating(10) { _, _ ->
             noDamageTicks--

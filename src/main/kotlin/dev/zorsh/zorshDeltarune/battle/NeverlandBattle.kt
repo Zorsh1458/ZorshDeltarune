@@ -156,6 +156,10 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                         pl.damage(projectileData.damage) { hp ->
                             battleCanvas.updateHealthbar(hp, pl.maxhp, pl.uuid)
                             battleCanvas.myCanvas.setText(Component.text("Scale: ${hp.toFloat() / pl.maxhp.toFloat()}"), "debug_info", pl.uuid)
+                            if (hp <= 0) {
+                                pl.freeFromBattle(battleUUID)
+                                battleCanvas.myCanvas.clearPlayer(pl.uuid)
+                            }
                         }
                     }
                 }
