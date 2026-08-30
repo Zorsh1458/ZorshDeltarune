@@ -15,7 +15,7 @@ abstract class FakeDisplay(
     var transformation: Transformation,
     protected val teleportDuration: Int,
     protected val interpolationDuration: Int,
-    val players: List<Player>,
+    var players: List<Player>,
     var holder: MutableSet<FakeDisplay>? = null,
 ) {
 
@@ -37,15 +37,15 @@ abstract class FakeDisplay(
         }
     }
 
-    open fun destroy(playerUUID: UUID) {
-        val pl = Bukkit.getPlayer(playerUUID) ?: return
+    open fun destroy(player: Player) {
+        players = players - player
         repeat(10) { i ->
             runLater(i * 20L) {
-                PacketManager.removeEntity(entityId, listOf(pl))
+                PacketManager.removeEntity(entityId, listOf(player))
             }
         }
         runLater(400L) {
-            PacketManager.removeEntity(entityId, listOf(pl))
+            PacketManager.removeEntity(entityId, listOf(player))
         }
     }
 
