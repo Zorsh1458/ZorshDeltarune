@@ -395,10 +395,11 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         playerOptionsObjectNames += "player_hp_bar_red"
                     }
 
+                    val offsetPercentage = dPlayer.hp.toFloat() / dPlayer.maxhp.toFloat()
                     myCanvas.drawSprite(
-                        -58f,
+                        -78f + offsetPercentage * 20f,
                         -100f,
-                        20f,
+                        offsetPercentage * 20f,
                         4f,
                         57,
                         CanvasSprite.SQUARE,
