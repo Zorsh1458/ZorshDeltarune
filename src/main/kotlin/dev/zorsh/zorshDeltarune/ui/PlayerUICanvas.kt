@@ -56,7 +56,7 @@ class PlayerUICanvas {
 
     fun removePlayer(player: Player) {
         targetPlayers -= player
-        clearPlayer(player.uniqueId)
+        clearPlayer(player)
     }
 
     fun clearPlayer(player: Player) {

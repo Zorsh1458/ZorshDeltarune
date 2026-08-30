@@ -158,7 +158,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                             battleCanvas.myCanvas.setText(Component.text("Scale: ${hp.toFloat() / pl.maxhp.toFloat()}"), "debug_info", pl.uuid)
                             if (hp <= 0) {
                                 pl.freeFromBattle(battleUUID)
-                                battleCanvas.myCanvas.clearPlayer(pl.uuid)
+                                pl.player?.let { player -> battleCanvas.myCanvas.removePlayer(player) }
                             }
                         }
                     }
