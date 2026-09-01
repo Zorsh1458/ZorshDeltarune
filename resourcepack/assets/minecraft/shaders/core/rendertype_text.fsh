@@ -242,7 +242,13 @@ void main() {
         }
         if (EFFECT == 5) {
             vec4 def = texture(Sampler0, texCoord0);
-            fragColor = mix(def, vec4(1.0), sin(GameTime * 16383.0 / 14.0 * 6.283 * 2.0) * 0.5 + 0.5);
+            fragColor = mix(def, vec4(1.0), sin(GameTime * 1000.0 / 0.8333 * 6.283 * 2.0) * 0.5 + 0.5);
+            fragColor = REMOVE_BLUE(fragColor);
+            return;
+        }
+        if (EFFECT == 6) {
+            vec4 def = texture(Sampler0, texCoord0);
+            fragColor = mix(def, def * vec4(0.5, 0.5, 0.5, 1.0), sin(GameTime * 1000.0 / 0.8333 * 6.283 * 2.0) * 0.5 + 0.5);
             fragColor = REMOVE_BLUE(fragColor);
             return;
         }
