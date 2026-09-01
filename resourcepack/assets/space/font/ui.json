@@ -152,6 +152,15 @@
             "chars": [
                 "\uF00F"
             ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/tp_bar_outline.png",
+            "height": 116,
+            "ascent": 56,
+            "chars": [
+                "\uF010"
+            ]
         }
     ]
 }
