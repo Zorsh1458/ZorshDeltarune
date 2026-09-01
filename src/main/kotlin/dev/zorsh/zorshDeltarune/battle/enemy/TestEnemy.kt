@@ -55,12 +55,19 @@ class TestEnemy(
                 if (i < 20) {
                     radius -= 2
                 }
-                val rad = radius + sin(i * 0.05f) * 10f
-                angle -= 3.1415f * 0.05f
+                val rad = radius + sin(i * 0.15f) * 10f
+                angle -= 3.1415f * 0.03f
                 val x = cos(angle) * rad + bbx
                 val y = sin(angle) * rad + bby
                 canvas.setPosition(x, y, registryName)
                 dealDamage()
+
+                if (i == 119) {
+                    canvas.setScale(0.5f, 0.5f, registryName)
+                }
+                if (i == 120) {
+                    canvas.setScale(0f, 0f, registryName)
+                }
             }
             runLater(121) {
                 canvas.remove(registryName)
