@@ -33,12 +33,17 @@ class TestEnemy(
         repeat(count) { i ->
             attackPattern1(i * 6.283f / count)
         }
+        delay(6000)
     }
 
-    suspend fun attackPattern1(initialAngle: Float) {
+    fun attackPattern1(initialAngle: Float) {
         val (bbx, bby) = myBattle.getBBLocation()
+        var radius = 80
+        var angle = initialAngle
+        val inx = cos(angle) * radius + bbx
+        val iny = sin(angle) * radius + bby
         myBattle.createProjectile(
-            0f, 120f,
+            inx, iny,
             ProjectileData(
                 10,
                 listOf(CanvasSprite.SOUL),
@@ -46,8 +51,6 @@ class TestEnemy(
                 CircleHitbox(8f)
             )
         ) { canvas, registryName, dealDamage ->
-            var radius = 80
-            var angle = initialAngle
             runRepeating(120) { i ->
                 if (i < 10) {
                     radius -= 2
@@ -62,6 +65,5 @@ class TestEnemy(
                 canvas.remove(registryName)
             }
         }
-        delay(6000)
     }
 }
