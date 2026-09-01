@@ -134,6 +134,24 @@
             "chars": [
                 "\uF00D"
             ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/soul_outline.png",
+            "height": 40,
+            "ascent": 18,
+            "chars": [
+                "\uF00E"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/soul_outline_big.png",
+            "height": 48,
+            "ascent": 22,
+            "chars": [
+                "\uF00F"
+            ]
         }
     ]
 }

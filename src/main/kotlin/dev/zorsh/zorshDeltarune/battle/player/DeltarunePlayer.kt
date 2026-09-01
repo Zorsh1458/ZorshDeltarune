@@ -89,30 +89,6 @@ class DeltarunePlayer(val uuid: UUID) {
         moveMenuTexts.clear()
     }
 
-    fun updateTpCounter() {
-//        tpCounter?.changeTransformation(tpCounter!!.transformation, Component.text("X: ${(soulLocation.x * 10).roundToInt() / 10.0} | Y: ${(soulLocation.y * 10).roundToInt() / 10.0}"))
-        if (tpAmount == 100.0) {
-            tpCounter?.changeTransformation(tpCounter!!.transformation, Component.text("MAKC.").font("space:smooth"))
-            tpBar?.changeTransformation(
-                tpBar!!.transformation,
-                Component.text(" ".repeat(100)).style(Style.style(TextDecoration.UNDERLINED)).color("#ffff00")
-            )
-        } else {
-            tpCounter?.changeTransformation(tpCounter!!.transformation, Component.text("${tpAmount.toInt()}").font("space:smooth")
-                .append(Component.text("%").font("minecraft:default")))
-            tpBar?.changeTransformation(
-                tpBar!!.transformation,
-                Component.text(" ".repeat(max(tpAmount.toInt() - 2, 0))).style(Style.style(TextDecoration.UNDERLINED))
-                    .color("#ffb24d")
-                    .append(Component.text("  ").style(Style.style(TextDecoration.UNDERLINED)).color("#ffffff"))
-                    .append(
-                        Component.text(" ".repeat(100 - tpAmount.toInt())).style(Style.style(TextDecoration.UNDERLINED))
-                            .color("#770000")
-                    )
-            )
-        }
-    }
-
     fun damage(amount: Int, afterHpCalculated: (Int) -> Unit) {
         if (myBattleUUID == null) return
         player?.playSound(player!!, "soul_hurt", 1f, 1f)
@@ -127,18 +103,10 @@ class DeltarunePlayer(val uuid: UUID) {
     }
 
     fun tpGain() {
-        if (soulOutline != null) {
-            soulOutline?.changeTransformation(soulOutline!!.transformation, newOpacity = 128.toByte())
-            if (tpGain <= 0) {
-                player?.playSound(player!!, "tp_gain", 1f, 1f)
-            }
-            tpGain = 3
-            runLater(3) {
-                if (tpGain <= 0) {
-                    soulOutline?.changeTransformation(soulOutline!!.transformation, newOpacity = 0)
-                }
-            }
+        if (tpGain <= 0) {
+            player?.playSound(player!!, "tp_gain", 1f, 1f)
         }
+        tpGain = 3
     }
 
     fun freeFromBattle(targetUUID: UUID) {
@@ -194,10 +162,11 @@ class DeltarunePlayer(val uuid: UUID) {
         }
         player?.showTitle(
             title(
-            fontText("\uD701", "#000000", "space:default"),
-            Component.text(""),
-            Times.times(Duration.ZERO, Duration.ofMillis(1000), Duration.ofMillis(100))
-        ))
+                fontText("\uD701", "#000000", "space:default"),
+                Component.text(""),
+                Times.times(Duration.ZERO, Duration.ofMillis(1000), Duration.ofMillis(100))
+            )
+        )
         runLater(6) {
             player?.gameMode = gameMode
             if (initialLocation != null) {
@@ -246,12 +215,15 @@ class DeltarunePlayer(val uuid: UUID) {
                     if (tpGain > 0) {
                         tpGain--
                         tpAmount = min(tpAmount + 0.5, 100.0)
-                        updateTpCounter()
                     }
 
                     if (shakingTime > 0) {
                         PacketManager.playerLookAt(
-                            myPlayer.location + Vector3d(ZorshDeltarune.random.nextDouble() * shakingTime * shakingMult * ((shakingTime % 2) * 2 - 1), 0.0, ZorshDeltarune.random.nextDouble() * shakingTime * shakingMult * 1000000) + Vector3d(0.0, -1000000000.0, 100.0),
+                            myPlayer.location + Vector3d(
+                                ZorshDeltarune.random.nextDouble() * shakingTime * shakingMult * ((shakingTime % 2) * 2 - 1),
+                                0.0,
+                                ZorshDeltarune.random.nextDouble() * shakingTime * shakingMult * 1000000
+                            ) + Vector3d(0.0, -1000000000.0, 100.0),
                             listOf(myPlayer)
                         )
                     } else {
@@ -304,7 +276,7 @@ class DeltarunePlayer(val uuid: UUID) {
                 val x = -pos.x.toFloat() * 16f * 8f
                 val y = pos.z.toFloat() * 16f * 8f
                 list.forEach { (name, uuid) ->
-                    canvas.myCanvas.setPosition(x + battleBoxLocation.first, y + battleBoxLocation.second,name, uuid)
+                    canvas.myCanvas.setPosition(x + battleBoxLocation.first, y + battleBoxLocation.second, name, uuid)
                 }
             }
         }

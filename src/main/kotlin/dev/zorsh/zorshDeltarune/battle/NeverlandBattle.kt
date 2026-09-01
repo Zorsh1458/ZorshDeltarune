@@ -61,6 +61,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
     private val spawnedEntities = mutableSetOf<FakeDisplay>()
 
     private var theSoul: FakeTextDisplay? = null
+    private var soulGraze: FakeTextDisplay? = null
 
     object BattleLocation {
         val TEST = Location(Bukkit.getWorld("world"), 8.0, 100.0, 8.1)
@@ -131,9 +132,23 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 
     override fun getBattleEnemies() = enemies
 
-    override fun createProjectile(px: Float, py: Float, projectileData: ProjectileData, afterCreated: (PlayerUICanvas, String, () -> Unit) -> Unit) {
+    override fun createProjectile(
+        px: Float,
+        py: Float,
+        projectileData: ProjectileData,
+        afterCreated: (PlayerUICanvas, String, () -> Unit) -> Unit,
+    ) {
         val projId = UUID.randomUUID()
-        battleCanvas.myCanvas.drawSprite(px, py, 1f, 1f, 48, projectileData.sprites.first(), ShaderTextColor.pure("#ffffff"), "projectile_$projId") {
+        battleCanvas.myCanvas.drawSprite(
+            px,
+            py,
+            1f,
+            1f,
+            48,
+            projectileData.sprites.first(),
+            ShaderTextColor.pure("#ffffff"),
+            "projectile_$projId"
+        ) {
             if (projectileData.framesPerSprite != null) {
                 battleCanvas.animateSprite(
                     projectileData.sprites,
@@ -143,7 +158,9 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                 )
             }
             afterCreated(battleCanvas.myCanvas, "projectile_$projId") {
-                getBattlePlayers().forEach { pl ->
+                for (pl in getBattlePlayers()) {
+                    if (pl.noDamageTicks > 0) continue
+
                     var px = pl.player!!.x - battleCenterLocation.x
                     var py = pl.player!!.z - battleCenterLocation.z
                     px *= -1f
@@ -154,10 +171,14 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                     val projPosition = battleCanvas.myCanvas.getPosition("projectile_$projId")
                     px -= projPosition.first
                     py -= projPosition.second
-                    if (projectileData.hitbox.isIn(px.toFloat(), py.toFloat(), 6f) && pl.noDamageTicks <= 0) {
+                    if (projectileData.hitbox.isIn(px.toFloat(), py.toFloat(), 6f)) {
                         pl.damage(projectileData.damage) { hp ->
                             battleCanvas.updateHealthbar(hp, pl.maxhp, pl.uuid)
-                            battleCanvas.myCanvas.setText(Component.text("Scale: ${hp.toFloat() / pl.maxhp.toFloat()}"), "debug_info", pl.uuid)
+                            battleCanvas.myCanvas.setText(
+                                Component.text("Scale: ${hp.toFloat() / pl.maxhp.toFloat()}"),
+                                "debug_info",
+                                pl.uuid
+                            )
                             if (hp <= 0) {
                                 pl.freeFromBattle(battleUUID)
                                 pl.player?.let { player ->
@@ -165,6 +186,36 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                                     spawnedEntities.forEach { ent ->
                                         ent.destroy(player)
                                     }
+                                }
+                            }
+                        }
+                    } else if (projectileData.hitbox.isIn(px.toFloat(), py.toFloat(), 12f)) {
+                        if (pl.tpGain == 0) {
+                            soulGraze?.let { ent ->
+                                ent.changeOnlyTransformation(
+                                    Transformation(
+                                        ent.transformation.translation,
+                                        ent.transformation.leftRotation,
+                                        Vector3f(1f, 1f, 1f),
+                                        ent.transformation.rightRotation
+                                    ),
+                                    listOf(pl.player!!)
+                                )
+                            }
+                        }
+                        pl.tpGain()
+                        runLater(4) {
+                            if (pl.tpGain == 0) {
+                                soulGraze?.let { ent ->
+                                    ent.changeOnlyTransformation(
+                                        Transformation(
+                                            ent.transformation.translation,
+                                            ent.transformation.leftRotation,
+                                            Vector3f(0f, 0f, 1f),
+                                            ent.transformation.rightRotation
+                                        ),
+                                        listOf(pl.player!!)
+                                    )
                                 }
                             }
                         }
@@ -271,6 +322,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         loc.pitch = -90f
 
         runLater(3) {
+            // SOUL
             val sprite = CanvasSprite.SOUL
             PacketManager.spawnTextDisplay(
                 loc,
@@ -293,6 +345,31 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                 spawnedEntities += ent
                 theSoul = ent
             }
+
+            // SOUL_GRAZE_OUTLINE
+            val spriteGraze = CanvasSprite.SOUL_OUTLINE
+            PacketManager.spawnTextDisplay(
+                loc,
+                spriteGraze.toTextValue().color(ShaderTextColor.pure("#ffffff").value),
+                getBattlePlayers().mapNotNull { it.player },
+                data = FakeDisplayData(
+                    Transformation(
+                        Vector3f(battleBoxLocation.first / 16f / 8f, battleBoxLocation.second / 16f / 8f, 0f),
+                        AxisAngle4f(),
+                        Vector3f(0f, 0f, 1f),
+                        AxisAngle4f()
+                    ),
+                    interpolationDuration = 0,
+                    opacity = 251.toByte()
+                ),
+                seeThrough = false,
+                alignment = TextDisplay.TextAlignment.CENTER,
+                lineWidth = 1000,
+                isShadowed = false
+            ) { ent ->
+                spawnedEntities += ent
+                soulGraze = ent
+            }
         }
     }
 
@@ -308,7 +385,10 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
             )
         )
         getBattlePlayers().forEach { battlePlayer ->
-            battlePlayer.unlockSoul(battleBoxLocation, battleCanvas, getBattlePlayers().mapNotNull { dp -> dp.player }.filter { pl -> pl.uniqueId != battlePlayer.uuid })
+            battlePlayer.unlockSoul(
+                battleBoxLocation,
+                battleCanvas,
+                getBattlePlayers().mapNotNull { dp -> dp.player }.filter { pl -> pl.uniqueId != battlePlayer.uuid })
         }
     }
 

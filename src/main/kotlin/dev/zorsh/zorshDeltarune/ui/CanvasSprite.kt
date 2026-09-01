@@ -16,6 +16,8 @@ enum class CanvasSprite {
     SLIME_SPRITE_2,
     SOUL,
     SOUL_OTHER,
+    SOUL_OUTLINE,
+    SOUL_OUTLINE_BIG,
     UNKNOWN;
 
     fun getSize() = when (this) {
@@ -31,6 +33,8 @@ enum class CanvasSprite {
         SOUL -> 20 to 20
         SOUL_OTHER -> 20 to 20
         UNKNOWN -> 64 to 32
+        SOUL_OUTLINE -> 40 to 40
+        SOUL_OUTLINE_BIG -> 48 to 48
     }
 
     fun applyScaling() = when (this) {
@@ -61,6 +65,8 @@ enum class CanvasSprite {
             SLIME_SPRITE_2 -> "\uF00B"
             SOUL -> "\uF00C"
             SOUL_OTHER -> "\uF00D"
+            SOUL_OUTLINE -> "\uF00E"
+            SOUL_OUTLINE_BIG -> "\uF00F"
             UNKNOWN -> "\uF000"
         }
         if (isSpriteWidthEven()) {
