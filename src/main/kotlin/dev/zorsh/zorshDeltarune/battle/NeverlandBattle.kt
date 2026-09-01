@@ -189,14 +189,15 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                                 }
                             }
                         }
-                    } else if (projectileData.hitbox.isIn(px.toFloat(), py.toFloat(), 12f)) {
+                    } else if (projectileData.hitbox.isIn(px.toFloat(), py.toFloat(), 18f)) {
                         if (pl.tpGain == 0) {
                             soulGraze?.let { ent ->
+                                val (sx, sy) = CanvasSprite.SOUL_OUTLINE.getSizeRatios()
                                 ent.changeOnlyTransformation(
                                     Transformation(
                                         ent.transformation.translation,
                                         ent.transformation.leftRotation,
-                                        Vector3f(1f, 1f, 1f),
+                                        Vector3f(1f / 16f * 2.5f * sx, 1f / 16f * 2.5f * sy, 1f),
                                         ent.transformation.rightRotation
                                     ),
                                     listOf(pl.player!!)
