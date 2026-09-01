@@ -189,7 +189,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                                 }
                             }
                         }
-                    } else if (projectileData.hitbox.isIn(px.toFloat(), py.toFloat(), 18f)) {
+                    } else if (projectileData.hitbox.isIn(px.toFloat(), py.toFloat(), 20f)) {
                         if (pl.tpGain == 0) {
                             soulGraze?.let { ent ->
                                 val (sx, sy) = CanvasSprite.SOUL_OUTLINE.getSizeRatios()
