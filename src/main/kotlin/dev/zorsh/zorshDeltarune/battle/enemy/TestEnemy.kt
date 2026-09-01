@@ -7,6 +7,8 @@ import dev.zorsh.zorshDeltarune.utils.runLater
 import dev.zorsh.zorshDeltarune.utils.runRepeating
 import kotlinx.coroutines.*
 import net.kyori.adventure.text.Component
+import kotlin.math.cos
+import kotlin.math.sin
 
 class TestEnemy(
     name: Component,
@@ -27,10 +29,14 @@ class TestEnemy(
 ) {
 
     override suspend fun attack(onAttackEnds: () -> Unit) = coroutineScope {
-        attackPattern1()
+        val count = 16
+        repeat(count) { i ->
+            attackPattern1(i * 6.283f / count)
+        }
     }
 
-    suspend fun attackPattern1() {
+    suspend fun attackPattern1(initialAngle: Float) {
+        val (bbx, bby) = myBattle.getBBLocation()
         myBattle.createProjectile(
             0f, 120f,
             ProjectileData(
@@ -40,11 +46,16 @@ class TestEnemy(
                 CircleHitbox(8f)
             )
         ) { canvas, registryName, dealDamage ->
-            runRepeating(15) {
-                canvas.move(0f, -4f, registryName)
-            }
-            runRepeating(120) {
-                canvas.rotate(3.1415f / 5f, registryName)
+            var radius = 80
+            var angle = initialAngle
+            runRepeating(120) { i ->
+                if (i < 10) {
+                    radius -= 2
+                }
+                angle += 3.1415f * 0.05f
+                val x = cos(angle) * radius + bbx
+                val y = sin(angle) * radius + bby
+                canvas.setPosition(x, y, registryName)
                 dealDamage()
             }
             runLater(121) {

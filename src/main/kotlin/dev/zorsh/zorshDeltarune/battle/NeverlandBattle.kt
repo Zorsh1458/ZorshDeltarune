@@ -71,7 +71,9 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 
     var playersTurn = false
 
-    var battleBoxLocation = 0f to 20f
+    private var battleBoxLocation = 0f to 20f
+
+    override fun getBBLocation() = battleBoxLocation
 
     override fun isActive() = active
 
