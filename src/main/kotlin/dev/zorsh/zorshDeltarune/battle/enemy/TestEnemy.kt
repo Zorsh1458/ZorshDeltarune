@@ -29,7 +29,7 @@ class TestEnemy(
 ) {
 
     override suspend fun attack(onAttackEnds: () -> Unit) = coroutineScope {
-        val count = 16
+        val count = 12
         repeat(count) { i ->
             attackPattern1(i * 6.283f / count)
         }
@@ -38,7 +38,7 @@ class TestEnemy(
 
     fun attackPattern1(initialAngle: Float) {
         val (bbx, bby) = myBattle.getBBLocation()
-        var radius = 80
+        var radius = 100
         var angle = initialAngle
         val inx = cos(angle) * radius + bbx
         val iny = sin(angle) * radius + bby
@@ -52,12 +52,13 @@ class TestEnemy(
             )
         ) { canvas, registryName, dealDamage ->
             runRepeating(120) { i ->
-                if (i < 10) {
+                if (i < 20) {
                     radius -= 2
                 }
-                angle += 3.1415f * 0.05f
-                val x = cos(angle) * radius + bbx
-                val y = sin(angle) * radius + bby
+                val rad = radius + sin(i * 0.05f) * 10f
+                angle -= 3.1415f * 0.05f
+                val x = cos(angle) * rad + bbx
+                val y = sin(angle) * rad + bby
                 canvas.setPosition(x, y, registryName)
                 dealDamage()
             }
