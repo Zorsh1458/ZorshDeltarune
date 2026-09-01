@@ -60,12 +60,14 @@ class TestEnemy(
                 val x = cos(angle) * rad + bbx
                 val y = sin(angle) * rad + bby
                 canvas.setPosition(x, y, registryName)
-                dealDamage()
+                if (i < 118) {
+                    dealDamage()
+                }
 
-                if (i == 119) {
+                if (i == 117) {
                     canvas.setScale(0.5f, 0.5f, registryName)
                 }
-                if (i == 120) {
+                if (i == 118) {
                     canvas.setScale(0f, 0f, registryName)
                 }
             }
