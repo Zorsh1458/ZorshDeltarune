@@ -48,6 +48,8 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 
     private val battleCanvas = BattleCanvas(players.mapNotNull { it.player }, this)
 
+    private val playersNotQuit = players.toMutableList()
+
     private var loopTask: BukkitTask? = null
 
     private var battleJob: Job? = null
@@ -125,7 +127,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 
     override fun getBattleInitialPlayers() = players
 
-    override fun getBattlePlayers() = players.filter { it.player?.isOnline == true && it.myBattleUUID == battleUUID }
+    override fun getBattlePlayers() = playersNotQuit.filter { it.player?.isOnline == true && it.myBattleUUID == battleUUID }
 
     override fun getBattleEnemies() = enemies
 
@@ -136,6 +138,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                 ent.destroy(player)
             }
         }
+        playersNotQuit -= dPlayer
     }
 
     override fun createProjectile(
