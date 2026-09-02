@@ -368,7 +368,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
                 section("HEALTH_BAR", true) {
                     myCanvas.drawText(
-                        189f,
+                        74f,
                         -107f,
                         1.2f,
                         1.2f,
@@ -384,7 +384,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                     }
 
                     myCanvas.drawSprite(
-                        172f,
+                        57f,
                         -100f,
                         20f,
                         4f,
@@ -399,7 +399,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
                     val offsetPercentage = dPlayer.hp.toFloat() / dPlayer.maxhp.toFloat()
                     myCanvas.drawSprite(
-                        152f + offsetPercentage * 20f,
+                        37f + offsetPercentage * 20f,
                         -100f,
                         offsetPercentage * 20f,
                         4f,
@@ -413,7 +413,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                     }
 
                     myCanvas.drawText(
-                        106f,
+                        36f,
                         -95f,
                         1.2f,
                         1.2f,
