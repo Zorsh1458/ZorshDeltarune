@@ -111,7 +111,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
     fun updateHealthInfo(hp: Int, maxHp: Int, playerId: UUID) {
         val offsetPercentage = hp.toFloat() / maxHp.toFloat()
         val py = myCanvas.getPosition("player_hp_bar_green", playerId).second
-        myCanvas.setPosition(152f + offsetPercentage * 20f, py, "player_hp_bar_green", playerId)
+        myCanvas.setPosition(35f + offsetPercentage * 20f, py, "player_hp_bar_green", playerId)
         myCanvas.setScale(offsetPercentage * 20f, 4f, "player_hp_bar_green", playerId)
         val hpCountText = Component.text("                       \n$hp / $maxHp")
         myCanvas.setText(hpCountText, "player_hp_counter", playerId)
@@ -368,8 +368,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
                 section("HEALTH_BAR", true) {
                     myCanvas.drawText(
-                        74f,
-                        -107f,
+                        72f,
+                        -110f,
                         1.2f,
                         1.2f,
                         58,
@@ -384,8 +384,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                     }
 
                     myCanvas.drawSprite(
-                        57f,
-                        -100f,
+                        55f,
+                        -103f,
                         20f,
                         4f,
                         58,
@@ -399,8 +399,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
                     val offsetPercentage = dPlayer.hp.toFloat() / dPlayer.maxhp.toFloat()
                     myCanvas.drawSprite(
-                        37f + offsetPercentage * 20f,
-                        -100f,
+                        35f + offsetPercentage * 20f,
+                        -103f,
                         offsetPercentage * 20f,
                         4f,
                         57,
@@ -414,7 +414,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
                     myCanvas.drawText(
                         36f,
-                        -95f,
+                        -97f,
                         1.2f,
                         1.2f,
                         58,
