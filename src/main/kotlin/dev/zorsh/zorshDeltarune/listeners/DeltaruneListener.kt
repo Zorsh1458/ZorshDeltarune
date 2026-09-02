@@ -57,8 +57,6 @@ class DeltaruneListener : Listener {
     @EventHandler
     fun onPlayerQuitEvent(e: PlayerQuitEvent) {
         val id = e.player.uniqueId
-        if (PacketManager.lockedTimeTracker.contains(id)) {
-            PacketManager.lockedTimeTracker.remove(id)
-        }
+        ZorshDeltarune.deltarunePlayer.remove(id)
     }
 }
