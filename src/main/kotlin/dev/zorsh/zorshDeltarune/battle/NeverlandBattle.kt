@@ -1,6 +1,5 @@
 package dev.zorsh.zorshDeltarune.battle
 
-import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.enemy.DeltaruneEnemy
 import dev.zorsh.zorshDeltarune.battle.player.DeltarunePlayer
 import dev.zorsh.zorshDeltarune.battle.player.PlayerActionStage
@@ -30,7 +29,6 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.entity.TextDisplay
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.Transformation
 import org.joml.AxisAngle4f
@@ -39,7 +37,6 @@ import org.joml.Vector3f
 import java.time.Duration
 import java.util.UUID
 import kotlin.math.ceil
-import kotlin.math.round
 
 class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<DeltaruneEnemy>) : INeverlandBattle {
 
@@ -64,7 +61,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
     private var soulGraze: FakeTextDisplay? = null
 
     object BattleLocation {
-        val TEST = Location(Bukkit.getWorld("world"), 8.0, 100.0, 8.1)
+//        val TEST = Location(Bukkit.getWorld("world"), 8.0, 100.0, 8.1)
         val UNDER_STATION = Location(Bukkit.getWorld("moon"), 952.0, 99.6, 1101.0)
     }
 
@@ -93,7 +90,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         active = false
         for (pl in players) {
             try {
-                pl.freeFromBattle(battleUUID)
+                pl.freeFromBattle(battleUUID, true)
             } catch (_: Exception) {
             }
         }
@@ -131,6 +128,15 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
     override fun getBattlePlayers() = players.filter { it.player?.isOnline == true && it.myBattleUUID == battleUUID }
 
     override fun getBattleEnemies() = enemies
+
+    override fun removePlayer(dPlayer: DeltarunePlayer) {
+        dPlayer.player?.let { player ->
+            battleCanvas.myCanvas.removePlayer(player)
+            spawnedEntities.forEach { ent ->
+                ent.destroy(player)
+            }
+        }
+    }
 
     override fun createProjectile(
         px: Float,
@@ -180,13 +186,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                                 pl.uuid
                             )
                             if (hp <= 0) {
-                                pl.freeFromBattle(battleUUID)
-                                pl.player?.let { player ->
-                                    battleCanvas.myCanvas.removePlayer(player)
-                                    spawnedEntities.forEach { ent ->
-                                        ent.destroy(player)
-                                    }
-                                }
+                                pl.freeFromBattle(battleUUID, false)
                             }
                         }
                     } else if (projectileData.hitbox.isIn(px.toFloat(), py.toFloat(), 20f)) {

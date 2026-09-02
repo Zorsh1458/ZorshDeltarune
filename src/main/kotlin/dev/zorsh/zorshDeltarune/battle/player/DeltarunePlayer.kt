@@ -10,8 +10,6 @@ import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.ui.ShaderTextColor
 import dev.zorsh.zorshDeltarune.utils.*
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.Style
-import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title.Times
 import net.kyori.adventure.title.Title.title
 import net.minecraft.world.entity.ai.attributes.Attributes
@@ -109,10 +107,13 @@ class DeltarunePlayer(val uuid: UUID) {
         tpGain = 3
     }
 
-    fun freeFromBattle(targetUUID: UUID) {
+    fun freeFromBattle(targetUUID: UUID, silentQuit: Boolean) {
         if (myBattleUUID == null) return
         if (myBattleUUID != targetUUID) return
         player?.sendMessage(Component.text("Freeing from battle $myBattleUUID"))
+        if (!silentQuit) {
+            myBattleUUID?.let { ids -> BattleManager.getBattle(ids)?.removePlayer(this) }
+        }
         myBattleUUID = null
         locked = false
         player?.stopAllSounds()
@@ -201,7 +202,7 @@ class DeltarunePlayer(val uuid: UUID) {
 
                 if (!locked) {
                     action.cancel()
-                    freeFromBattle(uuid)
+                    freeFromBattle(uuid, false)
                 } else {
                     if (i % 20 == 0) {
                         myPlayer.hideFromEveryone()
