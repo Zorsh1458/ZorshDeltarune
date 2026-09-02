@@ -1,5 +1,6 @@
 package dev.zorsh.zorshDeltarune.battle.enemy
 
+import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.projectile.CircleHitbox
 import dev.zorsh.zorshDeltarune.battle.projectile.ProjectileData
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
@@ -45,7 +46,6 @@ class TestEnemy(
         myBattle.createProjectile(
             inx, iny,
             ProjectileData(
-                10,
                 listOf(CanvasSprite.SOUL),
                 null,
                 CircleHitbox(8f)
@@ -61,7 +61,7 @@ class TestEnemy(
                 val y = sin(angle) * rad + bby
                 canvas.setPosition(x, y, registryName)
                 if (i < 118) {
-                    dealDamage()
+                    dealDamage(ZorshDeltarune.random.nextInt(10) + 10)
                 }
 
                 if (i == 117) {

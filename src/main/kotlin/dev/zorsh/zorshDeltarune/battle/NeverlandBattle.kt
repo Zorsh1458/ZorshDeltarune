@@ -145,7 +145,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         px: Float,
         py: Float,
         projectileData: ProjectileData,
-        afterCreated: (PlayerUICanvas, String, () -> Unit) -> Unit,
+        afterCreated: (PlayerUICanvas, String, (Int) -> Unit) -> Unit,
     ) {
         val projId = UUID.randomUUID()
         battleCanvas.myCanvas.drawSprite(
@@ -166,7 +166,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                     stoppingCondition = { return@animateSprite !isActive() || !battleCanvas.myCanvas.hasObject("projectile_$projId") }
                 )
             }
-            afterCreated(battleCanvas.myCanvas, "projectile_$projId") {
+            afterCreated(battleCanvas.myCanvas, "projectile_$projId") { baseDamageAmount ->
                 for (pl in getBattlePlayers()) {
                     if (pl.noDamageTicks > 0) continue
 
@@ -181,13 +181,8 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                     px -= projPosition.first
                     py -= projPosition.second
                     if (projectileData.hitbox.isIn(px.toFloat(), py.toFloat(), 6f)) {
-                        pl.damage(projectileData.damage) { hp ->
-                            battleCanvas.updateHealthbar(hp, pl.maxhp, pl.uuid)
-                            battleCanvas.myCanvas.setText(
-                                Component.text("Scale: ${hp.toFloat() / pl.maxhp.toFloat()}"),
-                                "debug_info",
-                                pl.uuid
-                            )
+                        pl.damage(baseDamageAmount) { hp ->
+                            battleCanvas.updateHealthInfo(hp, pl.maxhp, pl.uuid)
                             if (hp <= 0) {
                                 pl.freeFromBattle(battleUUID, false)
                             }

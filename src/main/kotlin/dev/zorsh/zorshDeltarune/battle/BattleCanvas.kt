@@ -77,7 +77,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
     fun showPlayerOptions() {
         val dPlayers = battle.getBattlePlayers()
         dPlayers.forEach { dPlayer ->
-            playerOptionsObjectNames.forEach { objName ->
+            playerOptionsObjectNamesToLift.forEach { objName ->
                 myCanvas.move(0f, 36f, objName, dPlayer.player!!.uniqueId)
             }
         }
@@ -86,7 +86,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
     fun hidePlayerOptions() {
         val dPlayers = battle.getBattlePlayers()
         dPlayers.forEach { dPlayer ->
-            playerOptionsObjectNames.forEach { objName ->
+            playerOptionsObjectNamesToLift.forEach { objName ->
                 myCanvas.move(0f, -36f, objName, dPlayer.player!!.uniqueId)
             }
         }
@@ -108,16 +108,18 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         }
     }
 
-    fun updateHealthbar(hp: Int, maxHp: Int, playerId: UUID) {
+    fun updateHealthInfo(hp: Int, maxHp: Int, playerId: UUID) {
         val offsetPercentage = hp.toFloat() / maxHp.toFloat()
         val py = myCanvas.getPosition("player_hp_bar_green", playerId).second
         myCanvas.setPosition(-78f + offsetPercentage * 20f, py, "player_hp_bar_green", playerId)
         myCanvas.setScale(offsetPercentage * 20f, 4f, "player_hp_bar_green", playerId)
+        val hpCountText = Component.text("                       \n$hp / $maxHp")
+        myCanvas.setText(hpCountText, "player_hp_counter", playerId)
     }
 
-    val playerOptionsObjectNames = mutableSetOf<String>()
+    val playerOptionsObjectNamesToLift = mutableSetOf<String>()
     fun setupLayout() {
-        playerOptionsObjectNames.clear()
+        playerOptionsObjectNamesToLift.clear()
         section("ENEMIES", true) {
             val spritedEnemies = battle.getBattleEnemies().filterIsInstance<SpritedEnemy>()
             for (enemy in spritedEnemies.reversed().withIndex()) {
@@ -289,7 +291,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         section("PLAYER_STUFF", true) {
             val dPlayers = battle.getBattlePlayers()
             dPlayers.forEach { dPlayer ->
-                section("DEBUG", true) {
+                section("DEBUG", false) {
                     myCanvas.drawText(0f, 160f, 2f, 2f, 48,
                         Component.text("Debug:"),
                         ShaderTextColor.pure("#ffffff"),
@@ -312,7 +314,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         "selection_box_outline",
                         dPlayer.player!!
                     ) {
-                        playerOptionsObjectNames += "selection_box_outline"
+                        playerOptionsObjectNamesToLift += "selection_box_outline"
                     }
 
                     myCanvas.drawSprite(
@@ -326,7 +328,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         "selection_box_inner",
                         dPlayer.player!!
                     ) {
-                        playerOptionsObjectNames += "selection_box_inner"
+                        playerOptionsObjectNamesToLift += "selection_box_inner"
                     }
                 }
 
@@ -344,7 +346,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         "player_name",
                         dPlayer.player!!
                     ) {
-                        playerOptionsObjectNames += "player_name"
+                        playerOptionsObjectNamesToLift += "player_name"
                     }
 
                     myCanvas.drawText(
@@ -360,7 +362,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         "player_name_shadow",
                         dPlayer.player!!
                     ) {
-                        playerOptionsObjectNames += "player_name_shadow"
+                        playerOptionsObjectNamesToLift += "player_name_shadow"
                     }
                 }
 
@@ -378,7 +380,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         "player_hp_text",
                         dPlayer.player!!
                     ) {
-                        playerOptionsObjectNames += "player_hp_text"
+                        playerOptionsObjectNamesToLift += "player_hp_text"
                     }
 
                     myCanvas.drawSprite(
@@ -392,7 +394,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         "player_hp_bar_red",
                         dPlayer.player!!
                     ) {
-                        playerOptionsObjectNames += "player_hp_bar_red"
+                        playerOptionsObjectNamesToLift += "player_hp_bar_red"
                     }
 
                     val offsetPercentage = dPlayer.hp.toFloat() / dPlayer.maxhp.toFloat()
@@ -407,7 +409,23 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         "player_hp_bar_green",
                         dPlayer.player!!
                     ) {
-                        playerOptionsObjectNames += "player_hp_bar_green"
+                        playerOptionsObjectNamesToLift += "player_hp_bar_green"
+                    }
+
+                    myCanvas.drawText(
+                        -41f,
+                        -97f,
+                        1.2f,
+                        1.2f,
+                        58,
+                        Component.text("                       \n${dPlayer.hp} / ${dPlayer.maxhp}"),
+                        ShaderTextColor.pure("#ffffff"),
+                        TextDisplay.TextAlignment.RIGHT,
+                        1000,
+                        "player_hp_counter",
+                        dPlayer.player!!
+                    ) {
+                        playerOptionsObjectNamesToLift += "player_hp_counter"
                     }
                 }
 
@@ -423,7 +441,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         "player_button_fight",
                         dPlayer.player!!
                     ) {
-                        playerOptionsObjectNames += "player_button_fight"
+                        playerOptionsObjectNamesToLift += "player_button_fight"
                     }
 
                     myCanvas.drawSprite(
@@ -437,7 +455,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         "player_button_act",
                         dPlayer.player!!
                     ) {
-                        playerOptionsObjectNames += "player_button_act"
+                        playerOptionsObjectNamesToLift += "player_button_act"
                     }
 
                     myCanvas.drawSprite(
@@ -451,7 +469,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         "player_button_item",
                         dPlayer.player!!
                     ) {
-                        playerOptionsObjectNames += "player_button_item"
+                        playerOptionsObjectNamesToLift += "player_button_item"
                     }
 
                     myCanvas.drawSprite(
@@ -465,7 +483,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         "player_button_mercy",
                         dPlayer.player!!
                     ) {
-                        playerOptionsObjectNames += "player_button_mercy"
+                        playerOptionsObjectNamesToLift += "player_button_mercy"
                     }
 
                     myCanvas.drawSprite(
@@ -479,7 +497,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         "player_button_defend",
                         dPlayer.player!!
                     ) {
-                        playerOptionsObjectNames += "player_button_defend"
+                        playerOptionsObjectNamesToLift += "player_button_defend"
                     }
                 }
             }

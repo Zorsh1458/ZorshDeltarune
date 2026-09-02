@@ -39,8 +39,8 @@ class DeltarunePlayer(val uuid: UUID) {
 
     var initialLocation: Location? = null
 
-    var hp = 100
-    var maxhp = 100
+    var hp = 1000
+    var maxhp = 1000
 
     private var passengers = mutableListOf<FakeDisplay>()
 
