@@ -47,7 +47,7 @@ class PlayerUICanvas {
         savedObjects.clear()
 
         // Individual objects
-        objectsPerPlayer.forEach { _, list ->
+        objectsPerPlayer.forEach { (_, list) ->
             list.forEach { it.destroy() }
         }
         objectsPerPlayer.clear()
