@@ -291,213 +291,289 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         section("PLAYER_STUFF", true) {
             val dPlayers = battle.getBattlePlayers()
             dPlayers.forEach { dPlayer ->
-                section("DEBUG", true) {
-                    myCanvas.drawText(0f, 160f, 2f, 2f, 48,
-                        Component.text("Debug:"),
-                        ShaderTextColor.pure("#ffffff"),
-                        TextDisplay.TextAlignment.CENTER,
-                        1000,
-                        "debug_info",
-                        dPlayer.player!!
-                    )
-                }
-
-                section("SELECTION_BOX_DECORATION", true) {
-                    myCanvas.drawSprite(
-                        0f,
-                        -115f,
-                        100f,
-                        38f,
-                        60,
-                        CanvasSprite.SQUARE,
-                        ShaderTextColor.pure("#00ffff"),
-                        "selection_box_outline",
-                        dPlayer.player!!
-                    ) {
-                        playerOptionsObjectNamesToLift += "selection_box_outline"
+                dPlayer.player?.let { bukkitPlayer ->
+                    section("DEBUG", true) {
+                        myCanvas.drawText(
+                            0f, 160f, 2f, 2f, 48,
+                            Component.text("Debug:"),
+                            ShaderTextColor.pure("#ffffff"),
+                            TextDisplay.TextAlignment.CENTER,
+                            1000,
+                            "debug_info",
+                            bukkitPlayer
+                        )
                     }
 
-                    myCanvas.drawSprite(
-                        0f,
-                        -115f,
-                        98f,
-                        36f,
-                        59,
-                        CanvasSprite.SQUARE,
-                        ShaderTextColor.pure("#000000"),
-                        "selection_box_inner",
-                        dPlayer.player!!
-                    ) {
-                        playerOptionsObjectNamesToLift += "selection_box_inner"
-                    }
-                }
+                    section("SELECTION_BOX_DECORATION", true) {
+                        myCanvas.drawSprite(
+                            0f,
+                            -115f,
+                            100f,
+                            38f,
+                            60,
+                            CanvasSprite.SQUARE,
+                            ShaderTextColor.pure("#00ffff"),
+                            "selection_box_outline",
+                            bukkitPlayer
+                        ) {
+                            playerOptionsObjectNamesToLift += "selection_box_outline"
+                        }
 
-                section("PLAYER_NAME", true) {
-                    myCanvas.drawText(
-                        -41f,
-                        -93f,
-                        1.2f,
-                        1.2f,
-                        57,
-                        Component.text("                       \n${dPlayer.player!!.name}"),
-                        ShaderTextColor.pure("#ffffff"),
-                        TextDisplay.TextAlignment.LEFT,
-                        1000,
-                        "player_name",
-                        dPlayer.player!!
-                    ) {
-                        playerOptionsObjectNamesToLift += "player_name"
+                        myCanvas.drawSprite(
+                            0f,
+                            -115f,
+                            98f,
+                            36f,
+                            59,
+                            CanvasSprite.SQUARE,
+                            ShaderTextColor.pure("#000000"),
+                            "selection_box_inner",
+                            bukkitPlayer
+                        ) {
+                            playerOptionsObjectNamesToLift += "selection_box_inner"
+                        }
                     }
 
-                    myCanvas.drawText(
-                        -41f + 1f,
-                        -93f - 1f,
-                        1.2f,
-                        1.2f,
-                        58,
-                        Component.text("                       \n${dPlayer.player!!.name}"),
-                        ShaderTextColor.pure("#444444"),
-                        TextDisplay.TextAlignment.LEFT,
-                        1000,
-                        "player_name_shadow",
-                        dPlayer.player!!
-                    ) {
-                        playerOptionsObjectNamesToLift += "player_name_shadow"
-                    }
-                }
+                    section("PLAYER_NAME", true) {
+                        myCanvas.drawText(
+                            -41f,
+                            -93f,
+                            1.2f,
+                            1.2f,
+                            57,
+                            Component.text("                       \n${dPlayer.player!!.name}"),
+                            ShaderTextColor.pure("#ffffff"),
+                            TextDisplay.TextAlignment.LEFT,
+                            1000,
+                            "player_name",
+                            bukkitPlayer
+                        ) {
+                            playerOptionsObjectNamesToLift += "player_name"
+                        }
 
-                section("HEALTH_BAR", true) {
-                    myCanvas.drawText(
-                        72f,
-                        -110f,
-                        1.2f,
-                        1.2f,
-                        58,
-                        Component.text("                       \nHP"),
-                        ShaderTextColor.pure("#ffffff"),
-                        TextDisplay.TextAlignment.LEFT,
-                        1000,
-                        "player_hp_text",
-                        dPlayer.player!!
-                    ) {
-                        playerOptionsObjectNamesToLift += "player_hp_text"
-                    }
-
-                    myCanvas.drawSprite(
-                        63f,
-                        -103f,
-                        28f,
-                        4f,
-                        58,
-                        CanvasSprite.SQUARE,
-                        ShaderTextColor.pure("#6b0e19"),
-                        "player_hp_bar_red",
-                        dPlayer.player!!
-                    ) {
-                        playerOptionsObjectNamesToLift += "player_hp_bar_red"
+                        myCanvas.drawText(
+                            -41f + 1f,
+                            -93f - 1f,
+                            1.2f,
+                            1.2f,
+                            58,
+                            Component.text("                       \n${bukkitPlayer.name}"),
+                            ShaderTextColor.pure("#444444"),
+                            TextDisplay.TextAlignment.LEFT,
+                            1000,
+                            "player_name_shadow",
+                            bukkitPlayer
+                        ) {
+                            playerOptionsObjectNamesToLift += "player_name_shadow"
+                        }
                     }
 
-                    val offsetPercentage = dPlayer.hp.toFloat() / dPlayer.maxhp.toFloat()
-                    myCanvas.drawSprite(
-                        35f + offsetPercentage * 28f,
-                        -103f,
-                        offsetPercentage * 28f,
-                        4f,
-                        57,
-                        CanvasSprite.SQUARE,
-                        ShaderTextColor.pure("#1bf230"),
-                        "player_hp_bar_green",
-                        dPlayer.player!!
-                    ) {
-                        playerOptionsObjectNamesToLift += "player_hp_bar_green"
+                    section("HEALTH_BAR", true) {
+                        myCanvas.drawText(
+                            72f,
+                            -110f,
+                            1.2f,
+                            1.2f,
+                            58,
+                            Component.text("                       \nHP"),
+                            ShaderTextColor.pure("#ffffff"),
+                            TextDisplay.TextAlignment.LEFT,
+                            1000,
+                            "player_hp_text",
+                            bukkitPlayer
+                        ) {
+                            playerOptionsObjectNamesToLift += "player_hp_text"
+                        }
+
+                        myCanvas.drawSprite(
+                            63f,
+                            -103f,
+                            28f,
+                            4f,
+                            58,
+                            CanvasSprite.SQUARE,
+                            ShaderTextColor.pure("#6b0e19"),
+                            "player_hp_bar_red",
+                            bukkitPlayer
+                        ) {
+                            playerOptionsObjectNamesToLift += "player_hp_bar_red"
+                        }
+
+                        val offsetPercentage = dPlayer.hp.toFloat() / dPlayer.maxhp.toFloat()
+                        myCanvas.drawSprite(
+                            35f + offsetPercentage * 28f,
+                            -103f,
+                            offsetPercentage * 28f,
+                            4f,
+                            57,
+                            CanvasSprite.SQUARE,
+                            ShaderTextColor.pure("#1bf230"),
+                            "player_hp_bar_green",
+                            bukkitPlayer
+                        ) {
+                            playerOptionsObjectNamesToLift += "player_hp_bar_green"
+                        }
+
+                        myCanvas.drawText(
+                            36f,
+                            -97f,
+                            1.2f,
+                            1.2f,
+                            58,
+                            Component.text("                       \n${dPlayer.hp} / ${dPlayer.maxhp}"),
+                            ShaderTextColor.pure("#ffffff"),
+                            TextDisplay.TextAlignment.RIGHT,
+                            1000,
+                            "player_hp_counter",
+                            bukkitPlayer
+                        ) {
+                            playerOptionsObjectNamesToLift += "player_hp_counter"
+                        }
                     }
 
-                    myCanvas.drawText(
-                        36f,
-                        -97f,
-                        1.2f,
-                        1.2f,
-                        58,
-                        Component.text("                       \n${dPlayer.hp} / ${dPlayer.maxhp}"),
-                        ShaderTextColor.pure("#ffffff"),
-                        TextDisplay.TextAlignment.RIGHT,
-                        1000,
-                        "player_hp_counter",
-                        dPlayer.player!!
-                    ) {
-                        playerOptionsObjectNamesToLift += "player_hp_counter"
-                    }
-                }
+                    section("BUTTONS", true) {
+                        val buttonColor = ShaderTextColor.pure("#ffffff")
+                        val buttonColorSelected = ShaderTextColor.pure("#ffff00")
 
-                section("BUTTONS", true) {
-                    myCanvas.drawSprite(
-                        -70f,
-                        -132.5f,
-                        1f,
-                        1f,
-                        57,
-                        CanvasSprite.DBUTTON_FIGHT,
-                        ShaderTextColor.pure("#cccccc"),
-                        "player_button_fight",
-                        dPlayer.player!!
-                    ) {
-                        playerOptionsObjectNamesToLift += "player_button_fight"
-                    }
+                        myCanvas.drawSprite(
+                            -70f,
+                            -132.5f,
+                            1f,
+                            1f,
+                            57,
+                            CanvasSprite.DBUTTON_FIGHT,
+                            buttonColor,
+                            "player_button_fight",
+                            bukkitPlayer
+                        ) {
+                            playerOptionsObjectNamesToLift += "player_button_fight"
+                        }
 
-                    myCanvas.drawSprite(
-                        -35f,
-                        -132.5f,
-                        1f,
-                        1f,
-                        57,
-                        CanvasSprite.DBUTTON_ACT,
-                        ShaderTextColor.pure("#cccccc"),
-                        "player_button_act",
-                        dPlayer.player!!
-                    ) {
-                        playerOptionsObjectNamesToLift += "player_button_act"
-                    }
+                        myCanvas.drawSprite(
+                            -70f,
+                            -132.5f,
+                            1f,
+                            1f,
+                            56,
+                            CanvasSprite.DBUTTON_FIGHT,
+                            buttonColorSelected,
+                            "player_button_fight_selected",
+                            bukkitPlayer
+                        ) {
+                            playerOptionsObjectNamesToLift += "player_button_fight_selected"
+                        }
 
-                    myCanvas.drawSprite(
-                        0f,
-                        -132.5f,
-                        1f,
-                        1f,
-                        57,
-                        CanvasSprite.DBUTTON_ITEM,
-                        ShaderTextColor.pure("#cccccc"),
-                        "player_button_item",
-                        dPlayer.player!!
-                    ) {
-                        playerOptionsObjectNamesToLift += "player_button_item"
-                    }
+                        myCanvas.drawSprite(
+                            -35f,
+                            -132.5f,
+                            1f,
+                            1f,
+                            57,
+                            CanvasSprite.DBUTTON_ACT,
+                            buttonColor,
+                            "player_button_act",
+                            bukkitPlayer
+                        ) {
+                            playerOptionsObjectNamesToLift += "player_button_act"
+                        }
 
-                    myCanvas.drawSprite(
-                        35f,
-                        -132.5f,
-                        1f,
-                        1f,
-                        57,
-                        CanvasSprite.DBUTTON_MERCY,
-                        ShaderTextColor.pure("#cccccc"),
-                        "player_button_mercy",
-                        dPlayer.player!!
-                    ) {
-                        playerOptionsObjectNamesToLift += "player_button_mercy"
-                    }
+                        myCanvas.drawSprite(
+                            -35f,
+                            -132.5f,
+                            1f,
+                            1f,
+                            56,
+                            CanvasSprite.DBUTTON_ACT,
+                            buttonColorSelected,
+                            "player_button_act_selected",
+                            bukkitPlayer
+                        ) {
+                            playerOptionsObjectNamesToLift += "player_button_act_selected"
+                        }
 
-                    myCanvas.drawSprite(
-                        70f,
-                        -132.5f,
-                        1f,
-                        1f,
-                        57,
-                        CanvasSprite.DBUTTON_DEFEND,
-                        ShaderTextColor.pure("#cccccc"),
-                        "player_button_defend",
-                        dPlayer.player!!
-                    ) {
-                        playerOptionsObjectNamesToLift += "player_button_defend"
+                        myCanvas.drawSprite(
+                            0f,
+                            -132.5f,
+                            1f,
+                            1f,
+                            57,
+                            CanvasSprite.DBUTTON_ITEM,
+                            buttonColor,
+                            "player_button_item",
+                            bukkitPlayer
+                        ) {
+                            playerOptionsObjectNamesToLift += "player_button_item"
+                        }
+
+                        myCanvas.drawSprite(
+                            0f,
+                            -132.5f,
+                            1f,
+                            1f,
+                            56,
+                            CanvasSprite.DBUTTON_ITEM,
+                            buttonColorSelected,
+                            "player_button_item_selected",
+                            bukkitPlayer
+                        ) {
+                            playerOptionsObjectNamesToLift += "player_button_item_selected"
+                        }
+
+                        myCanvas.drawSprite(
+                            35f,
+                            -132.5f,
+                            1f,
+                            1f,
+                            57,
+                            CanvasSprite.DBUTTON_MERCY,
+                            buttonColor,
+                            "player_button_mercy",
+                            bukkitPlayer
+                        ) {
+                            playerOptionsObjectNamesToLift += "player_button_mercy"
+                        }
+
+                        myCanvas.drawSprite(
+                            35f,
+                            -132.5f,
+                            1f,
+                            1f,
+                            56,
+                            CanvasSprite.DBUTTON_MERCY,
+                            buttonColorSelected,
+                            "player_button_mercy_selected",
+                            bukkitPlayer
+                        ) {
+                            playerOptionsObjectNamesToLift += "player_button_mercy_selected"
+                        }
+
+                        myCanvas.drawSprite(
+                            70f,
+                            -132.5f,
+                            1f,
+                            1f,
+                            57,
+                            CanvasSprite.DBUTTON_DEFEND,
+                            buttonColor,
+                            "player_button_defend",
+                            bukkitPlayer
+                        ) {
+                            playerOptionsObjectNamesToLift += "player_button_defend"
+                        }
+
+                        myCanvas.drawSprite(
+                            70f,
+                            -132.5f,
+                            1f,
+                            1f,
+                            56,
+                            CanvasSprite.DBUTTON_DEFEND,
+                            buttonColorSelected,
+                            "player_button_defend_selected",
+                            bukkitPlayer
+                        ) {
+                            playerOptionsObjectNamesToLift += "player_button_defend_selected"
+                        }
                     }
                 }
             }
