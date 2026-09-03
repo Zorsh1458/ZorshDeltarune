@@ -432,7 +432,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                     }
 
                     section("BUTTONS", true) {
-                        val buttonColor = ShaderTextColor.pure("#edc4a4")
+                        val buttonColor = ShaderTextColor.pure("#71d9c9")
                         val buttonColorSelected = ShaderTextColor.pure("#ffdd00")
 
                         myCanvas.drawSprite(
