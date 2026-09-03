@@ -75,8 +75,8 @@
         {
             "type": "bitmap",
             "file": "space:font/ui/dbutton_defend.png",
-            "height": 26,
-            "ascent": 11,
+            "height": 52,
+            "ascent": 24,
             "chars": [
                 "\uF007"
             ]

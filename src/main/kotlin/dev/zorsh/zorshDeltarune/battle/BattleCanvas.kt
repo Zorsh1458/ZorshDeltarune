@@ -550,8 +550,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         myCanvas.drawSprite(
                             70f,
                             -132.5f,
-                            1f,
-                            1f,
+                            0.5f,
+                            0.5f,
                             57,
                             CanvasSprite.DBUTTON_DEFEND,
                             buttonColor,

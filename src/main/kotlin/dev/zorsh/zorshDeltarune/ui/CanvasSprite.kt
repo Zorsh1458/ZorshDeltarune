@@ -11,7 +11,7 @@ enum class CanvasSprite(private val sizeX: Int, private val sizeY: Int, private 
     DBUTTON_ACT             (31, 26, '\uF004'),
     DBUTTON_ITEM            (31, 26, '\uF005'),
     DBUTTON_MERCY           (31, 26, '\uF006'),
-    DBUTTON_DEFEND          (31, 26, '\uF007'),
+    DBUTTON_DEFEND          (62, 52, '\uF007'),
     MOUSE                   (9, 9, '\uF009'),
     SLIME_SPRITE_1          (34, 28, '\uF00A'),
     SLIME_SPRITE_2          (30, 34, '\uF00B'),
