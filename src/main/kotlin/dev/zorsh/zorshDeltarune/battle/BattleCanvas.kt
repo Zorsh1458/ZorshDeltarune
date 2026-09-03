@@ -111,8 +111,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
     fun updateHealthInfo(hp: Int, maxHp: Int, playerId: UUID) {
         val offsetPercentage = hp.toFloat() / maxHp.toFloat()
         val py = myCanvas.getPosition("player_hp_bar_green", playerId).second
-        myCanvas.setPosition(35f + offsetPercentage * 27f, py, "player_hp_bar_green", playerId)
-        myCanvas.setScale(offsetPercentage * 27f, 4f, "player_hp_bar_green", playerId)
+        myCanvas.setPosition(35f + offsetPercentage * 28f, py, "player_hp_bar_green", playerId)
+        myCanvas.setScale(offsetPercentage * 28f, 4f, "player_hp_bar_green", playerId)
         val hpCountText = Component.text("                       \n$hp / $maxHp")
         myCanvas.setText(hpCountText, "player_hp_counter", playerId)
     }
@@ -386,7 +386,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                     myCanvas.drawSprite(
                         62f,
                         -103f,
-                        27f,
+                        28f,
                         4f,
                         58,
                         CanvasSprite.SQUARE,
@@ -399,9 +399,9 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
                     val offsetPercentage = dPlayer.hp.toFloat() / dPlayer.maxhp.toFloat()
                     myCanvas.drawSprite(
-                        35f + offsetPercentage * 27f,
+                        35f + offsetPercentage * 28f,
                         -103f,
-                        offsetPercentage * 27f,
+                        offsetPercentage * 28f,
                         4f,
                         57,
                         CanvasSprite.SQUARE,
