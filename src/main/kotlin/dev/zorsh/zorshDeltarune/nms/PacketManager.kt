@@ -17,7 +17,6 @@ import net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket
 import net.minecraft.world.entity.PositionMoveRotation
 import net.minecraft.world.entity.ai.attributes.Attribute
 import net.minecraft.world.phys.Vec3
-import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
@@ -29,7 +28,6 @@ import org.joml.Quaternionf
 import org.joml.Vector3f
 import java.lang.reflect.Type
 import java.util.*
-import kotlin.math.floor
 
 
 @Suppress("UNUSED", "PLATFORM_CLASS_MAPPED_TO_KOTLIN")

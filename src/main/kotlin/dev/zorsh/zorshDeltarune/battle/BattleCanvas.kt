@@ -144,7 +144,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         enemy.value.canvasSprites,
                         enemy.value.framesPerSprite,
                         "enemy_${enemy.index}",
-                        { return@animateSprite !battle.isActive() || !enemy.value.isAlive }
+                        stoppingCondition = { return@animateSprite !battle.isActive() || !enemy.value.isAlive }
                     )
                 }
             }

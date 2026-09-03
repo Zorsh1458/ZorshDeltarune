@@ -196,7 +196,7 @@ class DeltarunePlayer(val uuid: UUID) {
                     locked = false
                 }
 
-                if (myBattleUUID == null || !BattleManager.Companion.hasBattle(myBattleUUID!!)) {
+                if (myBattleUUID == null || !BattleManager.hasBattle(myBattleUUID!!)) {
                     locked = false
                 }
 

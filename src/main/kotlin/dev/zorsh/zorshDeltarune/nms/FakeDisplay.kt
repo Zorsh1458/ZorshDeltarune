@@ -3,11 +3,9 @@ package dev.zorsh.zorshDeltarune.nms
 import dev.zorsh.zorshDeltarune.utils.runLater
 import net.kyori.adventure.text.Component
 import net.minecraft.world.phys.Vec3
-import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.util.Transformation
-import java.util.UUID
 
 abstract class FakeDisplay(
     val entityId: Int,

@@ -117,10 +117,10 @@ class PlayerUICanvas {
 
     fun setRotation(angle: Float, objName: String, playerUUID: UUID? = null) {
         val holder =
-            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName)) ?: return
+            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName))
+                ?: return
 
         val obj = holder.entity
-        val scaling = holder.scaling
         obj.changeOnlyTransformation(
             Transformation(
                 obj.transformation.translation,
@@ -133,10 +133,10 @@ class PlayerUICanvas {
 
     fun rotate(angle: Float, objName: String, playerUUID: UUID? = null) {
         val holder =
-            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName)) ?: return
+            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName))
+                ?: return
 
         val obj = holder.entity
-        val scaling = holder.scaling
         val currentAngle = AxisAngle4f(obj.transformation.leftRotation).angle
         obj.changeOnlyTransformation(
             Transformation(
@@ -150,10 +150,10 @@ class PlayerUICanvas {
 
     fun setSprite(sprite: CanvasSprite, color: ShaderTextColor, objName: String, playerUUID: UUID? = null) {
         val holder =
-            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName)) ?: return
+            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName))
+                ?: return
 
         val obj = holder.entity
-        val scaling = holder.scaling
         val size = getScale(objName, playerUUID)
         obj.changeText(sprite.toTextValue().color(color.value))
         if (playerUUID == null) {
@@ -166,10 +166,10 @@ class PlayerUICanvas {
 
     fun setText(text: Component, objName: String, playerUUID: UUID? = null) {
         val holder =
-            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName)) ?: return
+            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName))
+                ?: return
 
         val obj = holder.entity
-        val scaling = holder.scaling
         val size = getScale(objName, playerUUID)
         obj.changeText(text)
         if (playerUUID == null) {
@@ -180,17 +180,13 @@ class PlayerUICanvas {
         setScale(size.first, size.second, objName, playerUUID)
     }
 
-    fun hasObject(objName: String, playerUUID: UUID? = null): Boolean {
-        if (playerUUID == null) {
-            return savedObjects.contains(objName)
-        } else {
-            return savedObjectsPerPlayer[playerUUID]?.contains(objName) == true
-        }
-    }
+    fun hasObject(objName: String, playerUUID: UUID? = null) =
+        if (playerUUID == null) savedObjects.contains(objName) else (savedObjectsPerPlayer[playerUUID]?.contains(objName) == true)
 
     fun setScale(sx: Float, sy: Float, objName: String, playerUUID: UUID? = null) {
         val holder =
-            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName)) ?: return
+            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName))
+                ?: return
 
         val obj = holder.entity
         val scaling = holder.scaling
@@ -206,7 +202,8 @@ class PlayerUICanvas {
 
     fun getScale(objName: String, playerUUID: UUID? = null): Pair<Float, Float> {
         val holder =
-            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName)) ?: throw IllegalStateException("Object $objName not found")
+            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName))
+                ?: throw IllegalStateException("Object $objName not found")
 
         val obj = holder.entity
         val scaling = holder.scaling
@@ -231,7 +228,8 @@ class PlayerUICanvas {
 
     fun getPosition(objName: String, playerUUID: UUID? = null): Pair<Float, Float> {
         val holder =
-            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName)) ?: throw IllegalStateException("Object $objName not found")
+            (if (playerUUID == null) savedObjects[objName] else savedObjectsPerPlayer[playerUUID]?.get(objName))
+                ?: throw IllegalStateException("Object $objName not found")
 
         val obj = holder.entity
 
@@ -258,8 +256,8 @@ class PlayerUICanvas {
         scaling: Pair<Float, Float> = 1f to 1f,
         saveAs: String? = null,
         player: Player? = null,
-        afterSpawn: () -> Unit)
-    {
+        afterSpawn: () -> Unit
+    ) {
         if (player == null) {
             if (targetPlayers.isEmpty()) return
             drawFunction(targetPlayers) { ent ->
@@ -272,9 +270,11 @@ class PlayerUICanvas {
             }
         } else {
             drawFunction(listOf(player)) { ent ->
-                objectsPerPlayer.getOrPut(player.uniqueId, { return@getOrPut mutableListOf() }) += ent
+                objectsPerPlayer.getOrPut(player.uniqueId, defaultValue = { return@getOrPut mutableListOf() }) += ent
                 if (saveAs != null) {
-                    savedObjectsPerPlayer.getOrPut(player.uniqueId, { return@getOrPut mutableMapOf() })[saveAs] = SpriteScalingHolder(ent, scaling)
+                    savedObjectsPerPlayer.getOrPut(
+                        player.uniqueId,
+                        defaultValue = { return@getOrPut mutableMapOf() })[saveAs] = SpriteScalingHolder(ent, scaling)
                 }
                 updateCanvas(player)
                 afterSpawn()
