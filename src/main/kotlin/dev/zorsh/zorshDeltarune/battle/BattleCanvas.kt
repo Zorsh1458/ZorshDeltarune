@@ -433,7 +433,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
                     section("BUTTONS", true) {
                         val buttonColor = ShaderTextColor.pure("#ffffff")
-                        val buttonColorSelected = ShaderTextColor.pure("#ffff00")
+                        val buttonColorSelected = ShaderTextColor.pure("#ffdd00")
 
                         myCanvas.drawSprite(
                             -70f,
@@ -482,7 +482,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             -132.5f,
                             1f,
                             1f,
-                            56,
+                            58,
                             CanvasSprite.DBUTTON_ACT,
                             buttonColorSelected,
                             "player_button_act_selected",
@@ -510,7 +510,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             -132.5f,
                             1f,
                             1f,
-                            56,
+                            58,
                             CanvasSprite.DBUTTON_ITEM,
                             buttonColorSelected,
                             "player_button_item_selected",
@@ -538,7 +538,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             -132.5f,
                             1f,
                             1f,
-                            56,
+                            58,
                             CanvasSprite.DBUTTON_MERCY,
                             buttonColorSelected,
                             "player_button_mercy_selected",
@@ -566,7 +566,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             -132.5f,
                             1f,
                             1f,
-                            56,
+                            58,
                             CanvasSprite.DBUTTON_DEFEND,
                             buttonColorSelected,
                             "player_button_defend_selected",
