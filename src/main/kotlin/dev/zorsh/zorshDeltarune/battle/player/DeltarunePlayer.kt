@@ -138,7 +138,7 @@ class DeltarunePlayer(val uuid: UUID) {
             val myPlayer = player!!
             initialLocation = myPlayer.location
             initialLocation?.let { loc ->
-                repeat(15) {
+                repeat(1) {
                     val ox = ZorshDeltarune.random.nextFloat() - 0.5f
                     val oy = ZorshDeltarune.random.nextFloat() * 2f
                     val oz = ZorshDeltarune.random.nextFloat() - 0.5f
