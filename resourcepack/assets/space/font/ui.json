@@ -166,7 +166,7 @@
             "type": "bitmap",
             "file": "space:font/ui/dbutton_fight_selected.png",
             "height": 58,
-            "ascent": 24,
+            "ascent": 27,
             "chars": [
                 "\uF011"
             ]
@@ -175,7 +175,7 @@
             "type": "bitmap",
             "file": "space:font/ui/dbutton_act_selected.png",
             "height": 58,
-            "ascent": 24,
+            "ascent": 27,
             "chars": [
                 "\uF012"
             ]
@@ -184,7 +184,7 @@
             "type": "bitmap",
             "file": "space:font/ui/dbutton_item_selected.png",
             "height": 58,
-            "ascent": 24,
+            "ascent": 27,
             "chars": [
                 "\uF013"
             ]
@@ -193,7 +193,7 @@
             "type": "bitmap",
             "file": "space:font/ui/dbutton_mercy_selected.png",
             "height": 58,
-            "ascent": 24,
+            "ascent": 27,
             "chars": [
                 "\uF014"
             ]
@@ -202,7 +202,7 @@
             "type": "bitmap",
             "file": "space:font/ui/dbutton_defend_selected.png",
             "height": 58,
-            "ascent": 24,
+            "ascent": 27,
             "chars": [
                 "\uF015"
             ]

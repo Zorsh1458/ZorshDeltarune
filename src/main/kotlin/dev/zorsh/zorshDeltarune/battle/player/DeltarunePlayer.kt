@@ -14,12 +14,14 @@ import net.kyori.adventure.title.Title.Times
 import net.kyori.adventure.title.Title.title
 import net.minecraft.world.entity.ai.attributes.Attributes
 import org.bukkit.Bukkit
+import org.bukkit.Effect
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Input
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
 import org.joml.Vector3d
+import org.joml.Vector3f
 import java.time.Duration
 import java.util.UUID
 import kotlin.math.max
@@ -184,6 +186,14 @@ class DeltarunePlayer(val uuid: UUID) {
             player?.sendMessage(Component.text("Locking to battle $uuid"))
             val myPlayer = player!!
             initialLocation = myPlayer.location
+            initialLocation?.let { loc ->
+                repeat(15) {
+                    val ox = ZorshDeltarune.random.nextFloat() - 0.5f
+                    val oy = ZorshDeltarune.random.nextFloat() * 2f - 1f
+                    val oz = ZorshDeltarune.random.nextFloat() - 0.5f
+                    loc.world.playEffect(loc + Vector3f(ox, oy, oz), Effect.TRIAL_SPAWNER_DETECT_PLAYER_OMINOUS, 0, 0)
+                }
+            }
             myPlayer.teleport(location)
             myPlayer.isGliding = true
             gameMode = myPlayer.gameMode
