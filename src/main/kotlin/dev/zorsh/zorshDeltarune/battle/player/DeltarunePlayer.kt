@@ -1,10 +1,7 @@
 package dev.zorsh.zorshDeltarune.battle.player
 
-import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.BattleCanvas
 import dev.zorsh.zorshDeltarune.battle.BattleManager
-import dev.zorsh.zorshDeltarune.nms.FakeDisplay
-import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
 import dev.zorsh.zorshDeltarune.nms.PacketManager
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.ui.ShaderTextColor
@@ -44,49 +41,19 @@ class DeltarunePlayer(val uuid: UUID) {
     var hp = 1000
     var maxhp = 1000
 
-    private var passengers = mutableListOf<FakeDisplay>()
-
-    var perPlayerEntities = mutableListOf<FakeDisplay>()
-
-    var playerButtons: FakeDisplay? = null
-
-    var healthCounter: FakeDisplay? = null
-    var healthBar: FakeDisplay? = null
     var noDamageTicks = 0
 
-    var tpCounter: FakeDisplay? = null
-    var tpBar: FakeDisplay? = null
     var tpGain = 0
-
     var tpAmount = 0.0
 
-    var shakingTime = 0
-    var shakingMult = 1.0
-
-    var playerSelectedButton = 0
-
-    var playerButtonTexts = mutableListOf<FakeDisplay>()
-
     private var prevInput = InputHolder()
-
-    var soul: FakeTextDisplay? = null
-    var soulOutline: FakeTextDisplay? = null
 
     var canMoveSoul = false
 
     private var gameMode = GameMode.SURVIVAL
 
-    var actionStage = PlayerActionStage.SELECT_BUTTON
-    var battleInfoText: FakeTextDisplay? = null
-    var moveMenuTexts: MutableList<FakeDisplay> = mutableListOf()
-
     fun updatePlayer() {
         player = Bukkit.getPlayer(uuid)
-    }
-
-    fun clearMenu() {
-        moveMenuTexts.forEach { it.destroy() }
-        moveMenuTexts.clear()
     }
 
     fun damage(amount: Int, afterHpCalculated: (Int) -> Unit) {
@@ -127,21 +94,8 @@ class DeltarunePlayer(val uuid: UUID) {
         inputCallbacksSneak.clear()
         inputCallbacksSprint.clear()
         //
-        passengers.clear()
-        //
-        playerButtons?.destroy()
-        playerButtons = null
-        soul?.destroy()
-        soul = null
-        soulOutline?.destroy()
-        soulOutline = null
-        tpBar?.destroy()
-        tpBar = null
-        tpCounter?.destroy()
-        tpCounter = null
         runLater(1) {
             if (player != null) {
-                player?.showToEveryone()
                 PacketManager.setAttribute(
                     Attributes.JUMP_STRENGTH,
                     0.42,
@@ -150,11 +104,6 @@ class DeltarunePlayer(val uuid: UUID) {
                 )
             }
         }
-        perPlayerEntities.toList().forEach { it.destroy() }
-        playerButtonTexts.toList().forEach { it.destroy() }
-        perPlayerEntities.clear()
-        playerButtonTexts.clear()
-        playerSelectedButton = 0
         runSync {
             if (player != null) {
                 Bukkit.dispatchCommand(
@@ -175,6 +124,7 @@ class DeltarunePlayer(val uuid: UUID) {
             if (initialLocation != null) {
                 player?.teleport(initialLocation!!)
             }
+            player?.showToEveryone()
         }
     }
 
@@ -187,12 +137,7 @@ class DeltarunePlayer(val uuid: UUID) {
             val myPlayer = player!!
             initialLocation = myPlayer.location
             initialLocation?.let { loc ->
-                repeat(15) {
-                    val ox = ZorshDeltarune.random.nextFloat() - 0.5f
-                    val oy = ZorshDeltarune.random.nextFloat() * 2f - 1f
-                    val oz = ZorshDeltarune.random.nextFloat() - 0.5f
-                    loc.world.playEffect(loc + Vector3f(ox, oy, oz), Effect.TRIAL_SPAWNER_DETECT_PLAYER_OMINOUS, 0, 0)
-                }
+                loc.world.playEffect(loc + Vector3f(0f, 1f, 0f), Effect.TRIAL_SPAWNER_DETECT_PLAYER_OMINOUS, 0, 0)
             }
             myPlayer.teleport(location)
             myPlayer.isGliding = true
@@ -228,25 +173,10 @@ class DeltarunePlayer(val uuid: UUID) {
                         tpAmount = min(tpAmount + 0.5, 100.0)
                     }
 
-                    if (shakingTime > 0) {
-                        PacketManager.playerLookAt(
-                            myPlayer.location + Vector3d(
-                                ZorshDeltarune.random.nextDouble() * shakingTime * shakingMult * ((shakingTime % 2) * 2 - 1),
-                                0.0,
-                                ZorshDeltarune.random.nextDouble() * shakingTime * shakingMult * 1000000
-                            ) + Vector3d(0.0, -1000000000.0, 100.0),
-                            listOf(myPlayer)
-                        )
-                    } else {
-                        PacketManager.playerLookAt(
-                            myPlayer.location + Vector3d(0.0, -1000000000.0, 100.0),
-                            listOf(myPlayer)
-                        )
-                    }
-
-                    if (shakingTime > 0) {
-                        shakingTime--
-                    }
+                    PacketManager.playerLookAt(
+                        myPlayer.location + Vector3d(0.0, -1000000000.0, 100.0),
+                        listOf(myPlayer)
+                    )
 
                     val target = location
                     target.y = myPlayer.location.y

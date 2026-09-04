@@ -2,7 +2,6 @@ package dev.zorsh.zorshDeltarune.battle
 
 import dev.zorsh.zorshDeltarune.battle.enemy.DeltaruneEnemy
 import dev.zorsh.zorshDeltarune.battle.player.DeltarunePlayer
-import dev.zorsh.zorshDeltarune.battle.player.PlayerActionStage
 import dev.zorsh.zorshDeltarune.battle.projectile.ProjectileData
 import dev.zorsh.zorshDeltarune.nms.FakeDisplay
 import dev.zorsh.zorshDeltarune.nms.FakeTextDisplay
@@ -68,8 +67,6 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
     }
 
     private val battleCenterLocation = BattleLocation.UNDER_STATION
-
-    var playersTurn = false
 
     private var battleBoxLocation = 0f to 20f
 
@@ -441,132 +438,5 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         }
         shulkerHitboxes.clear()
         battleCanvas.closeBattleBox()
-    }
-
-    private suspend fun showPlayersOptions() {
-        repeat(2) {
-            for (dPlayer in players) {
-                // Lift players interface
-                for (entity in dPlayer.perPlayerEntities) {
-                    val transform = entity.transformation
-                    entity.changeTransformation(
-                        Transformation(
-                            transform.translation + Vector3f(0f, 0.44f, 0f),
-                            transform.leftRotation,
-                            transform.scale,
-                            transform.rightRotation
-                        )
-                    )
-                }
-            }
-            delay(50)
-        }
-        delay(150)
-        for (dPlayer in players) {
-            dPlayer.actionStage = PlayerActionStage.SELECT_BUTTON
-            val buttonEntity = dPlayer.playerButtonTexts[dPlayer.playerSelectedButton]
-            buttonEntity.changeTransformation(
-                Transformation(
-                    buttonEntity.transformation.translation,
-                    AxisAngle4f(),
-                    Vector3f(1f),
-                    AxisAngle4f()
-                )
-            )
-        }
-        delay(50)
-        playersTurn = true
-    }
-
-    private fun proceedPlayerSubmit(dPlayer: DeltarunePlayer) {
-        if (playersTurn) {
-            when (dPlayer.actionStage) {
-                PlayerActionStage.SELECT_BUTTON -> {
-                    val index = dPlayer.playerSelectedButton
-                    val buttonEntity = dPlayer.playerButtonTexts[index]
-                    val transform = buttonEntity.transformation
-                    buttonEntity.changeTransformation(
-                        Transformation(
-                            transform.translation,
-                            transform.leftRotation,
-                            Vector3f(0f, transform.scale.y, 1f),
-                            transform.rightRotation
-                        )
-                    )
-                    val ent = dPlayer.battleInfoText
-                    ent?.changeOnlyTransformation(
-                        Transformation(
-                            ent.transformation.translation,
-                            ent.transformation.leftRotation,
-                            Vector3f(0f),
-                            ent.transformation.rightRotation
-                        )
-                    )
-                    when (dPlayer.playerSelectedButton) {
-                        0 -> {
-                            dPlayer.actionStage = PlayerActionStage.FIGHT_SELECT_ENEMY
-                            showEnemiesSelection(dPlayer)
-                        }
-
-                        1 -> {
-                            dPlayer.actionStage = PlayerActionStage.ACT_SELECT_ACT
-                        }
-
-                        2 -> {
-                            dPlayer.actionStage = PlayerActionStage.ITEM_SELECT_ITEM
-                        }
-
-                        3 -> {
-                            dPlayer.actionStage = PlayerActionStage.MERCY_SELECT_ENEMY
-                        }
-
-                        else -> {
-                            dPlayer.actionStage = PlayerActionStage.NONE
-                        }
-                    }
-                }
-
-                PlayerActionStage.FIGHT_SELECT_ENEMY -> {
-                    dPlayer.actionStage = PlayerActionStage.NONE
-                    dPlayer.clearMenu()
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    private fun showEnemiesSelection(dPlayer: DeltarunePlayer) {
-        val loc = battleCenterLocation
-        loc.yaw = 180f
-        loc.pitch = -90f
-        var offset = 0f
-        for (enemy in enemies) {
-            val updating = Component.text()
-            updating.append(Component.text(" ".repeat(64) + '\n'))
-            updating.append(enemy.name)
-//            newTextDisplay(
-//                loc,
-//                updating.style(Style.style(TextDecoration.BOLD)).shadowColor(ShadowColor.shadowColor(0, 0, 64, 255))
-//                    .build(),
-//                playerToShow = listOfNotNull(dPlayer.player),
-//                data = FakeDisplayData(
-//                    Transformation(
-//                        Vector3f(0f, -3f - offset, 0.011f) * sceneScale + sceneOffset,
-//                        AxisAngle4f(),
-//                        Vector3f(1.8f, 2f, 1f) * sceneScale,
-//                        AxisAngle4f()
-//                    ),
-//                    interpolationDuration = 0
-//                ),
-//                lineWidth = 320,
-//                alignment = TextDisplay.TextAlignment.LEFT,
-//                isShadowed = true,
-//                mountTo = true
-//            ) { txtEntity ->
-//                dPlayer.moveMenuTexts += txtEntity
-//            }
-            offset += 0.7f
-        }
     }
 }
