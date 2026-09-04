@@ -137,15 +137,6 @@ class DeltarunePlayer(val uuid: UUID) {
             player?.sendMessage(Component.text("Locking to battle $uuid"))
             val myPlayer = player!!
             initialLocation = myPlayer.location
-            initialLocation?.let { loc ->
-                repeat(1) {
-                    val ox = ZorshDeltarune.random.nextFloat() - 0.5f
-                    val oy = ZorshDeltarune.random.nextFloat() * 2f
-                    val oz = ZorshDeltarune.random.nextFloat() - 0.5f
-                    val l2 = loc + Vector3f(ox, oy, oz)
-                    l2.world.playEffect(l2 + Vector3f(0f, 0.1f, 0f), Effect.COPPER_WAX_ON, 0, 0)
-                }
-            }
             myPlayer.teleport(location)
             myPlayer.isGliding = true
             gameMode = myPlayer.gameMode
