@@ -434,7 +434,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                     section("BUTTONS", true) {
                         myCanvas.drawSprite(
                             0f,
-                            -147.5f,
+                            -146.5f,
                             82f,
                             1.5f,
                             50,
