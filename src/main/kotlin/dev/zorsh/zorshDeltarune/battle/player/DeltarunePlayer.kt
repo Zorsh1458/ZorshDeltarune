@@ -140,9 +140,10 @@ class DeltarunePlayer(val uuid: UUID) {
             initialLocation?.let { loc ->
                 repeat(15) {
                     val ox = ZorshDeltarune.random.nextFloat() - 0.5f
-                    val oy = ZorshDeltarune.random.nextFloat() * 2f - 1f
+                    val oy = ZorshDeltarune.random.nextFloat() * 2f
                     val oz = ZorshDeltarune.random.nextFloat() - 0.5f
-                    loc.world.playEffect(loc + Vector3f(ox, oy, oz), Effect.ELECTRIC_SPARK, 0, 0)
+                    val l2 = loc + Vector3f(ox, oy, oz)
+                    l2.world.playEffect(l2 + Vector3f(0f, 0.1f, 0f), Effect.ELECTRIC_SPARK, 0, 0)
                 }
             }
             myPlayer.teleport(location)
