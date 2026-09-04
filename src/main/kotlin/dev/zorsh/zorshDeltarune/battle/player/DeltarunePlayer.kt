@@ -1,5 +1,6 @@
 package dev.zorsh.zorshDeltarune.battle.player
 
+import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.BattleCanvas
 import dev.zorsh.zorshDeltarune.battle.BattleManager
 import dev.zorsh.zorshDeltarune.nms.PacketManager
@@ -137,7 +138,12 @@ class DeltarunePlayer(val uuid: UUID) {
             val myPlayer = player!!
             initialLocation = myPlayer.location
             initialLocation?.let { loc ->
-                loc.world.playEffect(loc + Vector3f(0f, 1f, 0f), Effect.TRIAL_SPAWNER_DETECT_PLAYER_OMINOUS, 0, 0)
+                repeat(15) {
+                    val ox = ZorshDeltarune.random.nextFloat() - 0.5f
+                    val oy = ZorshDeltarune.random.nextFloat() * 2f - 1f
+                    val oz = ZorshDeltarune.random.nextFloat() - 0.5f
+                    loc.world.playEffect(loc + Vector3f(ox, oy, oz), Effect.ELECTRIC_SPARK, 0, 0)
+                }
             }
             myPlayer.teleport(location)
             myPlayer.isGliding = true
