@@ -299,10 +299,6 @@ void main() {
     {
         effectId = -1;
     } else {
-        if (effectId == 0)
-        {
-            raindrop(fragColor, texCoord * ScreenSize);
-        }
         if (effectId == 1) {
             vec2 coord = texCoord;
             float depth = parseDepth(coord);
