@@ -2,6 +2,8 @@ package dev.zorsh.zorshDeltarune.commands
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.*
+import dev.zorsh.zorshDeltarune.battle.enemy.TestEnemy
+import dev.zorsh.zorshDeltarune.battle.player.DeltarunePlayer
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
@@ -18,16 +20,12 @@ class DeltaruneBattleCommand : CommandExecutor, TabCompleter {
                 .mapNotNull { Bukkit.getPlayer(it) }
                 .filter { ZorshDeltarune.getDPlayer(it.uniqueId)?.locked != true }
                 .map {
-                    val dPlayer = DeltarunePlayer(it.uniqueId)
-                    ZorshDeltarune.deltarunePlayer[it.uniqueId] = dPlayer
-                    dPlayer
+                    ZorshDeltarune.getDPlayer(it.uniqueId) ?: (DeltarunePlayer(it.uniqueId).also { dp -> ZorshDeltarune.deltarunePlayer[it.uniqueId] = dp })
                 }
             if (dPlayers.isNotEmpty()) {
-                val battle = DefaultBattle(
+                val battle = NeverlandBattle(
                     dPlayers,
                     listOf(
-                        TestEnemy(Component.text("Слизнячок"), 100),
-                        TestEnemy(Component.text("Слизнячок"), 100),
                         TestEnemy(Component.text("Слизнячок"), 100)
                     )
                 )

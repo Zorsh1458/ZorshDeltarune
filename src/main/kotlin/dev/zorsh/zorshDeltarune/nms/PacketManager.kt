@@ -17,7 +17,6 @@ import net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket
 import net.minecraft.world.entity.PositionMoveRotation
 import net.minecraft.world.entity.ai.attributes.Attribute
 import net.minecraft.world.phys.Vec3
-import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
@@ -29,7 +28,6 @@ import org.joml.Quaternionf
 import org.joml.Vector3f
 import java.lang.reflect.Type
 import java.util.*
-import kotlin.math.floor
 
 
 @Suppress("UNUSED", "PLATFORM_CLASS_MAPPED_TO_KOTLIN")
@@ -43,9 +41,6 @@ class PacketManager {
 
         @Volatile
         var savedEntities = mutableMapOf<Int, TextDisplay>()
-
-        // UniqueID -> End Tick, Override value
-        val lockedTimeTracker = mutableMapOf<UUID, Pair<Int, Long>>()
 
         private val protocolManager: ProtocolManager by lazy { ProtocolLibrary.getProtocolManager() }
 
@@ -439,27 +434,6 @@ class PacketManager {
         }
 
         @JvmStatic
-        fun setShaderData(
-            data: Long,
-            players: List<Player>,
-            lockTimeTicks: Int = -1
-        ) {
-            val long = floor((data * 128 + 1) / 16383.0F * 24000).toLong()
-            for (player in players.filter { it.isOnline }) {
-                val packet = PacketContainer(PacketType.Play.Server.UPDATE_TIME)
-                packet.longs
-                    .write(0, long)
-                    .write(1, player.world.time)
-
-                packet.booleans.write(0, true)
-                if (lockTimeTicks > 0) {
-                    lockedTimeTracker[player.uniqueId] = Pair(Bukkit.getCurrentTick() + lockTimeTicks, long)
-                }
-                protocolManager.sendServerPacket(player, packet)
-            }
-        }
-
-        @JvmStatic
         fun setAttribute(
             attribute: Holder<Attribute>,
             base: Double,
@@ -529,6 +503,7 @@ class PacketManager {
         @JvmStatic
         fun spawnHitbox(
             location: Location,
+            scale: Double,
             players: List<Player>,
             afterSpawned: (Int, Int) -> Unit
         ) {
@@ -567,9 +542,23 @@ class PacketManager {
                 e.printStackTrace()
             }
 
+            val packetScale = PacketContainer(PacketType.Play.Server.UPDATE_ATTRIBUTES)
+            try {
+                val data = ClientboundUpdateAttributesPacket.AttributeSnapshot(
+                    net.minecraft.world.entity.ai.attributes.Attributes.SCALE,
+                    scale,
+                    listOf()
+                )
+                packetScale.integers.write(0, entityIdShulker)
+                packetScale.modifier.write(1, listOf(data).toCollection(ArrayList()))
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
             for (player in players.filter { it.isOnline }) {
-                protocolManager.sendServerPacket(player, packetAnchor)
                 protocolManager.sendServerPacket(player, packetShulker)
+                protocolManager.sendServerPacket(player, packetScale)
+                protocolManager.sendServerPacket(player, packetAnchor)
                 protocolManager.sendServerPacket(player, packet)
             }
 

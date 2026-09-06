@@ -1,5 +1,6 @@
-package dev.zorsh.zorshDeltarune.battle
+package dev.zorsh.zorshDeltarune.battle.enemy
 
+import dev.zorsh.zorshDeltarune.battle.INeverlandBattle
 import net.kyori.adventure.text.Component
 
 abstract class DeltaruneEnemy(
@@ -8,12 +9,12 @@ abstract class DeltaruneEnemy(
     val encounterMessages: List<Component>
 ) {
 
-    lateinit var myBattle: DeltaruneBattle
+    lateinit var myBattle: INeverlandBattle
 
     var isAlive = true
 
     open fun askBoxSize(): Pair<Float, Float> {
-        return 30f to 30f
+        return 60f to 60f
     }
 
     abstract suspend fun attack(onAttackEnds: () -> Unit = {})

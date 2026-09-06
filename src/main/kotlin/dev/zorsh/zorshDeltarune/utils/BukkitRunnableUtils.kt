@@ -22,7 +22,7 @@ fun runRepeating(count: Int, action: (Int, BukkitRunnable) -> Unit) {
             } else {
                 try {
                     action(counter, this)
-                } catch (ignored: Exception) {}
+                } catch (_: Exception) {}
                 counter++
             }
         }
@@ -33,15 +33,15 @@ fun runRepeating(count: Int, action: (Int) -> Unit) {
     runRepeating(count) { i, _ -> action(i) }
 }
 
-fun runInfinite(delay: Long, action: (Int, BukkitRunnable) -> Unit) {
+fun runInfinite(period: Long, action: (Int, BukkitRunnable) -> Unit) {
     object : BukkitRunnable() {
         var counter = 0
 
         override fun run() {
             try {
                 action(counter, this)
-            } catch (ignored: Exception) {}
+            } catch (_: Exception) {}
             counter++
         }
-    }.runTaskTimer(ZorshDeltarune.instance, 1L, delay)
+    }.runTaskTimer(ZorshDeltarune.instance, 1L, period)
 }

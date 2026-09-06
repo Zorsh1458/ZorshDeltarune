@@ -1,0 +1,7 @@
+{
+  "hand_animation_on_swap": false,
+  "model": {
+    "type": "model",
+    "model": "item/grappling_hook_no_head"
+  }
+}

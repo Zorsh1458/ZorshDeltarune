@@ -260,46 +260,7 @@
 
 
 
-        
-        {
-            "vertex_shader": "minecraft:post/blit",
-            "fragment_shader": "minecraft:post/blit",
-            "inputs": [
-                {
-                    "sampler_name": "In",
-                    "target": "savedscreen"
-                }
-            ],
-            "uniforms": {
-                "BlitConfig": [
-                    {
-                        "name": "ColorModulate",
-                        "type": "vec4",
-                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
-                    }
-                ]
-            },
-            "output": "swap"
-        },
-        {
-            "vertex_shader": "minecraft:post/custom_sobel",
-            "fragment_shader": "minecraft:post/savescreen",
-            "inputs": [
-                {
-                    "sampler_name": "In",
-                    "target": "minecraft:main"
-                },
-                {
-                    "sampler_name": "Saved",
-                    "target": "swap"
-                },
-                {
-                    "sampler_name": "RawScreen",
-                    "target": "rawoutline"
-                }
-            ],
-            "output": "savedscreen"
-        },
+
 
 
 
@@ -423,6 +384,49 @@
                 ]
             },
             "output": "minecraft:main"
+        },
+
+
+
+
+        {
+            "vertex_shader": "minecraft:post/blit",
+            "fragment_shader": "minecraft:post/blit",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "savedscreen"
+                }
+            ],
+            "uniforms": {
+                "BlitConfig": [
+                    {
+                        "name": "ColorModulate",
+                        "type": "vec4",
+                        "value": [ 1.0, 1.0, 1.0, 1.0 ]
+                    }
+                ]
+            },
+            "output": "swap"
+        },
+        {
+            "vertex_shader": "minecraft:post/custom_sobel",
+            "fragment_shader": "minecraft:post/savescreen",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "minecraft:main"
+                },
+                {
+                    "sampler_name": "Saved",
+                    "target": "swap"
+                },
+                {
+                    "sampler_name": "RawScreen",
+                    "target": "rawoutline"
+                }
+            ],
+            "output": "savedscreen"
         },
 
 

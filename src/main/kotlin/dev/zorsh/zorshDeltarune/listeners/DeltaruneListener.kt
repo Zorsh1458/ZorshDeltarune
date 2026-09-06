@@ -1,7 +1,6 @@
 package dev.zorsh.zorshDeltarune.listeners
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
-import dev.zorsh.zorshDeltarune.nms.PacketManager
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -57,8 +56,6 @@ class DeltaruneListener : Listener {
     @EventHandler
     fun onPlayerQuitEvent(e: PlayerQuitEvent) {
         val id = e.player.uniqueId
-        if (PacketManager.lockedTimeTracker.contains(id)) {
-            PacketManager.lockedTimeTracker.remove(id)
-        }
+        ZorshDeltarune.deltarunePlayer.remove(id)
     }
 }

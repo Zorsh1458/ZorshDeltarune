@@ -13,8 +13,8 @@ abstract class FakeDisplay(
     var transformation: Transformation,
     protected val teleportDuration: Int,
     protected val interpolationDuration: Int,
-    val players: List<Player>,
-    var holder: MutableSet<FakeDisplay>? = null
+    var players: List<Player>,
+    var holder: MutableSet<FakeDisplay>? = null,
 ) {
 
     var exists = true
@@ -35,12 +35,28 @@ abstract class FakeDisplay(
         }
     }
 
+    open fun destroy(player: Player) {
+        players = players - player
+        repeat(10) { i ->
+            runLater(i * 20L) {
+                PacketManager.removeEntity(entityId, listOf(player))
+            }
+        }
+        runLater(400L) {
+            PacketManager.removeEntity(entityId, listOf(player))
+        }
+    }
+
     open fun teleport(newLocation: Location) {
         PacketManager.teleportEntity(entityId, newLocation, Vec3(0.0, 0.0, 0.0), players)
         location = newLocation
     }
 
-    open fun changeTransformation(newTransformation: Transformation, newText: Component = Component.text("___DEFAULT_TEXT___"), newOpacity: Byte = 255.toByte()) {
+    open fun changeTransformation(
+        newTransformation: Transformation,
+        newText: Component = Component.text("___DEFAULT_TEXT___"),
+        newOpacity: Byte = 255.toByte(),
+    ) {
         PacketManager.setTransformation(entityId, newTransformation, players, interpolationDuration, teleportDuration)
         transformation = newTransformation
     }

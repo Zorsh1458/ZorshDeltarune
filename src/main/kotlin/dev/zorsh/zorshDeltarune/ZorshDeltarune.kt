@@ -3,12 +3,11 @@ package dev.zorsh.zorshDeltarune
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
 import dev.zorsh.zorshDeltarune.battle.BattleManager
-import dev.zorsh.zorshDeltarune.battle.DeltarunePlayer
+import dev.zorsh.zorshDeltarune.battle.player.DeltarunePlayer
 import dev.zorsh.zorshDeltarune.commands.DeltaruneBattleCommand
 import dev.zorsh.zorshDeltarune.commands.NeverlandTestCommand
 import dev.zorsh.zorshDeltarune.listeners.DeltaruneListener
 import dev.zorsh.zorshDeltarune.nms.*
-import dev.zorsh.zorshDeltarune.ui.PlayerUICanvas
 import dev.zorsh.zorshDeltarune.ui.PlayerUIManager
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.UUID
@@ -38,8 +37,6 @@ class ZorshDeltarune : JavaPlugin() {
         protocolManager.addPacketListener(PacketListenerEntityDestroy())
         protocolManager.addPacketListener(PacketListenerEntityMetadata())
         protocolManager.addPacketListener(PacketListenerSpawnEntity())
-//        protocolManager.addPacketListener(PacketListenerUpdateAttributes())
-//        protocolManager.addPacketListener(PacketListenerUpdateTime())
         server.pluginManager.registerEvents(DeltaruneListener(), this)
         getCommand("deltarunebattle")?.setExecutor(DeltaruneBattleCommand())
         getCommand("deltarunebattle")?.tabCompleter = DeltaruneBattleCommand()
