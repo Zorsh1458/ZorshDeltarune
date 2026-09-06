@@ -261,8 +261,6 @@ void main() {
 
     vec2 baseCoord = texCoord;
     fragColor = texture(InSampler, baseCoord);
-    fragColor = texture(RawScreenSampler, baseCoord);
-    return;
 
     if (round(screenTexel.r * 255) == 253.0)
     {
