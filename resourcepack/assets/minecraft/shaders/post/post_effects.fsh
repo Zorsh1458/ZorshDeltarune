@@ -340,7 +340,9 @@ void main() {
             if (check_blue % 2 == 1 && depth < 64.0) {
                 // BLUE WORLD EFFECTS
                 if (check_blue == 1) {
-                    fragColor = vec4(1.0, 0.0, 0.0, 1.0);
+                    if (round(additionEffect * 255.0) == 1.0) {
+                        fragColor = texture(SavedSampler, col.rg);
+                    }
                 }
             }
         }
