@@ -11,6 +11,7 @@ import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.ui.PlayerUICanvas
 import dev.zorsh.zorshDeltarune.ui.ShaderTextColor
 import dev.zorsh.zorshDeltarune.utils.FakeDisplayData
+import dev.zorsh.zorshDeltarune.utils.color
 import dev.zorsh.zorshDeltarune.utils.fontText
 import dev.zorsh.zorshDeltarune.utils.minus
 import dev.zorsh.zorshDeltarune.utils.plus
@@ -230,8 +231,9 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         val mcPlayer = dPlayer.player ?: return
         val soul = theSoul ?: return
         val frames = dPlayer.noDamageTicks
-        val baseTranslation = soul.transformation.translation
         var counter = 0
+        val text = soul.text
+        soul.changeText(text.color("#888888"), listOf(mcPlayer))
         runRepeating(frames) { i ->
             counter = (counter + 1) % 2
             val power = frames - i - 1
@@ -240,13 +242,16 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
             val transformation = soul.transformation
             theSoul?.changeOnlyTransformation(
                 Transformation(
-                    baseTranslation + offset,
+                    transformation.translation + offset,
                     transformation.leftRotation,
                     transformation.scale,
                     transformation.rightRotation
                 ),
                 listOf(mcPlayer)
             )
+        }
+        runLater(frames / 2L) {
+            soul.changeText(soul.text, listOf(mcPlayer))
         }
     }
 
