@@ -25,6 +25,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.title.Title.Times
 import net.kyori.adventure.title.Title.title
 import org.bukkit.Bukkit
@@ -233,7 +234,9 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         val frames = dPlayer.noDamageTicks
         var counter = 0
         val text = soul.text
-        soul.changeText(text.color("#888888"), listOf(mcPlayer))
+        val color = text.color() ?: TextColor.color(255, 255, 255)
+        val darkened = TextColor.color(color.red() / 2, color.green() / 2, color.blue() / 2)
+        soul.changeText(text.color(darkened), listOf(mcPlayer))
         runRepeating(frames) { i ->
             counter = (counter + 1) % 2
             val power = frames - i - 1
