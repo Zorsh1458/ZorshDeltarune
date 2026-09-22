@@ -432,34 +432,6 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                     }
 
                     section("BUTTONS", true) {
-//                        myCanvas.drawSprite(
-//                            0f,
-//                            -147f,
-//                            90f,
-//                            3f,
-//                            58,
-//                            CanvasSprite.SQUARE,
-//                            ShaderTextColor.pure("#000000"),
-//                            "player_button_mask",
-//                            bukkitPlayer
-//                        ) {
-//                            playerOptionsObjectNamesToLift += "player_button_mask"
-//                        }
-//
-//                        myCanvas.drawSprite(
-//                            0f,
-//                            -117f,
-//                            90f,
-//                            3f,
-//                            58,
-//                            CanvasSprite.SQUARE,
-//                            ShaderTextColor.pure("#000000"),
-//                            "player_button_mask2",
-//                            bukkitPlayer
-//                        ) {
-//                            playerOptionsObjectNamesToLift += "player_button_mask2"
-//                        }
-
                         val buttonColor = ShaderTextColor.pure("#ffffff")
 
                         myCanvas.drawSprite(
@@ -468,7 +440,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             0.5f,
                             0.5f,
                             57,
-                            CanvasSprite.DBUTTON_FIGHT_SELECTED,
+                            CanvasSprite.DBUTTON_FIGHT,
                             buttonColor,
                             "player_button_fight",
                             bukkitPlayer
@@ -482,7 +454,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             0.5f,
                             0.5f,
                             57,
-                            CanvasSprite.DBUTTON_ACT_SELECTED,
+                            CanvasSprite.DBUTTON_ACT,
                             buttonColor,
                             "player_button_act",
                             bukkitPlayer
@@ -496,7 +468,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             0.5f,
                             0.5f,
                             57,
-                            CanvasSprite.DBUTTON_ITEM_SELECTED,
+                            CanvasSprite.DBUTTON_ITEM,
                             buttonColor,
                             "player_button_item",
                             bukkitPlayer
@@ -510,7 +482,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             0.5f,
                             0.5f,
                             57,
-                            CanvasSprite.DBUTTON_MERCY_SELECTED,
+                            CanvasSprite.DBUTTON_MERCY,
                             buttonColor,
                             "player_button_mercy",
                             bukkitPlayer
@@ -524,7 +496,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             0.5f,
                             0.5f,
                             57,
-                            CanvasSprite.DBUTTON_DEFEND_SELECTED,
+                            CanvasSprite.DBUTTON_DEFEND,
                             buttonColor,
                             "player_button_defend",
                             bukkitPlayer

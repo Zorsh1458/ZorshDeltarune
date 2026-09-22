@@ -1,5 +1,6 @@
 package dev.zorsh.zorshDeltarune.battle
 
+import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.enemy.DeltaruneEnemy
 import dev.zorsh.zorshDeltarune.battle.player.DeltarunePlayer
 import dev.zorsh.zorshDeltarune.battle.projectile.ProjectileData
@@ -14,6 +15,7 @@ import dev.zorsh.zorshDeltarune.utils.fontText
 import dev.zorsh.zorshDeltarune.utils.minus
 import dev.zorsh.zorshDeltarune.utils.plus
 import dev.zorsh.zorshDeltarune.utils.runLater
+import dev.zorsh.zorshDeltarune.utils.runRepeating
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -28,6 +30,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.entity.TextDisplay
+import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.Transformation
 import org.joml.AxisAngle4f
@@ -62,7 +65,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
     private var soulGraze: FakeTextDisplay? = null
 
     object BattleLocation {
-//        val TEST = Location(Bukkit.getWorld("world"), 8.0, 100.0, 8.1)
+        //        val TEST = Location(Bukkit.getWorld("world"), 8.0, 100.0, 8.1)
         val UNDER_STATION = Location(Bukkit.getWorld("moon"), 952.0, 99.6, 1101.0)
     }
 
@@ -124,7 +127,8 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 
     override fun getBattleInitialPlayers() = players
 
-    override fun getBattlePlayers() = playersNotQuit.filter { it.player?.isOnline == true && it.myBattleUUID == battleUUID }
+    override fun getBattlePlayers() =
+        playersNotQuit.filter { it.player?.isOnline == true && it.myBattleUUID == battleUUID }
 
     override fun getBattleEnemies() = enemies
 
@@ -184,6 +188,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                                 pl.freeFromBattle(battleUUID, false)
                             }
                         }
+                        animateSoulShake(pl)
                     } else if (projectileData.hitbox.isIn(px.toFloat(), py.toFloat(), 20f)) {
                         if (pl.tpGain == 0) {
                             soulGraze?.let { ent ->
@@ -218,6 +223,28 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                     }
                 }
             }
+        }
+    }
+
+    fun animateSoulShake(dPlayer: DeltarunePlayer) {
+        val mcPlayer = dPlayer.player ?: return
+        val transformation = theSoul?.transformation ?: return
+        val frames = dPlayer.noDamageTicks
+        var counter = 0
+        runRepeating(frames) { i ->
+            counter = (counter + 1) % 2
+            val power = frames - i - 1
+            val shift = power * (counter * 2 - 1) * 3
+            val offset = Vector3f(shift / 16f / 8f, 0f, 0f)
+            theSoul?.changeOnlyTransformation(
+                Transformation(
+                    transformation.translation + offset,
+                    transformation.leftRotation,
+                    transformation.scale,
+                    transformation.rightRotation
+                ),
+                listOf(mcPlayer)
+            )
         }
     }
 
@@ -295,16 +322,16 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
             }
         }
 
-//            loopTask = object : BukkitRunnable() {
-//                override fun run() {
-//                    if (players.all { !it.locked || it.myBattleUUID != battleUUID }) {
-//                        if (battleJob?.isCancelled == false) {
-//                            battleJob?.cancel()
-//                        }
-//                        cancel()
-//                    }
-//                }
-//            }.runTaskTimer(ZorshDeltarune.instance, 1L, 1L)
+        loopTask = object : BukkitRunnable() {
+            override fun run() {
+                if (getBattlePlayers().isEmpty()) {
+                    if (battleJob?.isCancelled == false) {
+                        battleJob?.cancel()
+                    }
+                    cancel()
+                }
+            }
+        }.runTaskTimer(ZorshDeltarune.instance, 5L, 10L)
     }
 
     override fun endBattle() {
