@@ -228,17 +228,19 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
 
     fun animateSoulShake(dPlayer: DeltarunePlayer) {
         val mcPlayer = dPlayer.player ?: return
-        val transformation = theSoul?.transformation ?: return
+        val soul = theSoul ?: return
         val frames = dPlayer.noDamageTicks
+        val baseTranslation = soul.transformation.translation
         var counter = 0
         runRepeating(frames) { i ->
             counter = (counter + 1) % 2
             val power = frames - i - 1
             val shift = power * (counter * 2 - 1) * 3
             val offset = Vector3f(shift / 16f / 8f, 0f, 0f)
+            val transformation = soul.transformation
             theSoul?.changeOnlyTransformation(
                 Transformation(
-                    transformation.translation + offset,
+                    baseTranslation + offset,
                     transformation.leftRotation,
                     transformation.scale,
                     transformation.rightRotation
