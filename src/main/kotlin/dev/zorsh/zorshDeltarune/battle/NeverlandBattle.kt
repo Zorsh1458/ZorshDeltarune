@@ -189,7 +189,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                                 pl.freeFromBattle(battleUUID, false)
                             }
                         }
-                        animateSoulShake(pl)
+                        animateSoulDamage(pl)
                     } else if (projectileData.hitbox.isIn(px.toFloat(), py.toFloat(), 20f)) {
                         if (pl.tpGain == 0) {
                             soulGraze?.let { ent ->
@@ -227,7 +227,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         }
     }
 
-    fun animateSoulShake(dPlayer: DeltarunePlayer) {
+    fun animateSoulDamage(dPlayer: DeltarunePlayer) {
         val mcPlayer = dPlayer.player ?: return
         val soul = theSoul ?: return
         val frames = dPlayer.noDamageTicks
