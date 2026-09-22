@@ -235,7 +235,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         runRepeating(frames) { i ->
             counter = (counter + 1) % 2
             val power = frames - i - 1
-            val shift = power * (counter * 2 - 1) * 3
+            val shift = power * (counter * 2 - 1) * 1.75f
             val offset = Vector3f(shift / 16f / 8f, 0f, 0f)
             val transformation = soul.transformation
             theSoul?.changeOnlyTransformation(
