@@ -8,6 +8,7 @@ import dev.zorsh.zorshDeltarune.utils.runLater
 import dev.zorsh.zorshDeltarune.utils.runRepeating
 import kotlinx.coroutines.*
 import net.kyori.adventure.text.Component
+import java.lang.Math.clamp
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -31,8 +32,11 @@ class TestEnemy(
 
     override suspend fun attack(onAttackEnds: () -> Unit) = coroutineScope {
         val count = 60
+        var yOffset = 0f
         repeat(count) { _ ->
-            attackPattern2()
+            yOffset += ZorshDeltarune.random.nextFloat() * 8 - 4
+            yOffset = clamp(yOffset, -64f, 64f)
+            attackPattern2(yOffset)
             delay(100)
         }
         delay(6000)
@@ -78,9 +82,13 @@ class TestEnemy(
         }
     }
 
-    fun attackPattern2() {
+    fun attackPattern2(yOffset: Float) {
+        attackPattern2_projectile(yOffset + 32f)
+        attackPattern2_projectile(yOffset - 32f)
+    }
+
+    fun attackPattern2_projectile(yOffset: Float) {
         val (bbx, bby) = myBattle.getBBLocation()
-        val yOffset = ZorshDeltarune.random.nextFloat() * 32 - 16
         myBattle.createProjectile(
             bbx + 256, bby + yOffset,
             ProjectileData(
