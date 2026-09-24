@@ -40,7 +40,7 @@ class TestEnemy(
             attackPattern2(yOffset)
             delay(100)
         }
-        delay(6000)
+        delay(500)
     }
 
     fun attackPattern1(initialAngle: Float) {
@@ -84,10 +84,10 @@ class TestEnemy(
     }
 
     fun attackPattern2(yOffset: Float) {
-        attackPattern2_projectile(yOffset + 32f)
-        attackPattern2_projectile(yOffset + 64f)
-        attackPattern2_projectile(yOffset - 32f)
-        attackPattern2_projectile(yOffset - 64f)
+        attackPattern2_projectile(yOffset + 48f)
+        attackPattern2_projectile(yOffset + 80f)
+        attackPattern2_projectile(yOffset - 48f)
+        attackPattern2_projectile(yOffset - 80f)
     }
 
     fun attackPattern2_projectile(yOffset: Float) {
