@@ -4,6 +4,7 @@ import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.projectile.CircleHitbox
 import dev.zorsh.zorshDeltarune.battle.projectile.ProjectileData
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
+import dev.zorsh.zorshDeltarune.ui.ShaderTextColor
 import dev.zorsh.zorshDeltarune.utils.runLater
 import dev.zorsh.zorshDeltarune.utils.runRepeating
 import kotlinx.coroutines.*
@@ -94,20 +95,49 @@ class TestEnemy(
         myBattle.createProjectile(
             bbx + 256, bby + yOffset,
             ProjectileData(
-                listOf(CanvasSprite.SOUL),
+                listOf(CanvasSprite.SQUARE),
                 null,
                 CircleHitbox(8f)
             )
         ) { canvas, registryName, dealDamage ->
             val count = 30
             runLater(2) {
-                canvas.setScale(0.5f, 1.2f, registryName)
+                canvas.setScale(4f, 16f, registryName)
             }
             runRepeating(count) { i ->
                 canvas.move(-20f, 0f, registryName)
                 if (i < count-2) {
                     dealDamage(ZorshDeltarune.random.nextInt(10) + 10)
                 }
+            }
+            runLater(-3L + count) {
+                canvas.setScale(0.5f, 0.5f, registryName)
+            }
+            runLater(-2L + count) {
+                canvas.setScale(0f, 0f, registryName)
+            }
+            runLater(1L + count) {
+                canvas.remove(registryName)
+            }
+        }
+        myBattle.createProjectile(
+            bbx + 256, bby + yOffset,
+            ProjectileData(
+                listOf(CanvasSprite.SQUARE),
+                null,
+                CircleHitbox(8f)
+            )
+        ) { canvas, registryName, _ ->
+            val count = 30
+            runLater(1) {
+                canvas.setZ(40, registryName)
+                canvas.setSprite(CanvasSprite.SQUARE, ShaderTextColor.pure("#000000"), registryName)
+            }
+            runLater(2) {
+                canvas.setScale(3f, 15f, registryName)
+            }
+            runRepeating(count) { i ->
+                canvas.move(-20f, 0f, registryName)
             }
             runLater(-3L + count) {
                 canvas.setScale(0.5f, 0.5f, registryName)
