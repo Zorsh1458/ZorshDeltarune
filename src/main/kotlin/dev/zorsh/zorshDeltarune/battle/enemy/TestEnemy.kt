@@ -30,9 +30,10 @@ class TestEnemy(
 ) {
 
     override suspend fun attack(onAttackEnds: () -> Unit) = coroutineScope {
-        val count = 12
-        repeat(count) { i ->
-            attackPattern1(i * 6.283f / count)
+        val count = 60
+        repeat(count) { _ ->
+            attackPattern2()
+            delay(100)
         }
         delay(6000)
     }
@@ -64,6 +65,35 @@ class TestEnemy(
                     dealDamage(ZorshDeltarune.random.nextInt(10) + 10)
                 }
 
+                if (i == 117) {
+                    canvas.setScale(0.5f, 0.5f, registryName)
+                }
+                if (i == 118) {
+                    canvas.setScale(0f, 0f, registryName)
+                }
+            }
+            runLater(121) {
+                canvas.remove(registryName)
+            }
+        }
+    }
+
+    fun attackPattern2() {
+        val (bbx, bby) = myBattle.getBBLocation()
+        val yOffset = ZorshDeltarune.random.nextFloat() * 32 - 16
+        myBattle.createProjectile(
+            bbx + 256, bby + yOffset,
+            ProjectileData(
+                listOf(CanvasSprite.SOUL),
+                null,
+                CircleHitbox(8f)
+            )
+        ) { canvas, registryName, dealDamage ->
+            runRepeating(120) { i ->
+                canvas.move(-5f, 0f, registryName)
+                if (i < 118) {
+                    dealDamage(ZorshDeltarune.random.nextInt(10) + 10)
+                }
                 if (i == 117) {
                     canvas.setScale(0.5f, 0.5f, registryName)
                 }
