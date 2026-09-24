@@ -84,9 +84,9 @@ class TestEnemy(
 
     fun attackPattern2(yOffset: Float) {
         attackPattern2_projectile(yOffset + 32f)
-        attackPattern2_projectile(yOffset + 48f)
+        attackPattern2_projectile(yOffset + 64f)
         attackPattern2_projectile(yOffset - 32f)
-        attackPattern2_projectile(yOffset - 48f)
+        attackPattern2_projectile(yOffset - 64f)
     }
 
     fun attackPattern2_projectile(yOffset: Float) {
@@ -100,17 +100,20 @@ class TestEnemy(
             )
         ) { canvas, registryName, dealDamage ->
             val count = 30
+            runLater(2) {
+                canvas.setScale(0.5f, 1.2f, registryName)
+            }
             runRepeating(count) { i ->
                 canvas.move(-20f, 0f, registryName)
                 if (i < count-2) {
                     dealDamage(ZorshDeltarune.random.nextInt(10) + 10)
                 }
-                if (i == count-3) {
-                    canvas.setScale(0.5f, 0.5f, registryName)
-                }
-                if (i == count-2) {
-                    canvas.setScale(0f, 0f, registryName)
-                }
+            }
+            runLater(-3L + count) {
+                canvas.setScale(0.5f, 0.5f, registryName)
+            }
+            runLater(-2L + count) {
+                canvas.setScale(0f, 0f, registryName)
             }
             runLater(1L + count) {
                 canvas.remove(registryName)
