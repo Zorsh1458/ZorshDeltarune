@@ -154,8 +154,8 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         battleCanvas.myCanvas.drawSprite(
             px,
             py,
-            1f,
-            1f,
+            0f,
+            0f,
             48,
             projectileData.sprites.first(),
             ShaderTextColor.pure("#ffffff"),
@@ -168,6 +168,9 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                     "projectile_$projId",
                     stoppingCondition = { return@animateSprite !isActive() || !battleCanvas.myCanvas.hasObject("projectile_$projId") }
                 )
+            }
+            runLater(1) {
+                battleCanvas.myCanvas.setScale(1f, 1f, "projectile_$projId")
             }
             afterCreated(battleCanvas.myCanvas, "projectile_$projId") { baseDamageAmount ->
                 for (pl in getBattlePlayers()) {
