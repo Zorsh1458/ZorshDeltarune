@@ -1,5 +1,6 @@
 package dev.zorsh.zorshDeltarune.battle.player.playerAction
 
+import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.BattleCanvas
 import dev.zorsh.zorshDeltarune.battle.player.PlayerActionSelection
 
@@ -73,6 +74,7 @@ enum class ActionSelectionButtonStage : PlayerActionSelection {
     }
 
     override fun onJumpPressed(): PlayerActionSelection {
+        ZorshDeltarune.instance.logger.info("Pressed jump from ActionSelectionButtonStage")
         canvas.setDebugText(name)
         return this
     }

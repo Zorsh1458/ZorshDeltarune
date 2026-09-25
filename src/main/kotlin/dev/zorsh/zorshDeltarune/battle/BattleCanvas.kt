@@ -120,7 +120,6 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
     fun setDebugText(text: String) {
         battle.getBattlePlayers().forEach { dPlayer ->
-            ZorshDeltarune.instance.logger.info("Setting debug for ${dPlayer.player?.name}: $text")
             myCanvas.setText(Component.text("Debug: $text"), "debug_info", dPlayer.uuid)
         }
     }
