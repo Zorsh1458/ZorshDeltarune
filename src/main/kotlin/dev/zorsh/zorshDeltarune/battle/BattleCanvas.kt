@@ -117,6 +117,12 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         myCanvas.setText(hpCountText, "player_hp_counter", playerId)
     }
 
+    fun setDebugText(text: String) {
+        battle.getBattlePlayers().forEach { dPlayer ->
+            myCanvas.setText(Component.text(text), "debug_info", dPlayer.uuid)
+        }
+    }
+
     val playerOptionsObjectNamesToLift = mutableSetOf<String>()
     fun setupLayout() {
         playerOptionsObjectNamesToLift.clear()

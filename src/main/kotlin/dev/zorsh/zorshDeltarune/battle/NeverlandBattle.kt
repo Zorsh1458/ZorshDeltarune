@@ -11,7 +11,6 @@ import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.ui.PlayerUICanvas
 import dev.zorsh.zorshDeltarune.ui.ShaderTextColor
 import dev.zorsh.zorshDeltarune.utils.FakeDisplayData
-import dev.zorsh.zorshDeltarune.utils.color
 import dev.zorsh.zorshDeltarune.utils.fontText
 import dev.zorsh.zorshDeltarune.utils.minus
 import dev.zorsh.zorshDeltarune.utils.plus
@@ -311,7 +310,13 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                 val job = scope.launch {
                     repeat(3) {
                         battleCanvas.showPlayerOptions()
+                        getBattlePlayers().forEach { dPlayer ->
+                            dPlayer.handlePickingOption(battleCanvas)
+                        }
                         delay(3000)
+                        getBattlePlayers().forEach { dPlayer ->
+                            dPlayer.stopPickingOption()
+                        }
                         battleCanvas.hidePlayerOptions()
                         battleBoxOpen()
                         delay(500)

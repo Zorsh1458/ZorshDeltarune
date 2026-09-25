@@ -3,6 +3,7 @@ package dev.zorsh.zorshDeltarune.battle.player
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.BattleCanvas
 import dev.zorsh.zorshDeltarune.battle.BattleManager
+import dev.zorsh.zorshDeltarune.battle.player.playerAction.ActionSelectionButtonStage
 import dev.zorsh.zorshDeltarune.nms.PacketManager
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.ui.ShaderTextColor
@@ -87,13 +88,6 @@ class DeltarunePlayer(val uuid: UUID) {
         myBattleUUID = null
         locked = false
         player?.stopAllSounds()
-        inputCallbacksLeft.clear()
-        inputCallbacksRight.clear()
-        inputCallbacksForward.clear()
-        inputCallbacksBackward.clear()
-        inputCallbacksJump.clear()
-        inputCallbacksSneak.clear()
-        inputCallbacksSprint.clear()
         //
         runLater(1) {
             if (player != null) {
@@ -225,64 +219,65 @@ class DeltarunePlayer(val uuid: UUID) {
         canMoveSoul = false
     }
 
-    private var inputCallbacksLeft = mutableListOf<() -> Unit>()
-    private var inputCallbacksRight = mutableListOf<() -> Unit>()
-    private var inputCallbacksForward = mutableListOf<() -> Unit>()
-    private var inputCallbacksBackward = mutableListOf<() -> Unit>()
-    private var inputCallbacksJump = mutableListOf<() -> Unit>()
-    private var inputCallbacksSneak = mutableListOf<() -> Unit>()
-    private var inputCallbacksSprint = mutableListOf<() -> Unit>()
-
-    fun onLeftPressed(action: () -> Unit) {
-        inputCallbacksLeft += action
+    var playerActionSelection: PlayerActionSelection? = null
+    fun handlePickingOption(battleCanvas: BattleCanvas) {
+        playerActionSelection = ActionSelectionButtonStage.BUTTON_ATTACK.withCanvas(battleCanvas)
     }
 
-    fun onRightPressed(action: () -> Unit) {
-        inputCallbacksRight += action
+    fun stopPickingOption() {
+        playerActionSelection = null
     }
 
-    fun onForwardPressed(action: () -> Unit) {
-        inputCallbacksForward += action
+    fun onLeftPressed() {
+        playerActionSelection = playerActionSelection?.onLeftPressed()
     }
 
-    fun onBackwardPressed(action: () -> Unit) {
-        inputCallbacksBackward += action
+    fun onRightPressed() {
+        playerActionSelection = playerActionSelection?.onRightPressed()
     }
 
-    fun onJumpPressed(action: () -> Unit) {
-        inputCallbacksJump += action
+    fun onForwardPressed() {
+        playerActionSelection = playerActionSelection?.onForwardPressed()
     }
 
-    fun onSneakPressed(action: () -> Unit) {
-        inputCallbacksSneak += action
+    fun onBackwardPressed() {
+        playerActionSelection = playerActionSelection?.onBackwardPressed()
     }
 
-    fun onSprintPressed(action: () -> Unit) {
-        inputCallbacksSprint += action
+    fun onJumpPressed() {
+        playerActionSelection = playerActionSelection?.onJumpPressed()
+    }
+
+    fun onSneakPressed() {
+        playerActionSelection = playerActionSelection?.onSneakPressed()
+    }
+
+    fun onSprintPressed() {
+        playerActionSelection = playerActionSelection?.onSprintPressed()
     }
 
     fun updateInputs(input: Input) {
         val newInput = InputHolder(input)
         if (newInput.left && !prevInput.left) {
-            inputCallbacksLeft.forEach { it() }
+            onLeftPressed()
         }
         if (newInput.right && !prevInput.right) {
-            inputCallbacksRight.forEach { it() }
+            onRightPressed()
         }
         if (newInput.forward && !prevInput.forward) {
-            inputCallbacksForward.forEach { it() }
+            onForwardPressed()
         }
         if (newInput.backward && !prevInput.backward) {
-            inputCallbacksBackward.forEach { it() }
+            onBackwardPressed()
         }
         if (newInput.jump && !prevInput.jump) {
-            inputCallbacksJump.forEach { it() }
+            onJumpPressed()
         }
         if (newInput.sneak && !prevInput.sneak) {
-            inputCallbacksSneak.forEach { it() }
+            onSneakPressed()
         }
         if (newInput.sprint && !prevInput.sprint) {
-            inputCallbacksSprint.forEach { it() }
+            onSprintPressed()
         }
         prevInput = newInput
     }
