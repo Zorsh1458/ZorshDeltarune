@@ -12,7 +12,6 @@ enum class ActionSelectionButtonStage : PlayerActionSelection {
         }
         override fun onForwardPressed() = this
         override fun onBackwardPressed() = this
-        override fun onJumpPressed() = this
         override fun onSneakPressed() = this
         override fun onSprintPressed() = this
     },
@@ -25,7 +24,6 @@ enum class ActionSelectionButtonStage : PlayerActionSelection {
         }
         override fun onForwardPressed() = this
         override fun onBackwardPressed() = this
-        override fun onJumpPressed() = this
         override fun onSneakPressed() = this
         override fun onSprintPressed() = this
     },
@@ -38,7 +36,6 @@ enum class ActionSelectionButtonStage : PlayerActionSelection {
         }
         override fun onForwardPressed() = this
         override fun onBackwardPressed() = this
-        override fun onJumpPressed() = this
         override fun onSneakPressed() = this
         override fun onSprintPressed() = this
     },
@@ -51,7 +48,6 @@ enum class ActionSelectionButtonStage : PlayerActionSelection {
         }
         override fun onForwardPressed() = this
         override fun onBackwardPressed() = this
-        override fun onJumpPressed() = this
         override fun onSneakPressed() = this
         override fun onSprintPressed() = this
     },
@@ -62,7 +58,6 @@ enum class ActionSelectionButtonStage : PlayerActionSelection {
         override fun onRightPressed() = this
         override fun onForwardPressed() = this
         override fun onBackwardPressed() = this
-        override fun onJumpPressed() = this
         override fun onSneakPressed() = this
         override fun onSprintPressed() = this
     };
@@ -74,7 +69,6 @@ enum class ActionSelectionButtonStage : PlayerActionSelection {
     }
 
     override fun onJumpPressed(): PlayerActionSelection {
-        ZorshDeltarune.instance.logger.info("Pressed jump from ActionSelectionButtonStage")
         canvas.setDebugText(name)
         return this
     }
