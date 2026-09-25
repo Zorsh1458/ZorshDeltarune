@@ -50,6 +50,7 @@ class DeltaruneListener : Listener {
     @EventHandler
     fun onPlayerInputEvent(e: PlayerInputEvent) {
         val player = e.player
+        ZorshDeltarune.instance.logger.info("!!! ${player.name} pressed jump ${ZorshDeltarune.getDPlayer(player.uniqueId)}")
         ZorshDeltarune.getDPlayer(player.uniqueId)?.updateInputs(e.input)
     }
 
