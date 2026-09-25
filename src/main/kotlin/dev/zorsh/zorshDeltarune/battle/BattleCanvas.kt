@@ -1,5 +1,6 @@
 package dev.zorsh.zorshDeltarune.battle
 
+import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.enemy.SpritedEnemy
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.ui.PlayerUICanvas
@@ -119,7 +120,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
     fun setDebugText(text: String) {
         battle.getBattlePlayers().forEach { dPlayer ->
-            myCanvas.setText(Component.text(text), "debug_info", dPlayer.uuid)
+            ZorshDeltarune.instance.logger.info("Setting debug for ${dPlayer.player?.name}: $text")
+            myCanvas.setText(Component.text("Debug: $text"), "debug_info", dPlayer.uuid)
         }
     }
 
