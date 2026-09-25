@@ -1,74 +1,67 @@
 package dev.zorsh.zorshDeltarune.battle.player.playerAction
 
-import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.BattleCanvas
 import dev.zorsh.zorshDeltarune.battle.player.PlayerActionSelection
 
 enum class ActionSelectionButtonStage : PlayerActionSelection {
     BUTTON_ATTACK {
-        override fun onLeftPressed() = this
-        override fun onRightPressed(): PlayerActionSelection {
-            return BUTTON_ACT.withCanvas(canvas)
+        override fun onLeftPressed(canvas: BattleCanvas) = this
+        override fun onRightPressed(canvas: BattleCanvas): PlayerActionSelection {
+            return BUTTON_ACT
         }
-        override fun onForwardPressed() = this
-        override fun onBackwardPressed() = this
-        override fun onSneakPressed() = this
-        override fun onSprintPressed() = this
+        override fun onForwardPressed(canvas: BattleCanvas) = this
+        override fun onBackwardPressed(canvas: BattleCanvas) = this
+        override fun onSneakPressed(canvas: BattleCanvas) = this
+        override fun onSprintPressed(canvas: BattleCanvas) = this
     },
     BUTTON_ACT {
-        override fun onLeftPressed(): PlayerActionSelection {
-            return BUTTON_ATTACK.withCanvas(canvas)
+        override fun onLeftPressed(canvas: BattleCanvas): PlayerActionSelection {
+            return BUTTON_ATTACK
         }
-        override fun onRightPressed(): PlayerActionSelection {
-            return BUTTON_ITEM.withCanvas(canvas)
+        override fun onRightPressed(canvas: BattleCanvas): PlayerActionSelection {
+            return BUTTON_ITEM
         }
-        override fun onForwardPressed() = this
-        override fun onBackwardPressed() = this
-        override fun onSneakPressed() = this
-        override fun onSprintPressed() = this
+        override fun onForwardPressed(canvas: BattleCanvas) = this
+        override fun onBackwardPressed(canvas: BattleCanvas) = this
+        override fun onSneakPressed(canvas: BattleCanvas) = this
+        override fun onSprintPressed(canvas: BattleCanvas) = this
     },
     BUTTON_ITEM {
-        override fun onLeftPressed(): PlayerActionSelection {
-            return BUTTON_ACT.withCanvas(canvas)
+        override fun onLeftPressed(canvas: BattleCanvas): PlayerActionSelection {
+            return BUTTON_ACT
         }
-        override fun onRightPressed(): PlayerActionSelection {
-            return BUTTON_MERCY.withCanvas(canvas)
+        override fun onRightPressed(canvas: BattleCanvas): PlayerActionSelection {
+            return BUTTON_MERCY
         }
-        override fun onForwardPressed() = this
-        override fun onBackwardPressed() = this
-        override fun onSneakPressed() = this
-        override fun onSprintPressed() = this
+        override fun onForwardPressed(canvas: BattleCanvas) = this
+        override fun onBackwardPressed(canvas: BattleCanvas) = this
+        override fun onSneakPressed(canvas: BattleCanvas) = this
+        override fun onSprintPressed(canvas: BattleCanvas) = this
     },
     BUTTON_MERCY {
-        override fun onLeftPressed(): PlayerActionSelection {
-            return BUTTON_ITEM.withCanvas(canvas)
+        override fun onLeftPressed(canvas: BattleCanvas): PlayerActionSelection {
+            return BUTTON_ITEM
         }
-        override fun onRightPressed(): PlayerActionSelection {
-            return BUTTON_DEFEND.withCanvas(canvas)
+        override fun onRightPressed(canvas: BattleCanvas): PlayerActionSelection {
+            return BUTTON_DEFEND
         }
-        override fun onForwardPressed() = this
-        override fun onBackwardPressed() = this
-        override fun onSneakPressed() = this
-        override fun onSprintPressed() = this
+        override fun onForwardPressed(canvas: BattleCanvas) = this
+        override fun onBackwardPressed(canvas: BattleCanvas) = this
+        override fun onSneakPressed(canvas: BattleCanvas) = this
+        override fun onSprintPressed(canvas: BattleCanvas) = this
     },
     BUTTON_DEFEND {
-        override fun onLeftPressed(): PlayerActionSelection {
-            return BUTTON_MERCY.withCanvas(canvas)
+        override fun onLeftPressed(canvas: BattleCanvas): PlayerActionSelection {
+            return BUTTON_MERCY
         }
-        override fun onRightPressed() = this
-        override fun onForwardPressed() = this
-        override fun onBackwardPressed() = this
-        override fun onSneakPressed() = this
-        override fun onSprintPressed() = this
+        override fun onRightPressed(canvas: BattleCanvas) = this
+        override fun onForwardPressed(canvas: BattleCanvas) = this
+        override fun onBackwardPressed(canvas: BattleCanvas) = this
+        override fun onSneakPressed(canvas: BattleCanvas) = this
+        override fun onSprintPressed(canvas: BattleCanvas) = this
     };
 
-    lateinit var canvas: BattleCanvas
-    override fun withCanvas(newCanvas: BattleCanvas): PlayerActionSelection {
-        canvas = newCanvas
-        return this
-    }
-
-    override fun onJumpPressed(): PlayerActionSelection {
+    override fun onJumpPressed(canvas: BattleCanvas): PlayerActionSelection {
         canvas.setDebugText(name)
         return this
     }

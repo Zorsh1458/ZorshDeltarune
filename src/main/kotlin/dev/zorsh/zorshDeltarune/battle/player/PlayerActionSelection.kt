@@ -6,13 +6,11 @@ import dev.zorsh.zorshDeltarune.battle.BattleCanvas
 // <phase: BUTTON|ENEMY|ACT|ITEM>_<state>
 
 interface PlayerActionSelection {
-    fun withCanvas(newCanvas: BattleCanvas): PlayerActionSelection
-
-    fun onLeftPressed(): PlayerActionSelection
-    fun onRightPressed(): PlayerActionSelection
-    fun onForwardPressed(): PlayerActionSelection
-    fun onBackwardPressed(): PlayerActionSelection
-    fun onJumpPressed(): PlayerActionSelection
-    fun onSneakPressed(): PlayerActionSelection
-    fun onSprintPressed(): PlayerActionSelection
+    fun onLeftPressed(canvas: BattleCanvas): PlayerActionSelection
+    fun onRightPressed(canvas: BattleCanvas): PlayerActionSelection
+    fun onForwardPressed(canvas: BattleCanvas): PlayerActionSelection
+    fun onBackwardPressed(canvas: BattleCanvas): PlayerActionSelection
+    fun onJumpPressed(canvas: BattleCanvas): PlayerActionSelection
+    fun onSneakPressed(canvas: BattleCanvas): PlayerActionSelection
+    fun onSprintPressed(canvas: BattleCanvas): PlayerActionSelection
 }
