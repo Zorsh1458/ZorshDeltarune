@@ -220,41 +220,51 @@ class DeltarunePlayer(val uuid: UUID) {
     }
 
     var playerActionSelection: PlayerActionSelection? = null
+    var playerActionSelectionCanvas: BattleCanvas? = null
     fun handlePickingOption(battleCanvas: BattleCanvas) {
-        playerActionSelection = ActionSelectionButtonStage.BUTTON_ATTACK.withCanvas(battleCanvas)
+        playerActionSelectionCanvas = battleCanvas
+        playerActionSelection = ActionSelectionButtonStage.BUTTON_ATTACK
     }
 
     fun stopPickingOption() {
+        playerActionSelectionCanvas = null
         playerActionSelection = null
     }
 
     fun onLeftPressed() {
-        playerActionSelection = playerActionSelection?.onLeftPressed()
+        val canvas = playerActionSelectionCanvas ?: return
+        playerActionSelection = playerActionSelection?.onLeftPressed(canvas)
     }
 
     fun onRightPressed() {
-        playerActionSelection = playerActionSelection?.onRightPressed()
+        val canvas = playerActionSelectionCanvas ?: return
+        playerActionSelection = playerActionSelection?.onRightPressed(canvas)
     }
 
     fun onForwardPressed() {
-        playerActionSelection = playerActionSelection?.onForwardPressed()
+        val canvas = playerActionSelectionCanvas ?: return
+        playerActionSelection = playerActionSelection?.onForwardPressed(canvas)
     }
 
     fun onBackwardPressed() {
-        playerActionSelection = playerActionSelection?.onBackwardPressed()
+        val canvas = playerActionSelectionCanvas ?: return
+        playerActionSelection = playerActionSelection?.onBackwardPressed(canvas)
     }
 
     fun onJumpPressed() {
         ZorshDeltarune.instance.logger.info("${player?.name} pressed jump - $playerActionSelection")
-        playerActionSelection = playerActionSelection?.onJumpPressed()
+        val canvas = playerActionSelectionCanvas ?: return
+        playerActionSelection = playerActionSelection?.onJumpPressed(canvas)
     }
 
     fun onSneakPressed() {
-        playerActionSelection = playerActionSelection?.onSneakPressed()
+        val canvas = playerActionSelectionCanvas ?: return
+        playerActionSelection = playerActionSelection?.onSneakPressed(canvas)
     }
 
     fun onSprintPressed() {
-        playerActionSelection = playerActionSelection?.onSprintPressed()
+        val canvas = playerActionSelectionCanvas ?: return
+        playerActionSelection = playerActionSelection?.onSprintPressed(canvas)
     }
 
     fun updateInputs(newInput: InputHolder) {
