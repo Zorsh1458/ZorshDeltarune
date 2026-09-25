@@ -245,6 +245,7 @@ class DeltarunePlayer(val uuid: UUID) {
     }
 
     fun onJumpPressed() {
+        ZorshDeltarune.instance.logger.info("${player?.name} pressed jump - $playerActionSelection")
         playerActionSelection = playerActionSelection?.onJumpPressed()
     }
 
