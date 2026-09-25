@@ -5,6 +5,7 @@ import com.comphenix.protocol.events.ListenerPriority
 import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketEvent
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
+import dev.zorsh.zorshDeltarune.utils.InputHolder
 
 class PacketListenerPlayerInput : PacketAdapter(
     ZorshDeltarune.instance,
@@ -21,6 +22,25 @@ class PacketListenerPlayerInput : PacketAdapter(
         val right = input.booleans.read(3)
         val space = input.booleans.read(4)
         val shift = input.booleans.read(5)
-        ZorshDeltarune.instance.logger.info("!!! ${player.name} pressed jump ${ZorshDeltarune.getDPlayer(player.uniqueId)} - FROM PACKET")
+        val sprint = input.booleans.read(6)
+        player.sendMessage("""
+            New input from ${player.name}:
+                L: $left
+                R: $right
+                F: $forward
+                B: $backward
+                J: $space
+                Sn: $shift
+                Sp: $sprint
+        """.trimIndent())
+//        ZorshDeltarune.getDPlayer(player.uniqueId)?.updateInputs(InputHolder(
+//            left,
+//            right,
+//            forward,
+//            backward,
+//            space,
+//            shift,
+//            sprint
+//        ))
     }
 }

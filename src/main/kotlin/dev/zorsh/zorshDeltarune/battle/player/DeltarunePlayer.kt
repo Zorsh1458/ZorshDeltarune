@@ -257,8 +257,7 @@ class DeltarunePlayer(val uuid: UUID) {
         playerActionSelection = playerActionSelection?.onSprintPressed()
     }
 
-    fun updateInputs(input: Input) {
-        val newInput = InputHolder(input)
+    fun updateInputs(newInput: InputHolder) {
         if (newInput.left && !prevInput.left) {
             onLeftPressed()
         }
