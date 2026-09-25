@@ -23,24 +23,14 @@ class PacketListenerPlayerInput : PacketAdapter(
         val space = input.booleans.read(4)
         val shift = input.booleans.read(5)
         val sprint = input.booleans.read(6)
-        player.sendMessage("""
-            New input from ${player.name}:
-                L: $left
-                R: $right
-                F: $forward
-                B: $backward
-                J: $space
-                Sn: $shift
-                Sp: $sprint
-        """.trimIndent())
-//        ZorshDeltarune.getDPlayer(player.uniqueId)?.updateInputs(InputHolder(
-//            left,
-//            right,
-//            forward,
-//            backward,
-//            space,
-//            shift,
-//            sprint
-//        ))
+        ZorshDeltarune.getDPlayer(player.uniqueId)?.updateInputs(InputHolder(
+            left,
+            right,
+            forward,
+            backward,
+            space,
+            shift,
+            sprint
+        ))
     }
 }
