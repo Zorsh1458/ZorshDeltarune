@@ -379,7 +379,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             18f,
                             59,
                             CanvasSprite.SQUARE,
-                            ShaderTextColor.pure("#ff0000"),
+                            ShaderTextColor.pure("#000000"),
                             "selection_box_inner2",
                             bukkitPlayer
                         ) {
