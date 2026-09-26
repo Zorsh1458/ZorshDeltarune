@@ -227,17 +227,12 @@ class DeltarunePlayer(val uuid: UUID) {
         playerActionSelector = null
     }
 
-    var counter = 0
     fun onLeftPressed() {
         playerActionSelector?.onLeftPressed()
-        counter--
-        canv?.setDebugText(counter.toString())
     }
 
     fun onRightPressed() {
         playerActionSelector?.onRightPressed()
-        counter++
-        canv?.setDebugText(counter.toString())
     }
 
     fun onForwardPressed() {

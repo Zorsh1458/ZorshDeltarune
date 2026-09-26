@@ -1,6 +1,5 @@
 package dev.zorsh.zorshDeltarune.battle
 
-import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.enemy.SpritedEnemy
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.ui.PlayerUICanvas
@@ -93,7 +92,12 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         }
     }
 
-    fun animateSprite(spriteList: List<CanvasSprite>, framesPerSprite: Int, objName: String, stoppingCondition: () -> Boolean) {
+    fun animateSprite(
+        spriteList: List<CanvasSprite>,
+        framesPerSprite: Int,
+        objName: String,
+        stoppingCondition: () -> Boolean,
+    ) {
         runInfinite(1) { i, action ->
             if (stoppingCondition()) {
                 action.cancel()
@@ -364,6 +368,33 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             bukkitPlayer
                         ) {
                             playerOptionsObjectNamesToLift += "selection_box_inner"
+                        }
+
+                        runInfinite(10) { i, action ->
+                            if (!battle.isActive() || !myCanvas.targetPlayers.contains(dPlayer.player)) {
+                                action.cancel()
+                                return@runInfinite
+                            }
+
+                            val objName = "player_box_decorative_animation_${UUID.randomUUID()}"
+                            myCanvas.drawSprite(
+                                -99f,
+                                -115f,
+                                1f,
+                                38f,
+                                58,
+                                CanvasSprite.SQUARE,
+                                ShaderTextColor.pure("#00ffff"),
+                                objName,
+                                bukkitPlayer
+                            ) {
+                                runRepeating(40) { i ->
+                                    myCanvas.move(1f, 0f, objName, bukkitPlayer.uniqueId)
+                                }
+                                runLater(41) {
+                                    myCanvas.remove(objName, bukkitPlayer.uniqueId)
+                                }
+                            }
                         }
 
                         myCanvas.drawSprite(
