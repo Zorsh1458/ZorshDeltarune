@@ -167,12 +167,12 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             saveAs = objName,
             player = player
         ) {
-            runRepeating(8) { i ->
+            runRepeating(5) { i ->
                 val t = i + 1
-                if (i < 5) {
-                    myCanvas.setScale(sx * 3 - sx * 2 * t / 5, sy * t / 5, objName, player?.uniqueId)
+                if (i < 3) {
+                    myCanvas.setScale(sx * 3 - sx * 2 * t / 3, sy * t / 3, objName, player?.uniqueId)
                 }
-                myCanvas.move(5f - t * 5 / 8f, 2.5f - t * 5f / 8f, objName, player?.uniqueId)
+                myCanvas.move(5f - t, 2.5f - t, objName, player?.uniqueId)
             }
             runLater(30) {
                 runRepeating(10) { i ->
