@@ -124,6 +124,10 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         }
     }
 
+    fun setTurnTimeScale(scale: Float, playerId: UUID) {
+        myCanvas.setScale(scale * 98, 1f, "selection_box_time_scale", playerId)
+    }
+
     fun setPlayerButtonSelection(objName: String, playerUUID: UUID) {
         val col = ShaderTextColor.pure("#ffffff")
         when (objName) {
@@ -365,7 +369,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         myCanvas.drawSprite(
                             0f,
                             -78f,
-                            100f,
+                            0f,
                             1f,
                             30,
                             CanvasSprite.SQUARE,
