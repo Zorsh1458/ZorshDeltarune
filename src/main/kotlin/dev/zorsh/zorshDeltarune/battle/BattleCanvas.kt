@@ -374,8 +374,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             30,
                             CanvasSprite.SQUARE,
                             ShaderTextColor.pure("#00ffff"),
-                            "selection_box_time_scale_points",
-                            bukkitPlayer
+                            player = bukkitPlayer
                         )
 
                         myCanvas.drawSprite(
@@ -386,8 +385,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             29,
                             CanvasSprite.SQUARE,
                             ShaderTextColor.pure("#0a2847"),
-                            "selection_box_time_scale_bg",
-                            bukkitPlayer
+                            player = bukkitPlayer
                         )
 
                         myCanvas.drawSprite(
@@ -400,6 +398,28 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             ShaderTextColor.pure("#3990ed"),
                             "selection_box_time_scale",
                             bukkitPlayer
+                        )
+
+                        myCanvas.drawSprite(
+                            0f,
+                            -78f,
+                            20f,
+                            1f,
+                            27,
+                            CanvasSprite.SQUARE,
+                            ShaderTextColor.pure("#000000"),
+                            player = bukkitPlayer
+                        )
+
+                        myCanvas.drawText(
+                            0f,
+                            -78f,
+                            0f,
+                            1f,
+                            26,
+                            Component.text("⌚"),
+                            ShaderTextColor.pure("#ffffff"),
+                            player = bukkitPlayer
                         )
                     }
 
