@@ -413,12 +413,12 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
                         myCanvas.drawText(
                             0f,
-                            -77f,
+                            -80f,
                             1f,
                             1f,
                             26,
                             Component.text("⌚"),
-                            ShaderTextColor.pure("#ffffff"),
+                            ShaderTextColor.pure("#d9d9d9"),
                             player = bukkitPlayer
                         )
                     }
