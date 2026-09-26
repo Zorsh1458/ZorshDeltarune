@@ -7,7 +7,9 @@ import dev.zorsh.zorshDeltarune.ui.ShaderTextColor
 import dev.zorsh.zorshDeltarune.utils.runInfinite
 import dev.zorsh.zorshDeltarune.utils.runLater
 import dev.zorsh.zorshDeltarune.utils.runRepeating
+import kr.toxicity.model.api.tracker.TrackerUpdateAction.brightness
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextColor
 import org.bukkit.entity.Player
 import org.bukkit.entity.TextDisplay
 import java.util.UUID
@@ -347,7 +349,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             -115f,
                             100f,
                             38f,
-                            60,
+                            62,
                             CanvasSprite.SQUARE,
                             ShaderTextColor.pure("#00ffff"),
                             "selection_box_outline",
@@ -361,7 +363,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             -115f,
                             98f,
                             36f,
-                            59,
+                            61,
                             CanvasSprite.SQUARE,
                             ShaderTextColor.pure("#000000"),
                             "selection_box_inner",
@@ -370,29 +372,66 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             playerOptionsObjectNamesToLift += "selection_box_inner"
                         }
 
+                        myCanvas.drawSprite(
+                            0f,
+                            -115f,
+                            98f,
+                            36f,
+                            59,
+                            CanvasSprite.SQUARE,
+                            ShaderTextColor.pure("#000000"),
+                            player = bukkitPlayer
+                        )
+
                         runInfinite(10) { i, action ->
                             if (!battle.isActive() || !myCanvas.targetPlayers.contains(dPlayer.player)) {
                                 action.cancel()
                                 return@runInfinite
                             }
 
-                            val objName = "player_box_decorative_animation_${UUID.randomUUID()}"
+                            val objName1 = "player_box_decorative_animation_${UUID.randomUUID()}"
                             myCanvas.drawSprite(
                                 -99f,
                                 -115f,
                                 1f,
                                 38f,
-                                58,
+                                60,
                                 CanvasSprite.SQUARE,
                                 ShaderTextColor.pure("#00ffff"),
-                                objName,
+                                objName1,
                                 bukkitPlayer
                             ) {
                                 runRepeating(40) { i ->
-                                    myCanvas.move(1f, 0f, objName, bukkitPlayer.uniqueId)
+                                    myCanvas.move(0.5f + i / 60f, 0f, objName1, bukkitPlayer.uniqueId)
+                                    val brightness = 1f - (i + 1) / 40f
+                                    val col = TextColor.color(brightness, brightness, brightness)
+                                    myCanvas.setSprite(CanvasSprite.SQUARE, ShaderTextColor.pure(col), objName1, bukkitPlayer.uniqueId)
                                 }
                                 runLater(41) {
-                                    myCanvas.remove(objName, bukkitPlayer.uniqueId)
+                                    myCanvas.remove(objName1, bukkitPlayer.uniqueId)
+                                }
+                            }
+
+                            val objName2 = "player_box_decorative_animation_${UUID.randomUUID()}"
+                            myCanvas.drawSprite(
+                                99f,
+                                -115f,
+                                1f,
+                                38f,
+                                60,
+                                CanvasSprite.SQUARE,
+                                ShaderTextColor.pure("#00ffff"),
+                                objName2,
+                                bukkitPlayer
+                            ) {
+                                runRepeating(40) { i ->
+                                    myCanvas.move(-0.5f - i / 60f, 0f, objName2, bukkitPlayer.uniqueId)
+                                    val brightness = 1f - (i + 1) / 40f
+                                    val col = TextColor.color(brightness, brightness, brightness)
+                                    myCanvas.setSprite(CanvasSprite.SQUARE, ShaderTextColor.pure(col), objName2, bukkitPlayer.uniqueId)
+                                }
+                                runLater(41) {
+                                    myCanvas.remove(objName2, bukkitPlayer.uniqueId)
                                 }
                             }
                         }

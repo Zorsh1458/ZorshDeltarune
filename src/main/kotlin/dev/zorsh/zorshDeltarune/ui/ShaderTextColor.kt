@@ -18,6 +18,12 @@ class ShaderTextColor {
         }
 
         @JvmStatic
+        fun pure(initialColor: TextColor): ShaderTextColor {
+            val final = TextColor.color(initialColor.red() - initialColor.red() % 2, initialColor.green(), initialColor.blue())
+            return ShaderTextColor(final)
+        }
+
+        @JvmStatic
         fun effect(effectClass: Int, effectId: Int, effectParameter: Int): ShaderTextColor {
             return ShaderTextColor(TextColor.color(effectClass, effectParameter, effectId))
         }
