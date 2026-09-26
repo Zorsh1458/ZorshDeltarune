@@ -72,8 +72,12 @@ class PlayerActionSelector(val canvas: BattleCanvas, val player: DeltarunePlayer
     fun onSneakPressed() { currentStage.onSneakPressed(this) }
     fun onSprintPressed() { currentStage.onSprintPressed(this) }
 
-    init {
+    fun startUpdate() {
         currentStage.updateEnter(this)
+    }
+
+    fun endUpdate() {
+        currentStage.updateExit(this)
     }
 
     fun changeTo(new: ActionSelection) {
