@@ -299,7 +299,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             myCanvas.drawSprite(
                 0f,
                 -78f,
-                800f,
+                100f,
                 1f,
                 32,
                 CanvasSprite.SQUARE,
@@ -361,6 +361,18 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         ) {
                             playerOptionsObjectNamesToLift += "selection_box_inner"
                         }
+
+                        myCanvas.drawSprite(
+                            0f,
+                            -114f,
+                            100f,
+                            1f,
+                            30,
+                            CanvasSprite.SQUARE,
+                            ShaderTextColor.pure("#247ad6"),
+                            "selection_box_time_scale",
+                            bukkitPlayer
+                        )
                     }
 
                     section("PLAYER_NAME", true) {

@@ -308,12 +308,12 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
         runLater(40) {
             CoroutineScope(Dispatchers.IO).launch {
                 val job = scope.launch {
-                    repeat(3) {
+                    repeat(2) {
                         battleCanvas.showPlayerOptions()
                         getBattlePlayers().forEach { dPlayer ->
                             dPlayer.handlePickingOption(battleCanvas)
                         }
-                        delay(3000)
+                        delay(15 * 1000L)
                         getBattlePlayers().forEach { dPlayer ->
                             dPlayer.stopPickingOption()
                         }
