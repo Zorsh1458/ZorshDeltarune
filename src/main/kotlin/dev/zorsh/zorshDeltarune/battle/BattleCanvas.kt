@@ -498,13 +498,13 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
                     section("PLAYER_NAME", true) {
                         myCanvas.drawText(
-                            -36f,
+                            -30f,
                             -93f,
                             1.2f,
                             1.2f,
                             57,
 //                            Component.text("                       \n${dPlayer.player!!.name}"),
-                            Component.text("                            \n- WWWWWWWWWWWWWWWW -"),
+                            Component.text("                           \nWWWWWWWWWWWWWWWW"),
                             ShaderTextColor.pure("#ffffff"),
                             TextDisplay.TextAlignment.LEFT,
                             1000,
