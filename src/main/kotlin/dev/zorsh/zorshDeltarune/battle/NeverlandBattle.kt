@@ -193,6 +193,14 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                             }
                         }
                         animateSoulDamage(pl)
+                        battleCanvas.animateStatusText(
+                            -200f,
+                            ZorshDeltarune.random.nextFloat() * 128f - 64f,
+                            2f,
+                            2f,
+                            ShaderTextColor.pure("#ffffff"),
+                            Component.text(baseDamageAmount)
+                        )
                     } else if (projectileData.hitbox.isIn(px.toFloat(), py.toFloat(), 20f)) {
                         if (pl.tpGain == 0) {
                             soulGraze?.let { ent ->
