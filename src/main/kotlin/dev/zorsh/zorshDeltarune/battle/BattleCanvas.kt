@@ -376,7 +376,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             0f,
                             -96f,
                             98f,
-                            18f,
+                            17f,
                             59,
                             CanvasSprite.SQUARE,
                             ShaderTextColor.pure("#000000"),
