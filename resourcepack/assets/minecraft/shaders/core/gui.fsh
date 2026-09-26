@@ -10,11 +10,26 @@ layout(std140) uniform DynamicTransforms {
     float LineWidth;
 };
 
+layout(std140) uniform Globals {
+    vec2 ScreenSize;
+    float GlintAlpha;
+    float GameTime;
+    int MenuBlurRadius;
+};
+
 in vec4 vertexColor;
 
 out vec4 fragColor;
 
+int getTimeData() {
+    return (int(floor(GameTime * 16383.0)) >> 7) & 1;
+}
+
 void main() {
+    if (getTimeData() != 0) {
+        discard;
+    }
+
     vec4 color = vertexColor;
     if (color.a == 0.0) {
         discard;

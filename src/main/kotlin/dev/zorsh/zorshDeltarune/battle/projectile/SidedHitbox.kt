@@ -1,11 +1,11 @@
-package dev.zorsh.zorshDeltarune.battle
+package dev.zorsh.zorshDeltarune.battle.projectile
 
 import org.bukkit.Location
 import org.joml.Vector2d
 import org.joml.Vector3d
 
 @Deprecated("Deprecated", level = DeprecationLevel.ERROR)
-class Hitbox(var center: Vector2d, private val sides: List<Pair<Vector2d, Vector2d>>) {
+class SidedHitbox(var center: Vector2d, private val sides: List<Pair<Vector2d, Vector2d>>) {
 
     constructor(center: Location, vectors2: List<Pair<Vector2d, Vector2d>>) : this(
         Vector2d(center.x, center.y),

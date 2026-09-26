@@ -1,7 +1,12 @@
 package dev.zorsh.zorshDeltarune.commands
 
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
+import dev.zorsh.zorshDeltarune.battle.BattleCanvas
+import dev.zorsh.zorshDeltarune.battle.player.DeltarunePlayer
+import dev.zorsh.zorshDeltarune.battle.NeverlandBattle
+import dev.zorsh.zorshDeltarune.battle.enemy.TestEnemy
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
+import dev.zorsh.zorshDeltarune.ui.ShaderTextColor
 import dev.zorsh.zorshDeltarune.utils.runLater
 import dev.zorsh.zorshDeltarune.utils.runRepeating
 import net.kyori.adventure.text.Component
@@ -26,6 +31,27 @@ class NeverlandTestCommand : CommandExecutor, TabCompleter {
         if (!player.isOp) return true
 
         try {
+            if (args[0] == "testBattleCanvas") {
+                val dPlayers = listOf(player)
+                    .filter { ZorshDeltarune.getDPlayer(it.uniqueId)?.locked != true }
+                    .map {
+                        val dPlayer = DeltarunePlayer(it.uniqueId)
+                        ZorshDeltarune.deltarunePlayer[it.uniqueId] = dPlayer
+                        dPlayer
+                    }
+                val battle = NeverlandBattle(dPlayers, listOf(
+                    TestEnemy(Component.text("Скебоб 1"), 100),
+                    TestEnemy(Component.text("Скебоб 2"), 100),
+                    TestEnemy(Component.text("Скебоб 3"), 100)
+                ))
+                battle.setUUID(UUID.randomUUID())
+                val cv = BattleCanvas(listOf(player), battle)
+                cv.initCanvas()
+                cv.setupLayout()
+                runLater(200) {
+                    cv.myCanvas.clear()
+                }
+            }
             if (args[0] == "canvas") {
                 if (args[1] == "initialize") {
                     ZorshDeltarune.UIManager.initCanvas(player)
@@ -39,7 +65,7 @@ class NeverlandTestCommand : CommandExecutor, TabCompleter {
                     val dy = args[5].toFloat()
                     val z = args[6].toInt()
                     val color = args[7]
-                    canvas.drawRect(sx, sy, dx, dy, z, color)
+                    canvas.drawRect(sx, sy, dx, dy, z, ShaderTextColor.pure(color))
                 }
                 if (args[1] == "drawSprite") {
                     val canvas = ZorshDeltarune.UIManager.getCanvas(player) ?: return true
@@ -53,7 +79,7 @@ class NeverlandTestCommand : CommandExecutor, TabCompleter {
                     val uuid = UUID.randomUUID()
                     canvas.drawSprite(
                         px, py, sx, sy, z,
-                        CanvasSprite.valueOf(sprite.uppercase()), color,
+                        CanvasSprite.valueOf(sprite.uppercase()), ShaderTextColor.pure(color),
                         "sprite_$uuid"
                     ) {
                         runRepeating(60) { i ->
@@ -74,7 +100,7 @@ class NeverlandTestCommand : CommandExecutor, TabCompleter {
                         val uuid = UUID.randomUUID()
                         canvas.drawSprite(
                             px, py, 1f, 1f, z,
-                            CanvasSprite.valueOf(sprite.uppercase()), "#ffffff",
+                            CanvasSprite.valueOf(sprite.uppercase()), ShaderTextColor.pure("#ffffff"),
                             "sprite_$uuid"
                         ) {
                             runRepeating(60) { i ->
@@ -107,7 +133,7 @@ class NeverlandTestCommand : CommandExecutor, TabCompleter {
     ): List<String?> {
         return when (p3.size) {
             0 -> emptyList()
-            1 -> listOf("canvas")
+            1 -> listOf("canvas", "testBattleCanvas")
             2 -> listOf("initialize", "drawRect", "drawSprite", "drawMouse", "randomTest", "clear")
             3 -> listOf("px")
             4 -> listOf("py")

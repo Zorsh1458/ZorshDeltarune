@@ -299,193 +299,12 @@ void main() {
     {
         effectId = -1;
     } else {
-        if (effectId == 0)
-        {
-            raindrop(fragColor, texCoord * ScreenSize);
-        }
-        if (effectId == 1)
-        {
-            vec4 mainCol = texture(MeshokSampler, texCoord);
-            float brightness = pow(mainCol.r * 255 / 160, 0.2);
-            fragColor = mix(inTexel, vec4(vec3(brightness * 0.2), mainCol.a) * (0.3 - 0.5 * length(texCoord - 0.5)), brightness);
-            for (float x = -2; x <= 2; x++)
-            {
-                for (float y = -2; y <= 2; y++)
-                {
-                    if (texture(MeshokSampler, texCoord + oneTexel * vec2(x, y)).a == 0.0)
-                    {
-                        fragColor = mix(inTexel, mainCol, 0.25);
-                    }
-                }
-            }
-        }
-        if (effectId == 2)
-        {
-            fragColor = inTexel;
-            vec2 uv = texCoord * 2.0 - 1.0;
-            uv.x *= ScreenSize.x / ScreenSize.y;
-            uv.y += sin(GameTime * 1000.0) * 0.01;
-            uv *= 0.7;
-            float dist = parseDepth(texCoord);
-            fragColor.rgb *= 1.0 + 1 *(100 - clamp(dist * dist, 0.0, 100.0)) / 100;
-            if (length(uv) < 10)
-            {
-                vec4 cookie = texture(CookieSampler, uv * (1.0 + dist) / 8 + 0.5);
-                fragColor.rgb *= 1.0 + clamp(cookie.r * 1.5 * (400 - clamp(dist * dist, 0.0, 400)) / 400 * (1.0 - smoothstep(0.25, 0.5, length(uv))), 0.0, 5);
-            }
-            float brightness = fragColor.g * 0.6 + fragColor.r * 0.25 + fragColor.b * 0.15;
-            for (int i = 0; i < 3; i++)
-            {
-                fragColor[i] = max(0.0, fragColor[i] - 0.1);
-                fragColor[i] /= (1.0 - 0.1);
-            }
-            fragColor = vec4(mix(fragColor.rgb, vec3(brightness), 0.2), fragColor.a);
-            //fragColor = vec4(mix(inTexel.rgb, fragColor.rgb, clamp(time / 20, 0.0, 1.0)), 1.0);
-        }
-        if (effectId == 3) {
-            filmGrain(fragColor, texCoord * iResolution.xy);
-        }
-        if (effectId == 4) {
-            filmGrainRaindrop(fragColor, texCoord * iResolution.xy);
-        }
-        if (effectId == 5) {
-            // ВОТ ЭТА ПЕРЕМЕННАЯ ВНИЗУ ОТ 0 до 180 ОЗНАЧАЕТ ЧТО ПОВОРОТ ОГРАНИЧЕН ОТ -diapason до diapason ГРАДУСОВ
-            // ВОТ ЭТА ПЕРЕМЕННАЯ ВНИЗУ ОТ 0 до 180 ОЗНАЧАЕТ ЧТО ПОВОРОТ ОГРАНИЧЕН ОТ -diapason до diapason ГРАДУСОВ
-            // ВОТ ЭТА ПЕРЕМЕННАЯ ВНИЗУ ОТ 0 до 180 ОЗНАЧАЕТ ЧТО ПОВОРОТ ОГРАНИЧЕН ОТ -diapason до diapason ГРАДУСОВ
-            //
-            float diapason = 30.0;
-            //
-            //
-            //
-            float angleFromBuffer = texture(RotationSampler, texCoord).b;
-            float angle = (angleFromBuffer * 2.0 - 1.0) * diapason / 180.0 * 3.1415;
-            vec2 coord = texCoord - vec2(0.5);
-            coord *= vec2(ScreenSize.x / ScreenSize.y, 1.0);
-            coord = vec2(cos(angle) * coord.x + sin(angle) * coord.y, cos(angle) * coord.y - sin(angle) * coord.x);
-            coord /= vec2(ScreenSize.x / ScreenSize.y, 1.0);
-            coord *= 1.0 - sin(abs(angle)) * 0.5;
-            coord += vec2(0.5);
-            fragColor = texture(InSampler, coord);
-        }
-        if (effectId == 6) {
-            vec2 coord = vec2(1.0) - baseCoord;
-            fragColor = texture(InSampler, coord);
-        }
-        if (effectId == 10) {
-            float cut = controlTexel.g * 6.283;
-            vec2 final = baseCoord;
-            vec2 uv = final - vec2(0.5);
-            float angle = acos(uv.x / length(uv));
-            if (uv.y < 0) {
-                angle *= -1;
-            }
-            vec2 shift = vec2(cos(cut), sin(cut));
-            final -= shift * oneTexel * 15.0;
-            if (angle < cut && angle > cut - 3.1415) {
-                final += shift * oneTexel * 15.0 * 2;
-            }
-            fragColor = texture(InSampler, final);
-        }
-        if (effectId == 11) {
-            float cut = controlTexel.g * 6.283;
-            vec2 final = baseCoord;
-            for (int i = 0; i < 5; i++) {
-                vec2 uv = final - vec2(0.5);
-                float angle = acos(uv.x / length(uv));
-                if (uv.y < 0) {
-                    angle *= -1;
-                }
-                cut *= 1.5;
-                while (cut > 3.1415) {
-                    cut -= 3.1415;
-                }
-                vec2 shift = vec2(cos(cut), sin(cut));
-                final -= shift * oneTexel * 15.0;
-                if (angle < cut && angle > cut - 3.1415) {
-                    final += shift * oneTexel * 15.0 * 2;
-                }
-            }
-            fragColor = texture(InSampler, final);
-        }
-        if (effectId == 12) {
-            vec3 col = fragColor.rgb;
-            for (int i = 1; i <= 10; i++) {
-                vec2 uv = baseCoord - vec2(0.5);
-                uv *= 1.0 - i * 0.03;
-                uv += vec2(0.5);
-                col += texture(InSampler, uv).rgb * 0.05;
-            }
-            fragColor = vec4(col, fragColor.a);
-        }
-        if (effectId == 13) {
-            vec3 col = fragColor.rgb;
-            vec3 newcol = vec3(0.0);
-            for (int i = 1; i <= 7; i++) {
-                vec2 uv = baseCoord - vec2(0.5);
-                float t = mod(GameTime * 16383.0 + i * 2, 14.0);
-                t = pow(t / 14.0, 1.4) * 14.0;
-                uv *= 1.0 - t * 0.06;
-                uv += vec2(0.5);
-                newcol += texture(InSampler, uv).rgb * 0.2 * (1.0 - t / 14.0);
-            }
-            fragColor = vec4(max(col.r, newcol.r), max(col.g, newcol.g), max(col.b, newcol.b), fragColor.a);
-        }
-        if (effectId == 14) {
-            fragColor = vec4(vec3(fragColor.g * 0.65 + fragColor.r * 0.25 + fragColor.b * 0.1) * 0.3, fragColor.a);
-            float depth = parseDepth(texCoord);
-            //fragColor = vec4(mix(vec3(0.0), fragColor.rgb, 1.0 / (1.0 + pow(depth, 3.0) * 0.05)), fragColor.a);
-            if (depth > additionEffect * 30.0) {
-                fragColor = vec4(mix(fragColor.rgb, vec3(0.0), min((depth - additionEffect * 30.0) * 0.5, 1.0)), fragColor.a);
-            }
-        }
-        if (effectId == 15) {
-            if (round(additionEffect * 255.0) == 1.0) {
-                vec2 ncord = texCoord - vec2(0.2, 0.5);
-                ncord *= 2.0;
-                ncord.x *= ScreenSize.x / ScreenSize.y;
-                ncord.y += 0.5;
-                if (ncord.x < 0.0) {
-                    return;
-                }
-                if (ncord.y < 0.0) {
-                    return;
-                }
-                if (ncord.x > 1.0) {
-                    return;
-                }
-                if (ncord.y > 1.0) {
-                    return;
-                }
-                vec4 skinmap = texture(SkinmapSampler, vec2(ncord.x, 1.0 - ncord.y));
-                fragColor = skinmap;
-                if (skinmap.b == 0.0) {
-                    fragColor = texture(SavedSampler, skinmap.rg * 4.0 * 64.0 / textureSize(SavedSampler, 0));
-                }
-                fragColor = vec4(mix(inTexel.rgb, fragColor.rgb, skinmap.a), 1.0);
-                // fragColor = texture(SavedSampler, ncord * 64.0 / textureSize(SavedSampler, 0));
-            }
-        }
-        if (effectId == 16 || effectId == 17) {
-            crt_mainImage(fragColor, gl_FragCoord.xy, additionEffect * 3.0, NVIntroSampler);
-        }
-        if (effectId == 18) {
-            vec2 uv = texCoord;
-            uv -= vec2(0.5);
-            uv.x *= ScreenSize.x / ScreenSize.y;
-            float angle = 3.1415 * additionEffect;
-            uv = vec2(uv.x * cos(angle) + uv.y * sin(angle), uv.y * cos(angle) - uv.x * sin(angle));
-            uv.x *= ScreenSize.y / ScreenSize.x;
-            uv += vec2(0.5);
-            if (additionEffect > 0.99) {
-                uv.x = 1.0 - uv.x;
-            }
-            fragColor = texture(InSampler, uv);
-        }
-        if (effectId == 20) {
+        if (effectId == 1) {
             vec2 coord = texCoord;
+            float depth = parseDepth(coord);
             vec4 col = inTexel;
             int check_blue = int(round(col.b * 255) + 0.5);
-            if (check_blue % 2 == 1 && coldepth < 64.0) {
+            if (check_blue % 2 == 1 && depth < 64.0) {
                 // BLUE WORLD EFFECTS
                 if (check_blue == 1) {
                     float zatemnenie = 0.0;
@@ -510,6 +329,20 @@ void main() {
                         fragColor = vec4(0.0, 0.0, 0.0, 1.0);
                     }
                     fragColor.rgb = mix(fragColor.rgb, vec3(0.0), zatemnenie);
+                }
+            }
+        }
+        if (effectId == 2) {
+            vec2 coord = texCoord;
+            float depth = parseDepth(coord);
+            vec4 col = inTexel;
+            int check_blue = int(round(col.b * 255) + 0.5);
+            if (check_blue % 2 == 1 && depth < 64.0) {
+                // BLUE WORLD EFFECTS
+                if (check_blue == 1) {
+                    if (round(additionEffect * 255.0) == 1.0 || round(additionEffect * 255.0) == 2.0) {
+                        fragColor = texture(SavedSampler, col.rg);
+                    }
                 }
             }
         }

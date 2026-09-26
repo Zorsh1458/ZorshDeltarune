@@ -39,8 +39,8 @@
         {
             "type": "bitmap",
             "file": "space:font/ui/dbutton_fight.png",
-            "height": 26,
-            "ascent": 11,
+            "height": 52,
+            "ascent": 24,
             "chars": [
                 "\uF003"
             ]
@@ -48,8 +48,8 @@
         {
             "type": "bitmap",
             "file": "space:font/ui/dbutton_act.png",
-            "height": 26,
-            "ascent": 11,
+            "height": 52,
+            "ascent": 24,
             "chars": [
                 "\uF004"
             ]
@@ -57,8 +57,8 @@
         {
             "type": "bitmap",
             "file": "space:font/ui/dbutton_item.png",
-            "height": 26,
-            "ascent": 11,
+            "height": 52,
+            "ascent": 24,
             "chars": [
                 "\uF005"
             ]
@@ -66,8 +66,8 @@
         {
             "type": "bitmap",
             "file": "space:font/ui/dbutton_mercy.png",
-            "height": 26,
-            "ascent": 11,
+            "height": 52,
+            "ascent": 24,
             "chars": [
                 "\uF006"
             ]
@@ -75,8 +75,8 @@
         {
             "type": "bitmap",
             "file": "space:font/ui/dbutton_defend.png",
-            "height": 26,
-            "ascent": 11,
+            "height": 52,
+            "ascent": 24,
             "chars": [
                 "\uF007"
             ]
@@ -97,6 +97,114 @@
             "ascent": 3,
             "chars": [
                 "\uF009"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/slime_1.png",
+            "height": 28,
+            "ascent": 11,
+            "chars": [
+                "\uF00A"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/slime_2.png",
+            "height": 34,
+            "ascent": 17,
+            "chars": [
+                "\uF00B"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/soul.png",
+            "height": 20,
+            "ascent": 8,
+            "chars": [
+                "\uF00C"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/soul_other.png",
+            "height": 20,
+            "ascent": 8,
+            "chars": [
+                "\uF00D"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/soul_outline.png",
+            "height": 40,
+            "ascent": 18,
+            "chars": [
+                "\uF00E"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/soul_outline_big.png",
+            "height": 48,
+            "ascent": 22,
+            "chars": [
+                "\uF00F"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/tp_bar_outline.png",
+            "height": 116,
+            "ascent": 56,
+            "chars": [
+                "\uF010"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/dbutton_fight_selected.png",
+            "height": 58,
+            "ascent": 27,
+            "chars": [
+                "\uF011"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/dbutton_act_selected.png",
+            "height": 58,
+            "ascent": 27,
+            "chars": [
+                "\uF012"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/dbutton_item_selected.png",
+            "height": 58,
+            "ascent": 27,
+            "chars": [
+                "\uF013"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/dbutton_mercy_selected.png",
+            "height": 58,
+            "ascent": 27,
+            "chars": [
+                "\uF014"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/dbutton_defend_selected.png",
+            "height": 58,
+            "ascent": 27,
+            "chars": [
+                "\uF015"
             ]
         }
     ]
