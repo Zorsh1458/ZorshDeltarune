@@ -1,9 +1,7 @@
 package dev.zorsh.zorshDeltarune.battle.player
 
-import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.BattleCanvas
 import dev.zorsh.zorshDeltarune.battle.BattleManager
-import dev.zorsh.zorshDeltarune.battle.player.playerAction.ActionSelectionButtonStage
 import dev.zorsh.zorshDeltarune.nms.PacketManager
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.ui.ShaderTextColor
@@ -13,14 +11,11 @@ import net.kyori.adventure.title.Title.Times
 import net.kyori.adventure.title.Title.title
 import net.minecraft.world.entity.ai.attributes.Attributes
 import org.bukkit.Bukkit
-import org.bukkit.Effect
 import org.bukkit.GameMode
 import org.bukkit.Location
-import org.bukkit.Input
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
 import org.joml.Vector3d
-import org.joml.Vector3f
 import java.time.Duration
 import java.util.UUID
 import kotlin.math.max
@@ -219,52 +214,44 @@ class DeltarunePlayer(val uuid: UUID) {
         canMoveSoul = false
     }
 
-    var playerActionSelection: PlayerActionSelection? = null
+    var playerActionSelector: PlayerActionSelector? = null
     var playerActionSelectionCanvas: BattleCanvas? = null
     fun handlePickingOption(battleCanvas: BattleCanvas) {
         playerActionSelectionCanvas = battleCanvas
-        playerActionSelection = ActionSelectionButtonStage.BUTTON_ATTACK
+        playerActionSelector = PlayerActionSelector(battleCanvas, this)
     }
 
     fun stopPickingOption() {
         playerActionSelectionCanvas = null
-        playerActionSelection = null
+        playerActionSelector = null
     }
 
     fun onLeftPressed() {
-        val canvas = playerActionSelectionCanvas ?: return
-        playerActionSelection = playerActionSelection?.onLeftPressed(canvas)
+        playerActionSelector?.onLeftPressed()
     }
 
     fun onRightPressed() {
-        val canvas = playerActionSelectionCanvas ?: return
-        playerActionSelection = playerActionSelection?.onRightPressed(canvas)
+        playerActionSelector?.onRightPressed()
     }
 
     fun onForwardPressed() {
-        val canvas = playerActionSelectionCanvas ?: return
-        playerActionSelection = playerActionSelection?.onForwardPressed(canvas)
+        playerActionSelector?.onForwardPressed()
     }
 
     fun onBackwardPressed() {
-        val canvas = playerActionSelectionCanvas ?: return
-        playerActionSelection = playerActionSelection?.onBackwardPressed(canvas)
+        playerActionSelector?.onBackwardPressed()
     }
 
     fun onJumpPressed() {
-        ZorshDeltarune.instance.logger.info("${player?.name} pressed jump - $playerActionSelection")
-        val canvas = playerActionSelectionCanvas ?: return
-        playerActionSelection = playerActionSelection?.onJumpPressed(canvas)
+        playerActionSelector?.onJumpPressed()
     }
 
     fun onSneakPressed() {
-        val canvas = playerActionSelectionCanvas ?: return
-        playerActionSelection = playerActionSelection?.onSneakPressed(canvas)
+        playerActionSelector?.onSneakPressed()
     }
 
     fun onSprintPressed() {
-        val canvas = playerActionSelectionCanvas ?: return
-        playerActionSelection = playerActionSelection?.onSprintPressed(canvas)
+        playerActionSelector?.onSprintPressed()
     }
 
     fun updateInputs(newInput: InputHolder) {

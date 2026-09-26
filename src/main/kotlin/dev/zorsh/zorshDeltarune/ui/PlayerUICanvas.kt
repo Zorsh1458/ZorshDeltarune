@@ -180,6 +180,14 @@ class PlayerUICanvas {
         setScale(size.first, size.second, objName, playerUUID)
     }
 
+    fun getText(objName: String, playerUUID: UUID? = null): Component {
+        val obj =
+            (if (playerUUID == null) savedObjects[objName]?.entity else savedObjectsPerPlayer[playerUUID]?.get(objName)?.entity)
+                ?: throw IllegalStateException("Object $objName not found")
+
+        return obj.text
+    }
+
     fun hasObject(objName: String, playerUUID: UUID? = null) =
         if (playerUUID == null) savedObjects.contains(objName) else (savedObjectsPerPlayer[playerUUID]?.contains(objName) == true)
 

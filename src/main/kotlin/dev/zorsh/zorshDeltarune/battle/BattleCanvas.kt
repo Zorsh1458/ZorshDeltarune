@@ -124,6 +124,28 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         }
     }
 
+    fun setPlayerButtonSelection(objName: String, playerUUID: UUID) {
+        val col = ShaderTextColor.pure("#ffffff")
+        when (objName) {
+            "player_button_fight" -> myCanvas.setSprite(CanvasSprite.DBUTTON_FIGHT_SELECTED, col, objName, playerUUID)
+            "player_button_act" -> myCanvas.setSprite(CanvasSprite.DBUTTON_ACT_SELECTED, col, objName, playerUUID)
+            "player_button_item" -> myCanvas.setSprite(CanvasSprite.DBUTTON_ITEM_SELECTED, col, objName, playerUUID)
+            "player_button_mercy" -> myCanvas.setSprite(CanvasSprite.DBUTTON_MERCY_SELECTED, col, objName, playerUUID)
+            "player_button_defend" -> myCanvas.setSprite(CanvasSprite.DBUTTON_DEFEND_SELECTED, col, objName, playerUUID)
+        }
+    }
+
+    fun removePlayerButtonSelection(objName: String, playerUUID: UUID) {
+        val col = ShaderTextColor.pure("#ffffff")
+        when (objName) {
+            "player_button_fight" -> myCanvas.setSprite(CanvasSprite.DBUTTON_FIGHT, col, objName, playerUUID)
+            "player_button_act" -> myCanvas.setSprite(CanvasSprite.DBUTTON_ACT, col, objName, playerUUID)
+            "player_button_item" -> myCanvas.setSprite(CanvasSprite.DBUTTON_ITEM, col, objName, playerUUID)
+            "player_button_mercy" -> myCanvas.setSprite(CanvasSprite.DBUTTON_MERCY, col, objName, playerUUID)
+            "player_button_defend" -> myCanvas.setSprite(CanvasSprite.DBUTTON_DEFEND, col, objName, playerUUID)
+        }
+    }
+
     val playerOptionsObjectNamesToLift = mutableSetOf<String>()
     fun setupLayout() {
         playerOptionsObjectNamesToLift.clear()
