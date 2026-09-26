@@ -374,9 +374,9 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
                         myCanvas.drawSprite(
                             0f,
-                            -115f,
+                            -96f,
                             98f,
-                            36f,
+                            18f,
                             59,
                             CanvasSprite.SQUARE,
                             ShaderTextColor.pure("#ff0000"),
@@ -395,9 +395,9 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             val objName1 = "player_box_decorative_animation_${UUID.randomUUID()}"
                             myCanvas.drawSprite(
                                 -99f,
-                                -115f,
+                                -96f,
                                 1f,
-                                38f,
+                                18f,
                                 60,
                                 CanvasSprite.SQUARE,
                                 ShaderTextColor.pure("#00ffff"),
@@ -418,9 +418,9 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             val objName2 = "player_box_decorative_animation_${UUID.randomUUID()}"
                             myCanvas.drawSprite(
                                 99f,
-                                -115f,
+                                -96f,
                                 1f,
-                                38f,
+                                18f,
                                 60,
                                 CanvasSprite.SQUARE,
                                 ShaderTextColor.pure("#00ffff"),
