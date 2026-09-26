@@ -403,7 +403,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         myCanvas.drawSprite(
                             0f,
                             -78f,
-                            20f,
+                            10f,
                             1f,
                             27,
                             CanvasSprite.SQUARE,
@@ -413,8 +413,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
                         myCanvas.drawText(
                             0f,
-                            -78f,
-                            0f,
+                            -77f,
+                            1f,
                             1f,
                             26,
                             Component.text("⌚"),
