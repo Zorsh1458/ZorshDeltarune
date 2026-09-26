@@ -380,8 +380,11 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             59,
                             CanvasSprite.SQUARE,
                             ShaderTextColor.pure("#000000"),
-                            player = bukkitPlayer
-                        )
+                            "selection_box_inner2",
+                            bukkitPlayer
+                        ) {
+                            playerOptionsObjectNamesToLift += "selection_box_inner2"
+                        }
 
                         runInfinite(10) { i, action ->
                             if (!battle.isActive() || !myCanvas.targetPlayers.contains(dPlayer.player)) {
@@ -404,7 +407,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                                 runRepeating(40) { i ->
                                     myCanvas.move(0.5f + i / 60f, 0f, objName1, bukkitPlayer.uniqueId)
                                     val brightness = 1f - (i + 1) / 40f
-                                    val col = TextColor.color(brightness, brightness, brightness)
+                                    val col = TextColor.color(0f, brightness, brightness)
                                     myCanvas.setSprite(CanvasSprite.SQUARE, ShaderTextColor.pure(col), objName1, bukkitPlayer.uniqueId)
                                 }
                                 runLater(41) {
