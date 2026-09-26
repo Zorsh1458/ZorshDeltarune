@@ -70,7 +70,7 @@ void main() {
 
     float opacity = round(Color.a * 255.0);
 
-    if (opacity == 251.0) {
+    if (opacity == 251.0 && Position.z > 0.5) {
         vertexColor = Color;
         vertexColor.a = 1.0;
         isUI = 1;
@@ -86,7 +86,7 @@ void main() {
         sphericalVertexDistance = 0.1;
     }
 
-    if (opacity == 253.0 || opacity == 252.0) {
+    if ((opacity == 253.0 || opacity == 252.0) && Position.z > 0.5) {
         vertexColor = Color;
         vertexColor.a = 1.0;
         isUI = 1;
