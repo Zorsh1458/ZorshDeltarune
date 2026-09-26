@@ -514,7 +514,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         }
 
                         myCanvas.drawText(
-                            -41f + 1f,
+                            -30f + 1f,
                             -93f - 1f,
                             1.2f,
                             1.2f,
