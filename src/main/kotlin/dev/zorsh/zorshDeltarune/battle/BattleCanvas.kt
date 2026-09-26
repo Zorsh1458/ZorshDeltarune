@@ -309,7 +309,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             myCanvas.drawSprite(
                 0f,
                 -78f,
-                100f,
+                800f,
                 1f,
                 32,
                 CanvasSprite.SQUARE,
@@ -379,7 +379,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                             36f,
                             59,
                             CanvasSprite.SQUARE,
-                            ShaderTextColor.pure("#000000"),
+                            ShaderTextColor.pure("#ff0000"),
                             "selection_box_inner2",
                             bukkitPlayer
                         ) {
@@ -430,7 +430,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                                 runRepeating(40) { i ->
                                     myCanvas.move(-0.5f - i / 60f, 0f, objName2, bukkitPlayer.uniqueId)
                                     val brightness = 1f - (i + 1) / 40f
-                                    val col = TextColor.color(brightness, brightness, brightness)
+                                    val col = TextColor.color(0f, brightness, brightness)
                                     myCanvas.setSprite(CanvasSprite.SQUARE, ShaderTextColor.pure(col), objName2, bukkitPlayer.uniqueId)
                                 }
                                 runLater(41) {
