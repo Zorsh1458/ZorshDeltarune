@@ -24,7 +24,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title.Times
 import net.kyori.adventure.title.Title.title
 import org.bukkit.Bukkit
@@ -196,10 +198,11 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                         battleCanvas.animateStatusText(
                             -200f,
                             ZorshDeltarune.random.nextFloat() * 128f - 64f,
-                            2f,
+                            2.25f,
                             2f,
                             ShaderTextColor.pure("#ffffff"),
-                            Component.text(baseDamageAmount)
+                            Component.text(baseDamageAmount).style(Style.style(TextDecoration.BOLD)),
+                            pl.player
                         )
                     } else if (projectileData.hitbox.isIn(px.toFloat(), py.toFloat(), 20f)) {
                         if (pl.tpGain == 0) {

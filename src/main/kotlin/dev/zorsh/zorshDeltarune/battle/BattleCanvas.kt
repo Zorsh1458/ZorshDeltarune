@@ -163,22 +163,22 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
     fun animateStatusText(px: Float, py: Float, sx: Float, sy: Float, z: Int, color: ShaderTextColor, text: Component, player: Player? = null) {
         val objName = "status_text_${UUID.randomUUID()}"
         myCanvas.drawText(
-            px, py, sx * 2, 0f, z, text, color,
+            px, py, sx * 3, 0f, z, text, color,
             saveAs = objName,
             player = player
         ) {
-            runRepeating(10) { i ->
+            runRepeating(8) { i ->
                 val t = i + 1
                 if (i < 5) {
-                    myCanvas.setScale(sx * 2 - sx * t / 5, sy * t / 5, objName, player?.uniqueId)
+                    myCanvas.setScale(sx * 3 - sx * 2 * t / 5, sy * t / 5, objName, player?.uniqueId)
                 }
-                myCanvas.move(5f - t * 0.5f, 2.5f - t * 0.5f, objName, player?.uniqueId)
+                myCanvas.move(5f - t * 5 / 8f, 2.5f - t * 5f / 8f, objName, player?.uniqueId)
             }
             runLater(30) {
-                runRepeating(20) { i ->
+                runRepeating(10) { i ->
                     val t = i + 1
-                    myCanvas.setScale(sx - sx * t / 20, sy + sy * 0.5f * t / 20, objName, player?.uniqueId)
-                    myCanvas.move(0f, 1f, objName, player?.uniqueId)
+                    myCanvas.setScale(sx - sx * t / 10, sy + sy * 0.5f * t / 10, objName, player?.uniqueId)
+                    myCanvas.move(0f, 2f, objName, player?.uniqueId)
                 }
             }
             runLater(52) {
