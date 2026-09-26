@@ -318,7 +318,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                         delay(playerTurnLength / 20 * 1000L)
                         runRepeating(playerTurnLength) { i ->
                             getBattlePlayers().forEach { dPlayer ->
-                                battleCanvas.setTurnTimeScale(1f - (i + 1) / playerTurnLength, dPlayer.uuid)
+                                battleCanvas.setTurnTimeScale(1f - (i + 1f) / playerTurnLength, dPlayer.uuid)
                             }
                         }
                         getBattlePlayers().forEach { dPlayer ->
