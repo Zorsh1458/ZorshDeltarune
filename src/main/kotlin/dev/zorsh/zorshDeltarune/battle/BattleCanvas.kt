@@ -369,9 +369,33 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                         myCanvas.drawSprite(
                             0f,
                             -78f,
-                            0f,
+                            100f,
                             1f,
                             30,
+                            CanvasSprite.SQUARE,
+                            ShaderTextColor.pure("#00ffff"),
+                            "selection_box_time_scale_points",
+                            bukkitPlayer
+                        )
+
+                        myCanvas.drawSprite(
+                            0f,
+                            -78f,
+                            98f,
+                            1f,
+                            29,
+                            CanvasSprite.SQUARE,
+                            ShaderTextColor.pure("#0a2847"),
+                            "selection_box_time_scale_bg",
+                            bukkitPlayer
+                        )
+
+                        myCanvas.drawSprite(
+                            0f,
+                            -78f,
+                            0f,
+                            1f,
+                            28,
                             CanvasSprite.SQUARE,
                             ShaderTextColor.pure("#3990ed"),
                             "selection_box_time_scale",

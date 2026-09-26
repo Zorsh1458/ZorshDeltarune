@@ -315,12 +315,12 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                             dPlayer.handlePickingOption(battleCanvas)
                         }
                         val playerTurnLength = 300
-                        delay(playerTurnLength / 20 * 1000L)
                         runRepeating(playerTurnLength) { i ->
                             getBattlePlayers().forEach { dPlayer ->
                                 battleCanvas.setTurnTimeScale(1f - (i + 1f) / playerTurnLength, dPlayer.uuid)
                             }
                         }
+                        delay(playerTurnLength / 20 * 1000L)
                         getBattlePlayers().forEach { dPlayer ->
                             dPlayer.stopPickingOption()
                         }
