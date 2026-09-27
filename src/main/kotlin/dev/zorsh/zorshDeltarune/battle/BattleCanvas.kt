@@ -241,8 +241,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
     fun startAttackUI(player: Player) {
         myCanvas.drawSprite(
-            -128f, -164f,
-            72f, 32f,
+            -128f, -128f,
+            72f, 16f,
             24,
             CanvasSprite.SQUARE,
             ShaderTextColor.pure("#0c1938"),
@@ -250,8 +250,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             player
         )
         myCanvas.drawSprite(
-            -129f, -164f,
-            72f, 31f,
+            -126f, -128f,
+            72f, 14f,
             23,
             CanvasSprite.SQUARE,
             ShaderTextColor.pure("#000000"),
@@ -259,8 +259,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             player
         )
         myCanvas.drawSprite(
-            -196f, -164f,
-            4f, 32f,
+            -195f, -128f,
+            5f, 16f,
             22,
             CanvasSprite.SQUARE,
             ShaderTextColor.pure("#00ffff"),
@@ -268,8 +268,8 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             player
         )
         myCanvas.drawSprite(
-            -196f, -164f,
-            3f, 31f,
+            -196f, -128f,
+            3f, 14f,
             21,
             CanvasSprite.SQUARE,
             ShaderTextColor.pure("#000000"),
