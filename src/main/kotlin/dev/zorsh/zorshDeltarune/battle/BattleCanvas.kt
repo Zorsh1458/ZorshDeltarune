@@ -356,9 +356,9 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         val pos = myCanvas.getPosition("enemy_$ind")
         animateStatusText(
             pos.first, pos.second,
-            2.25f, 2f,
+            2f, 2f,
             14,
-            ShaderTextColor.pure("#ff8080"),
+            ShaderTextColor.pure("#ff5050"),
             Component.text(999),
             player
         )
@@ -410,7 +410,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         ) {
             var ySpeed = 4f
             var yPos = 0f
-            runRepeating(10) { i ->
+            runRepeating(20) { i ->
                 val t = i + 1
                 if (i < 3) {
                     myCanvas.setScale(sx * 3 - sx * 2 * t / 3, sy * t / 3, objName, player?.uniqueId)
@@ -422,7 +422,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                     ySpeed *= -0.75f
                     ySpeed = 0f
                 }
-                myCanvas.move(8f * (1 - i / 10f), ySpeed, objName, player?.uniqueId)
+                myCanvas.move(6f * (1 - i / 20f), ySpeed, objName, player?.uniqueId)
             }
             runLater(30) {
                 runRepeating(10) { i ->
