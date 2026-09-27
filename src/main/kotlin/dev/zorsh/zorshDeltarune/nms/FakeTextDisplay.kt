@@ -30,7 +30,7 @@ class FakeTextDisplay(
     holder
 ) {
     fun changeText(newText: Component, playerOverride: List<Player>? = null) {
-        if (playerOverride != emptyList<Player>()) {
+        if (playerOverride?.isNotEmpty() ?: true) {
             PacketManager.setTextDisplayMetadata(
                 entityId,
                 newText,
@@ -65,15 +65,19 @@ class FakeTextDisplay(
         text = new
     }
 
-    fun changeOnlyTransformation(newTransformation: Transformation) {
-        PacketManager.setTransformation(
-            entityId,
-            newTransformation,
-            players,
-            interpolationDuration,
-            teleportDuration
-        )
-        transformation = newTransformation
+    fun changeOnlyTransformation(newTransformation: Transformation, playerOverride: List<Player>? = null) {
+        if (playerOverride?.isNotEmpty() ?: true) {
+            PacketManager.setTransformation(
+                entityId,
+                newTransformation,
+                players,
+                interpolationDuration,
+                teleportDuration
+            )
+            if (playerOverride == null) {
+                transformation = newTransformation
+            }
+        }
     }
 
     fun animateBattleText(text: Component) {

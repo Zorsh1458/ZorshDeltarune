@@ -28,7 +28,7 @@ void main() {
     
     if (round(controlTexel.r * 255) == 253.0)
     {
-        if (effectId == 15) {
+        if (effectId == 2) {
             if (round(additionEffect * 255.0) == 2.0) {
                 fragColor = texture(InSampler, texCoord);
             }

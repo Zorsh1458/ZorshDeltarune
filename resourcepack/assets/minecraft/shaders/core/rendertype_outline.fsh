@@ -14,8 +14,6 @@ in vec3 Pos;
 
 out vec4 fragColor;
 
-#moj_import <minecraft:remove_blue.glsl>
-
 float near = 0.1;
 float far = 1000.0;
 float LinearizeDepth(float depth) {
@@ -49,6 +47,4 @@ void main() {
     //    //fragColor = vec4(red, fragColor.g, fragColor.b, 1.0);
     //    fragColor = vec4(redRound, redLeft, fragColor.b, 1.0);
     //}
-
-    fragColor = REMOVE_BLUE(fragColor);
 }

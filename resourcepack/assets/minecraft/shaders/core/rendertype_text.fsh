@@ -14,6 +14,7 @@ in vec2 texCoord0;
 flat in ivec3 control;
 in vec2 uvIndex;
 in vec2 fontUV;
+flat in int isUI;
 
 out vec4 fragColor;
 
@@ -145,29 +146,12 @@ void main() {
 
     fragColor = apply_fog(color, sphericalVertexDistance, cylindricalVertexDistance, FogEnvironmentalStart, FogEnvironmentalEnd, FogRenderDistanceStart, FogRenderDistanceEnd, FogColor);
 
-    if (vertexColor.a * 255.0 == 253.0) {
+    if (isUI == 1) {
         fragColor = vec4(baseCol.rgb * vertexColor.rgb, baseCol.a);
     }
 
-    if (control.x == 253) {
-        if (control.y == 1) {
-            float z = control.z * 1.0;
-            vec2 uv = gl_FragCoord.xy / ScreenSize;
-
-            vec3 col1 = deltaruneBg(uv, 14.0 / 16383.0);
-            vec3 col2 = deltaruneBg(uv, 0.0);
-            float t = mod(floor(GameTime * 16383.0), 32.0) / 14.0;
-            vec3 col = mix(col1, col2, min(max(t, 0.0), 1.0));
-            fragColor = vec4(mix(col, vec3(0.0), z / 255.0), 1.0);
-            fragColor = REMOVE_BLUE(fragColor);
-            return;
-        }
-        if (control.y == 2) {
-            vec4 def = apply_fog(texture(Sampler0, texCoord0) * ColorModulator, sphericalVertexDistance, cylindricalVertexDistance, FogEnvironmentalStart, FogEnvironmentalEnd, FogRenderDistanceStart, FogRenderDistanceEnd, FogColor);
-            fragColor = mix(def, vec4(1.0), sin(GameTime * 16383.0 / 14.0 * 6.283 * 2.0) * 0.5 + 0.5);
-            fragColor = REMOVE_BLUE(fragColor);
-            return;
-        }
+    if (isUI == 2) {
+        fragColor = vec4(0.0, 1.0, 0.0, 1.0);
     }
 
     // RED (x):
@@ -247,9 +231,33 @@ void main() {
             }
             fragColor.a *= vertexColor.a;
         }
+        if (EFFECT == 4) {
+            float z = PARAMETER;
+            vec2 uv = gl_FragCoord.xy / ScreenSize;
+
+            vec3 col = deltaruneBg(uv, 0.8333);
+            fragColor = vec4(mix(col, vec3(0.0), z / 255.0), 1.0);
+            fragColor = REMOVE_BLUE(fragColor);
+            return;
+        }
+        if (EFFECT == 5) {
+            vec4 def = texture(Sampler0, texCoord0);
+            fragColor = mix(def, vec4(1.0), sin(GameTime * 1000.0 / 0.8333 * 6.283 * 2.0) * 0.5 + 0.5);
+            fragColor = REMOVE_BLUE(fragColor);
+            return;
+        }
+        if (EFFECT == 6) {
+            vec4 def = texture(Sampler0, texCoord0);
+            if (def.a > 0.5) {
+                fragColor = mix(def, def * vec4(0.5, 0.5, 0.5, 1.0), sin(GameTime * 1000.0 / 0.8333 * 6.283 * 2.0) * 0.5 + 0.5);
+            }
+            fragColor = REMOVE_BLUE(fragColor);
+            return;
+        }
     }
 
-    if (round(fragColor.a * 255.0) == 0.0) {
+    if (floor(fragColor.a * 255.99) < 1.5) {
+        fragColor.a = 0.0;
         discard;
     }
 

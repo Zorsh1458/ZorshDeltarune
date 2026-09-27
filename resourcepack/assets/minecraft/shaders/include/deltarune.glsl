@@ -85,26 +85,27 @@ vec3 deltaruneBg2( vec2 uv, float timeOffset )
     //vec3 c2 = mainCityBg(trueUv, GameTime * 1000.0);
 }
 
-vec3 deltaruneBgPart(vec2 uv, vec2 dir, vec2 offset, float time) {
+vec3 deltaruneBgPart(vec2 uv, vec2 dir, vec2 offset, float time, float timeScale) {
     vec3 col = vec3(0.0);
     uv.x *= ScreenSize.x / ScreenSize.y;
-    uv = mod(uv * 12.0 + offset + dir * time * 2.35, 1.0);
+    uv = mod(uv * 12.0 + offset + dir * 2.0 * time / timeScale, 1.0);
     if (uv.x < 0.03 || uv.y < 0.03) {
         col = vec3(1.0, 0.0, 1.0);
     }
     return col;
 }
 
-vec3 deltaruneBg( vec2 uv, float timeOffset )
+vec3 deltaruneBg( vec2 uv, float timeScale )
 {
-    float time = iTime + timeOffset * 1000.0;
-    vec3 col1 = deltaruneBgPart(uv, vec2(0.5, -0.5), vec2(0.0), time);
-    vec3 col2 = deltaruneBgPart(uv, vec2(-0.5, 0.5), vec2(-0.2), time);
+    //float time = (min(mod(GameTime * 16383.0, 32.0), 13.0) / 16383.0 + timeOffset) * 1000.0;
+    float time = mod(GameTime * 16383.0, 32.0) / 16383.0 * 1000.0;
+    vec3 col1 = deltaruneBgPart(uv, vec2(0.5, -0.5), vec2(0.0), time, timeScale);
+    vec3 col2 = deltaruneBgPart(uv, vec2(-0.5, 0.5), vec2(-0.2), time, timeScale);
     vec3 col = mix(col1, col2, 0.25);
     return col * 0.25;
 }
 
-vec4 ScreenShaders2( vec2 uv_raw ){
+vec4 ScreenShaders2( vec2 uv_raw ) {
     float t = GameTime * 1000.0;
     //float t = vertexColor.a * 10.0;
 	vec3 c;

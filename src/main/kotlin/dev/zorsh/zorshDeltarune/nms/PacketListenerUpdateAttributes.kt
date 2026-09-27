@@ -3,9 +3,7 @@ package dev.zorsh.zorshDeltarune.nms
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.events.ListenerPriority
 import com.comphenix.protocol.events.PacketAdapter
-import com.comphenix.protocol.events.PacketEvent
 import dev.zorsh.zorshDeltarune.ZorshDeltarune
-import net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket.AttributeSnapshot
 
 class PacketListenerUpdateAttributes : PacketAdapter(
     ZorshDeltarune.instance,
