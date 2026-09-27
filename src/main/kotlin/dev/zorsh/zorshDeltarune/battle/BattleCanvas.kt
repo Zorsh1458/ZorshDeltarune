@@ -143,8 +143,10 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         battle.getBattleEnemies().forEach { enemy ->
             val px = -64f + ZorshDeltarune.random.nextFloat() * 64f - 32f
             val objName = "enemy_list_entry_${UUID.randomUUID()}"
-            val component = Component.text("                              \n")
-                .append(enemy.name)
+//            val component = Component.text("                              \n")
+//                .append(enemy.name)
+//                .append(Component.text(" ${ZorshDeltarune.random.nextInt(1000)}"))
+            val component = enemy.name
                 .append(Component.text(" ${ZorshDeltarune.random.nextInt(1000)}"))
             myCanvas.drawText(
                 px, py, 1.5f, 1.5f, 32, component, ShaderTextColor.pure("#ffffff"),
