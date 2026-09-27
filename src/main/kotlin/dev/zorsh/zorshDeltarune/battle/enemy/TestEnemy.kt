@@ -32,13 +32,13 @@ class TestEnemy(
 ) {
 
     override suspend fun attack(onAttackEnds: () -> Unit) = coroutineScope {
-        val count = 60
+        val count = 10
         var yOffset = 0f
         repeat(count) { _ ->
             yOffset += ZorshDeltarune.random.nextFloat() * 16 - 8
             yOffset = clamp(yOffset, -64f, 64f)
             attackPattern2(yOffset)
-            delay(100)
+            delay(600)
         }
         delay(500)
     }

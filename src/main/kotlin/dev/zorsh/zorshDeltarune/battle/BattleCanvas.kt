@@ -147,14 +147,14 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                 .append(enemy.name)
                 .append(Component.text(" ${ZorshDeltarune.random.nextInt(1000)}"))
             myCanvas.drawText(
-                px, py, 2f, 2f, 32, component, ShaderTextColor.pure("#ffffff"),
+                px, py, 1.5f, 1.5f, 32, component, ShaderTextColor.pure("#ffffff"),
                 alignment = TextDisplay.TextAlignment.LEFT,
                 saveAs = objName,
                 player = player
             ) {
                 optionsList[player.uniqueId]?.add(objName)
             }
-            py -= 32f
+            py -= 24f
         }
     }
 
