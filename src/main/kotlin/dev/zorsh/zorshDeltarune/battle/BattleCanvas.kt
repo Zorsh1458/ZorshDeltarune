@@ -291,7 +291,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                 if (i % 2 == 1) {
                     val objName = "attack_box_damage_indicator_shadow_${UUID.randomUUID()}"
                     myCanvas.drawSprite(
-                        6f + (1 - i) * 10f, -132f,
+                        6f + (0.75f - i) * 10f, -132f,
                         3f, 14f,
                         20,
                         CanvasSprite.SQUARE,
