@@ -481,7 +481,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             for (enemy in spritedEnemies.withIndex()) {
                 myCanvas.drawSprite(
                     320f,
-                    40f + (spritedEnemies.size - 1) * 24f - enemy.index * 72f,
+                    20f + (spritedEnemies.size - 1) * 48f - enemy.index * 72f,
                     0f,
                     0f,
                     16,
