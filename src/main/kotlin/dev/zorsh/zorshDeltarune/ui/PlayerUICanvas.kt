@@ -33,6 +33,7 @@ class PlayerUICanvas {
     var savedObjectsPerPlayer = mutableMapOf<UUID, MutableMap<String, SpriteScalingHolder>>()
 
     val TRANSLATION_BIAS = -0.2f
+    val MOUNT_LOCATION_OFFSET = Vector3f(0f, -TRANSLATION_BIAS, 0f)
 
     fun initialize(players: List<Player>) {
         targetPlayers = players as MutableList<Player>
@@ -75,6 +76,7 @@ class PlayerUICanvas {
         val allEntities = objects.map { it.entityId }.toMutableList()
         allEntities.addAll(playerEntities)
         PacketManager.mountEntities(player.entityId, allEntities, listOf(player))
+        allEntities.clear()
     }
 
     fun updateCanvas() {
@@ -304,7 +306,7 @@ class PlayerUICanvas {
         fun drawToPlayers(players: List<Player>, after: (FakeTextDisplay) -> Unit) {
             if (players.isEmpty()) return
             val actualPlayer = players[0]
-            val loc = actualPlayer.eyeLocation.clone()
+            val loc = actualPlayer.eyeLocation.clone() + MOUNT_LOCATION_OFFSET
             loc.yaw = 0f
             loc.pitch = 0f
             val scaleX = dx - sx + 1
@@ -343,7 +345,7 @@ class PlayerUICanvas {
         fun drawToPlayers(players: List<Player>, after: (FakeTextDisplay) -> Unit) {
             if (players.isEmpty()) return
             val actualPlayer = players[0]
-            val loc = actualPlayer.eyeLocation.clone()
+            val loc = actualPlayer.eyeLocation.clone() + MOUNT_LOCATION_OFFSET
             loc.yaw = 0f
             loc.pitch = 0f
             PacketManager.spawnTextDisplay(
@@ -387,7 +389,7 @@ class PlayerUICanvas {
         fun drawToPlayers(players: List<Player>, after: (FakeTextDisplay) -> Unit) {
             if (players.isEmpty()) return
             val actualPlayer = players[0]
-            val loc = actualPlayer.eyeLocation.clone()
+            val loc = actualPlayer.eyeLocation.clone() + MOUNT_LOCATION_OFFSET
             loc.yaw = 0f
             loc.pitch = 0f
             PacketManager.spawnTextDisplay(
@@ -432,7 +434,7 @@ class PlayerUICanvas {
         fun drawToPlayers(players: List<Player>, after: (FakeTextDisplay) -> Unit) {
             if (players.isEmpty()) return
             val actualPlayer = players[0]
-            val loc = actualPlayer.eyeLocation.clone()
+            val loc = actualPlayer.eyeLocation.clone() + MOUNT_LOCATION_OFFSET
             loc.yaw = 0f
             loc.pitch = 0f
             PacketManager.spawnTextDisplay(
