@@ -263,7 +263,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             5f, 16f,
             22,
             CanvasSprite.SQUARE,
-            ShaderTextColor.pure("#ff0000"),
+            ShaderTextColor.pure("#ffff00"),
             "attack_box_crit_zone_outer",
             player
         )
