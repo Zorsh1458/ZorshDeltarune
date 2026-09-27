@@ -146,8 +146,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 //            val component = Component.text("                              \n")
 //                .append(enemy.name)
 //                .append(Component.text(" ${ZorshDeltarune.random.nextInt(1000)}"))
-            val component = enemy.name
-                .append(Component.text(" ${ZorshDeltarune.random.nextInt(1000)}"))
+            val component = Component.text("${enemy.name} ${ZorshDeltarune.random.nextInt(1000)}")
             myCanvas.drawText(
                 px, py, 1.5f, 1.5f, 32, component, ShaderTextColor.pure("#ffffff"),
                 alignment = TextDisplay.TextAlignment.LEFT,

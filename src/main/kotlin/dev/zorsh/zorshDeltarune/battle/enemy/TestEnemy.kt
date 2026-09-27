@@ -14,7 +14,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class TestEnemy(
-    name: Component,
+    name: String,
     hitpoints: Int,
 ) : SpritedEnemy(
     name,

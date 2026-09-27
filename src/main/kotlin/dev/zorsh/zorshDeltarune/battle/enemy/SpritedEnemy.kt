@@ -4,7 +4,7 @@ import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import net.kyori.adventure.text.Component
 
 abstract class SpritedEnemy(
-    name: Component,
+    name: String,
     hitpoints: Int,
     encounterMessages: List<Component>,
     val canvasSprites: List<CanvasSprite>,

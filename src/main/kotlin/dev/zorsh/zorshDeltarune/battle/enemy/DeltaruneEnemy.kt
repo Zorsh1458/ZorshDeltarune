@@ -4,7 +4,7 @@ import dev.zorsh.zorshDeltarune.battle.INeverlandBattle
 import net.kyori.adventure.text.Component
 
 abstract class DeltaruneEnemy(
-    val name: Component,
+    val name: String,
     val hitpoints: Int,
     val encounterMessages: List<Component>
 ) {
