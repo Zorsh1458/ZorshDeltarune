@@ -9,6 +9,7 @@ enum class ActionSelectionOptionsStage : PlayerActionSelector.ActionSelection {
         }
 
         override fun onJumpPressed(selector: PlayerActionSelector) {
+            selector.canvas.hidePlayerOptions(selector.player.uuid)
             selector.changeTo(ActionSelectionAttackStage.ATTACK_ENEMY)
         }
 

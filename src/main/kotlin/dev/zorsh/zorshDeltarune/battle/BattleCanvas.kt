@@ -400,8 +400,6 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
         storage.isAttacking = false
 
-        hidePlayerOptions(player.uniqueId)
-
         //// TODO("Remove hp calculation from BattleCanvas as it's not its responsibility")
         //// For testing purposes
         val enemy = storage.selectedEnemy
