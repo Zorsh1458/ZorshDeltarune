@@ -285,8 +285,31 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             "attack_box_damage_indicator",
             player
         ) {
-            runRepeating(40) {
-                myCanvas.move(0f, -10f, "attack_box_damage_indicator", player.uniqueId)
+            runRepeating(40) { i ->
+                myCanvas.move(-10f, 0f, "attack_box_damage_indicator", player.uniqueId)
+
+                if (i % 5 == 0) {
+                    val objName = "attack_box_damage_indicator_shadow_${UUID.randomUUID()}"
+                    myCanvas.drawSprite(
+                        -100f - i * 10f, -132f,
+                        3f, 14f,
+                        20,
+                        CanvasSprite.SQUARE,
+                        ShaderTextColor.pure("#ffffff"),
+                        objName,
+                        player
+                    ) {
+                        runRepeating(8) { t ->
+                            val brightness = 1f - (t + 1) / 8f
+                            myCanvas.setSprite(
+                                CanvasSprite.SQUARE,
+                                ShaderTextColor.pure(TextColor.color(brightness, brightness, brightness)),
+                                objName,
+                                player.uniqueId
+                            )
+                        }
+                    }
+                }
             }
         }
     }
