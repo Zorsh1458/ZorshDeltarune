@@ -335,16 +335,17 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         }
     }
 
-    fun confirmAttack(playerUUID: UUID) {
-        val storage = playerBattleDataStorage[playerUUID] ?: return
+    fun confirmAttack(player: Player) {
+        val storage = playerBattleDataStorage[player.uniqueId] ?: return
         val ind = storage.selectedEnemyIndex
         val frames = 10
         var counter = 0
         val pos = myCanvas.getPosition("enemy_$ind")
+        animateStatusText(pos.first, pos.second, 2.25f, 2f, ShaderTextColor.pure("#ffaaaa"), Component.text(999), player)
         runRepeating(frames) { i ->
             counter = (counter + 1) % 2
             val power = frames - i - 1
-            val shift = power * (counter * 2 - 1) * 16f
+            val shift = power * (counter * 2 - 1) * 16f / frames
             myCanvas.setPosition(
                 pos.first + shift, pos.second,
                 "enemy_$ind"

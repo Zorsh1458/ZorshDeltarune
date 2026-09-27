@@ -12,7 +12,7 @@ enum class ActionSelectionAttackStage : PlayerActionSelector.ActionSelection {
         }
 
         override fun onJumpPressed(selector: PlayerActionSelector) {
-            selector.canvas.confirmAttack(selector.player.uuid)
+            selector.player.player?.let { selector.canvas.confirmAttack(it) }
             selector.changeTo(PlayerActionSelector.FinishedAction.END)
         }
     }
