@@ -358,7 +358,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             pos.first, pos.second,
             2.25f, 2f,
             14,
-            ShaderTextColor.pure("#ffaaaa"),
+            ShaderTextColor.pure("#ff8080"),
             Component.text(999),
             player
         )
@@ -408,12 +408,19 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             saveAs = objName,
             player = player
         ) {
-            runRepeating(5) { i ->
+            var ySpeed = 2.5f
+            var yPos = 0f
+            runRepeating(10) { i ->
                 val t = i + 1
                 if (i < 3) {
                     myCanvas.setScale(sx * 3 - sx * 2 * t / 3, sy * t / 3, objName, player?.uniqueId)
                 }
-                myCanvas.move(5f - t, 2.5f - t, objName, player?.uniqueId)
+                ySpeed -= t
+                yPos += ySpeed
+                if (yPos <= 0f) {
+                    ySpeed *= -0.75f
+                }
+                myCanvas.move(8f * (1 - i / 10f), ySpeed, objName, player?.uniqueId)
             }
             runLater(30) {
                 runRepeating(10) { i ->
