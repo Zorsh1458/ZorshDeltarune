@@ -134,6 +134,33 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         myCanvas.setScale(scale * 98, 1f, "selection_box_time_scale", playerId)
     }
 
+    val optionsList = hashMapOf<UUID, MutableList<String>>()
+    fun createEnemiesList(player: Player) {
+        val px = -30f
+        var py = -128f
+
+        optionsList[player.uniqueId] = mutableListOf()
+        battle.getBattleEnemies().forEach { enemy ->
+            val objName = "enemy_list_entry_${UUID.randomUUID()}"
+            myCanvas.drawText(
+                px, py, 1f, 1f, 32, enemy.name, ShaderTextColor.pure("#ffffff"),
+                saveAs = objName,
+                player = player
+            ) {
+                optionsList[player.uniqueId]?.add(objName)
+            }
+            py -= 24f
+        }
+    }
+
+    fun clearEnemiesList(playerUUID: UUID) {
+        optionsList[playerUUID]?.forEach { objName ->
+            myCanvas.remove(objName, playerUUID)
+        }
+        optionsList[playerUUID]?.clear()
+        optionsList.remove(playerUUID)
+    }
+
     fun setPlayerButtonSelection(objName: String, playerUUID: UUID) {
         val col = ShaderTextColor.pure("#ffffff")
         when (objName) {
