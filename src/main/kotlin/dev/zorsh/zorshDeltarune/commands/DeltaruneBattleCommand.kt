@@ -26,10 +26,10 @@ class DeltaruneBattleCommand : CommandExecutor, TabCompleter {
                 val battle = NeverlandBattle(
                     dPlayers,
                     listOf(
-                        TestEnemy(Component.text("Слизнячок"), 100),
-                        TestEnemy(Component.text("Слизнячок"), 100),
-                        TestEnemy(Component.text("Слизнячог"), 100),
-                        TestEnemy(Component.text("Злодей британец"), 100)
+                        TestEnemy("Слизнячок", 100),
+                        TestEnemy("Слизнячок", 100),
+                        TestEnemy("Слизнячог", 100),
+                        TestEnemy("Злодей британец", 100)
                     )
                 )
                 BattleManager.startBattle(battle)
