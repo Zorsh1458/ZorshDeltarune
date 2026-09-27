@@ -164,6 +164,20 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         optionsList.remove(playerUUID)
     }
 
+    fun createOptionsSelector(player: Player) {
+        myCanvas.drawSprite(
+            -160f, -140f, 1f, 1f, 16,
+            CanvasSprite.SOUL,
+            ShaderTextColor.pure("#ff0000"),
+            "menu_selector",
+            player
+        )
+    }
+
+    fun removeOptionsSelector(playerUUID: UUID) {
+        myCanvas.remove("menu_selector", playerUUID)
+    }
+
     fun setPlayerButtonSelection(objName: String, playerUUID: UUID) {
         val col = ShaderTextColor.pure("#ffffff")
         when (objName) {

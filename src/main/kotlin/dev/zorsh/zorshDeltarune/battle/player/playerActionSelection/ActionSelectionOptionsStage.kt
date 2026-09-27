@@ -10,9 +10,11 @@ enum class ActionSelectionOptionsStage : PlayerActionSelector.ActionSelection {
 
         override fun updateExit(selector: PlayerActionSelector) {
             selector.canvas.clearEnemiesList(selector.player.uuid)
+            selector.canvas.removeOptionsSelector(selector.player.uuid)
         }
         override fun updateEnter(selector: PlayerActionSelector) {
             selector.player.player?.let { selector.canvas.createEnemiesList(it) }
+            selector.player.player?.let { selector.canvas.createOptionsSelector(it) }
         }
     }
 }
