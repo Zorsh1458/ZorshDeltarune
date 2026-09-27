@@ -375,12 +375,12 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             }
             runLater(24) {
                 val storage = playerBattleDataStorage[player.uniqueId] ?: return@runLater
-                if (!storage.isAttacking) {
+                if (storage.isAttacking) {
                     val ind = storage.selectedEnemyIndex
                     val pos = myCanvas.getPosition("enemy_$ind")
                     animateStatusText(
                         pos.first, pos.second,
-                        2f, 2f,
+                        1.75f, 1.75f,
                         14,
                         ShaderTextColor.pure("#ff5050"),
                         Component.text("Промах"),
