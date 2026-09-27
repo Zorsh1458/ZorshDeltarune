@@ -245,7 +245,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             72f, 16f,
             24,
             CanvasSprite.SQUARE,
-            ShaderTextColor.pure("#38190c"),
+            ShaderTextColor.pure("#38090c"),
             "attack_box_outer",
             player
         )
@@ -263,7 +263,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             5f, 16f,
             22,
             CanvasSprite.SQUARE,
-            ShaderTextColor.pure("#ffff00"),
+            ShaderTextColor.pure("#ff0000"),
             "attack_box_crit_zone_outer",
             player
         )
@@ -277,7 +277,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             player
         )
         myCanvas.drawSprite(
-            0f, -132f,
+            6f, -132f,
             3f, 14f,
             20,
             CanvasSprite.SQUARE,
@@ -291,7 +291,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                 if (i % 2 == 1) {
                     val objName = "attack_box_damage_indicator_shadow_${UUID.randomUUID()}"
                     myCanvas.drawSprite(
-                        (1 - i) * 10f, -132f,
+                        6f + (1 - i) * 10f, -132f,
                         3f, 14f,
                         20,
                         CanvasSprite.SQUARE,
