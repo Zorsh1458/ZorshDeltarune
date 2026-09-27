@@ -307,9 +307,21 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                                 objName,
                                 player.uniqueId
                             )
+                            myCanvas.setScale(
+                                3f - 3f * t / 8f,
+                                14f,
+                                objName,
+                                player.uniqueId
+                            )
+                        }
+                        runLater(9) {
+                            myCanvas.remove(objName, player.uniqueId)
                         }
                     }
                 }
+            }
+            runLater(42) {
+                myCanvas.remove("attack_box_damage_indicator", player.uniqueId)
             }
         }
     }
