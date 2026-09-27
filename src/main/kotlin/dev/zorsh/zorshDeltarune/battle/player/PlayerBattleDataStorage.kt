@@ -10,5 +10,6 @@ class PlayerBattleDataStorage(
     var selectedEnemyIndex: Int = 0,
     var selectedEnemy: DeltaruneEnemy? = null,
 
-    var optionsShown: Boolean = false
+    var optionsShown: Boolean = false,
+    var isAttacking: Boolean = false
 )

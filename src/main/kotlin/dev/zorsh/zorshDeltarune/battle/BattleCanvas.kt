@@ -332,7 +332,13 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             "attack_box_damage_indicator",
             player
         ) {
-            runRepeating(22) { i ->
+            playerBattleDataStorage[player.uniqueId]?.isAttacking = true
+            runRepeating(22) { i, task ->
+                if (playerBattleDataStorage[player.uniqueId]?.isAttacking == false) {
+                    task.cancel()
+                    return@runRepeating
+                }
+
                 myCanvas.move(-10f, 0f, "attack_box_damage_indicator", player.uniqueId)
 
                 if (i % 2 == 1) {
@@ -368,23 +374,41 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                 }
             }
             runLater(24) {
-                myCanvas.remove("attack_box_damage_indicator", player.uniqueId)
+                val storage = playerBattleDataStorage[player.uniqueId] ?: return@runLater
+                if (!storage.isAttacking) {
+                    val ind = storage.selectedEnemyIndex
+                    val pos = myCanvas.getPosition("enemy_$ind")
+                    animateStatusText(
+                        pos.first, pos.second,
+                        2f, 2f,
+                        14,
+                        ShaderTextColor.pure("#ff5050"),
+                        Component.text("Промах"),
+                        player
+                    )
+                }
+
+                storage.isAttacking = false
+                removeAttackUI(player.uniqueId)
             }
         }
     }
 
     fun confirmAttack(player: Player) {
         val storage = playerBattleDataStorage[player.uniqueId] ?: return
+        if (!storage.isAttacking) return
+
+        storage.isAttacking = false
 
         hidePlayerOptions(player.uniqueId)
-
-        val ind = storage.selectedEnemyIndex
 
         //// TODO("Remove hp calculation from BattleCanvas as it's not its responsibility")
         //// For testing purposes
         val enemy = storage.selectedEnemy
         enemy?.hitpoints = max(0, enemy.hitpoints - 10)
         ////
+
+        val ind = storage.selectedEnemyIndex
 
         val frames = 10
         var counter = 0
@@ -409,10 +433,12 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
     }
 
     fun removeAttackUI(playerUUID: UUID) {
+        playerBattleDataStorage[playerUUID]?.isAttacking = false
         myCanvas.remove("attack_box_outer", playerUUID)
         myCanvas.remove("attack_box_inner", playerUUID)
         myCanvas.remove("attack_box_crit_zone_outer", playerUUID)
         myCanvas.remove("attack_box_crit_zone_inner", playerUUID)
+        myCanvas.remove("attack_box_damage_indicator", playerUUID)
     }
 
     fun animateStatusText(
