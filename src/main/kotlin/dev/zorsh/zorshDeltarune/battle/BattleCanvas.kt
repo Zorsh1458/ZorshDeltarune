@@ -340,11 +340,11 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         val ind = storage.selectedEnemyIndex
         val frames = 10
         var counter = 0
+        val pos = myCanvas.getPosition("enemy_$ind")
         runRepeating(frames) { i ->
             counter = (counter + 1) % 2
             val power = frames - i - 1
             val shift = power * (counter * 2 - 1) * 16f
-            val pos = myCanvas.getPosition("enemy_$ind")
             myCanvas.setPosition(
                 pos.first + shift, pos.second,
                 "enemy_$ind"
