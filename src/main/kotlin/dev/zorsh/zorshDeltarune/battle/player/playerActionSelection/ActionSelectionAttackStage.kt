@@ -10,5 +10,9 @@ enum class ActionSelectionAttackStage : PlayerActionSelector.ActionSelection {
         override fun updateEnter(selector: PlayerActionSelector) {
             selector.player.player?.let { selector.canvas.startAttackUI(it) }
         }
+
+        override fun onJumpPressed(selector: PlayerActionSelector) {
+            selector.changeTo(PlayerActionSelector.FinishedAction.END)
+        }
     }
 }

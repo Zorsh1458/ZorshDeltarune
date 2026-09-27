@@ -16,6 +16,10 @@ class PlayerActionSelector(val canvas: BattleCanvas, val player: DeltarunePlayer
         fun updateExit(selector: PlayerActionSelector) {}
     }
 
+    enum class FinishedAction : ActionSelection {
+        END
+    }
+
     var currentStage : ActionSelection = ActionSelectionButtonStage.BUTTON_FIGHT
 
     fun onLeftPressed() { currentStage.onLeftPressed(this) }

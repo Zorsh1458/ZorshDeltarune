@@ -320,7 +320,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                     }
                 }
             }
-            runLater(42) {
+            runLater(24) {
                 myCanvas.remove("attack_box_damage_indicator", player.uniqueId)
             }
         }
