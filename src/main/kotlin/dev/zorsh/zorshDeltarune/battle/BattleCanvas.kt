@@ -355,10 +355,9 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         var counter = 0
         val pos = myCanvas.getPosition("enemy_$ind")
         animateStatusText(
-            pos.first,
-            pos.second,
-            2.25f,
-            2f,
+            pos.first, pos.second,
+            2.25f, 2f,
+            14,
             ShaderTextColor.pure("#ffaaaa"),
             Component.text(999),
             player
