@@ -277,7 +277,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             player
         )
         myCanvas.drawSprite(
-            -100f, -132f,
+            -30f, -132f,
             3f, 14f,
             20,
             CanvasSprite.SQUARE,
@@ -288,10 +288,10 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             runRepeating(40) { i ->
                 myCanvas.move(-10f, 0f, "attack_box_damage_indicator", player.uniqueId)
 
-                if (i % 5 == 0) {
+                if (i % 2 == 0) {
                     val objName = "attack_box_damage_indicator_shadow_${UUID.randomUUID()}"
                     myCanvas.drawSprite(
-                        -100f - i * 10f, -132f,
+                        -30f - i * 10f, -132f,
                         3f, 14f,
                         20,
                         CanvasSprite.SQUARE,
