@@ -418,7 +418,9 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                 ySpeed -= t
                 yPos += ySpeed
                 if (yPos <= 0f) {
+                    yPos = 0f
                     ySpeed *= -0.75f
+                    ySpeed = 0f
                 }
                 myCanvas.move(8f * (1 - i / 10f), ySpeed, objName, player?.uniqueId)
             }
