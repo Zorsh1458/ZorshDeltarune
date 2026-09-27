@@ -5,6 +5,7 @@ import dev.zorsh.zorshDeltarune.battle.player.PlayerBattleDataStorage
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.ui.PlayerUICanvas
 import dev.zorsh.zorshDeltarune.ui.ShaderTextColor
+import dev.zorsh.zorshDeltarune.utils.plus
 import dev.zorsh.zorshDeltarune.utils.runInfinite
 import dev.zorsh.zorshDeltarune.utils.runLater
 import dev.zorsh.zorshDeltarune.utils.runRepeating
@@ -12,6 +13,8 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.entity.Player
 import org.bukkit.entity.TextDisplay
+import org.bukkit.util.Transformation
+import org.joml.Vector3f
 import java.util.UUID
 
 class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
@@ -240,6 +243,12 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
     }
 
     fun startAttackUI(player: Player) {
+        val storage = playerBattleDataStorage[player.uniqueId]
+        storage?.let { st ->
+            st.selectedEnemy = battle.getBattleEnemies()[st.optionsSelectorPosition.second - 1]
+            st.selectedEnemyIndex = st.optionsSelectorPosition.second - 1
+        }
+
         myCanvas.drawSprite(
             -128f, -132f,
             72f, 16f,
@@ -323,6 +332,23 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             runLater(24) {
                 myCanvas.remove("attack_box_damage_indicator", player.uniqueId)
             }
+        }
+    }
+
+    fun confirmAttack(playerUUID: UUID) {
+        val storage = playerBattleDataStorage[playerUUID] ?: return
+        val ind = storage.selectedEnemyIndex
+        val frames = 10
+        var counter = 0
+        runRepeating(frames) { i ->
+            counter = (counter + 1) % 2
+            val power = frames - i - 1
+            val shift = power * (counter * 2 - 1) * 16f
+            val pos = myCanvas.getPosition("enemy_$ind")
+            myCanvas.setPosition(
+                pos.first + shift, pos.second,
+                "enemy_$ind"
+            )
         }
     }
 
