@@ -166,7 +166,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
     fun createOptionsSelector(player: Player) {
         myCanvas.drawSprite(
-            -160f, -140f, 1f, 1f, 16,
+            -212f, -136f, 1f, 1f, 16,
             CanvasSprite.SOUL,
             ShaderTextColor.pure("#ff0000"),
             "menu_selector",
