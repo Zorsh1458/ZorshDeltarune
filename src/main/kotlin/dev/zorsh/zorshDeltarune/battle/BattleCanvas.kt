@@ -408,7 +408,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             saveAs = objName,
             player = player
         ) {
-            var ySpeed = 2.5f
+            var ySpeed = 4f
             var yPos = 0f
             runRepeating(10) { i ->
                 val t = i + 1
