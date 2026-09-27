@@ -320,7 +320,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
             CoroutineScope(Dispatchers.IO).launch {
                 val job = scope.launch {
                     repeat(2) {
-                        battleCanvas.showPlayerOptions()
+                        battleCanvas.showPlayersOptions()
                         getBattlePlayers().forEach { dPlayer ->
                             battleCanvas.setTurnTimeScale(1f, dPlayer.uuid)
                             dPlayer.handlePickingOption(battleCanvas)
@@ -335,7 +335,7 @@ class NeverlandBattle(val players: List<DeltarunePlayer>, val enemies: List<Delt
                         getBattlePlayers().forEach { dPlayer ->
                             dPlayer.stopPickingOption()
                         }
-                        battleCanvas.hidePlayerOptions()
+                        battleCanvas.hidePlayersOptions()
                         battleBoxOpen()
                         delay(500)
                         unlockSouls()

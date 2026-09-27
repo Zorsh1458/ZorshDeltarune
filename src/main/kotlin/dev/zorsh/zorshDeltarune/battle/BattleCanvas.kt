@@ -5,7 +5,6 @@ import dev.zorsh.zorshDeltarune.battle.player.PlayerBattleDataStorage
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.ui.PlayerUICanvas
 import dev.zorsh.zorshDeltarune.ui.ShaderTextColor
-import dev.zorsh.zorshDeltarune.utils.plus
 import dev.zorsh.zorshDeltarune.utils.runInfinite
 import dev.zorsh.zorshDeltarune.utils.runLater
 import dev.zorsh.zorshDeltarune.utils.runRepeating
@@ -13,12 +12,11 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.entity.Player
 import org.bukkit.entity.TextDisplay
-import org.bukkit.util.Transformation
-import org.joml.Vector3f
 import java.util.UUID
 
 class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
     val myCanvas = PlayerUICanvas()
+    lateinit var playerBattleDataStorage: HashMap<UUID, PlayerBattleDataStorage>
 
     fun initCanvas() {
         myCanvas.initialize(players)
@@ -79,21 +77,35 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         }
     }
 
-    fun showPlayerOptions() {
+    fun showPlayersOptions() {
         val dPlayers = battle.getBattlePlayers()
-        dPlayers.forEach { dPlayer ->
-            playerOptionsObjectNamesToLift.forEach { objName ->
-                myCanvas.move(0f, 36f, objName, dPlayer.player!!.uniqueId)
-            }
+        dPlayers.mapNotNull { it.player?.uniqueId }.forEach { uuid ->
+            showPlayerOptions(uuid)
         }
     }
 
-    fun hidePlayerOptions() {
+    fun hidePlayersOptions() {
         val dPlayers = battle.getBattlePlayers()
-        dPlayers.forEach { dPlayer ->
-            playerOptionsObjectNamesToLift.forEach { objName ->
-                myCanvas.move(0f, -36f, objName, dPlayer.player!!.uniqueId)
-            }
+        dPlayers.mapNotNull { it.player?.uniqueId }.forEach { uuid ->
+            hidePlayerOptions(uuid)
+        }
+    }
+
+    fun showPlayerOptions(playerUUID: UUID) {
+        if (playerBattleDataStorage[playerUUID]?.optionsShown == true) return
+        playerBattleDataStorage[playerUUID]?.optionsShown = true
+
+        playerOptionsObjectNamesToLift.forEach { objName ->
+            myCanvas.move(0f, 36f, objName, playerUUID)
+        }
+    }
+
+    fun hidePlayerOptions(playerUUID: UUID) {
+        if (playerBattleDataStorage[playerUUID]?.optionsShown == false) return
+        playerBattleDataStorage[playerUUID]?.optionsShown = false
+
+        playerOptionsObjectNamesToLift.forEach { objName ->
+            myCanvas.move(0f, -36f, objName, playerUUID)
         }
     }
 
@@ -136,8 +148,6 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
     fun setTurnTimeScale(scale: Float, playerId: UUID) {
         myCanvas.setScale(scale * 98, 1f, "selection_box_time_scale", playerId)
     }
-
-    lateinit var playerBattleDataStorage: HashMap<UUID, PlayerBattleDataStorage>
 
     fun createEnemiesList(player: Player) {
         val storage = playerBattleDataStorage[player.uniqueId] ?: return
@@ -337,11 +347,22 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
     fun confirmAttack(player: Player) {
         val storage = playerBattleDataStorage[player.uniqueId] ?: return
+
+        hidePlayerOptions(player.uniqueId)
+
         val ind = storage.selectedEnemyIndex
         val frames = 10
         var counter = 0
         val pos = myCanvas.getPosition("enemy_$ind")
-        animateStatusText(pos.first, pos.second, 2.25f, 2f, ShaderTextColor.pure("#ffaaaa"), Component.text(999), player)
+        animateStatusText(
+            pos.first,
+            pos.second,
+            2.25f,
+            2f,
+            ShaderTextColor.pure("#ffaaaa"),
+            Component.text(999),
+            player
+        )
         runRepeating(frames) { i ->
             counter = (counter + 1) % 2
             val power = frames - i - 1
@@ -360,11 +381,28 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         myCanvas.remove("attack_box_crit_zone_inner", playerUUID)
     }
 
-    fun animateStatusText(px: Float, py: Float, sx: Float, sy: Float, color: ShaderTextColor, text: Component, player: Player? = null) {
+    fun animateStatusText(
+        px: Float,
+        py: Float,
+        sx: Float,
+        sy: Float,
+        color: ShaderTextColor,
+        text: Component,
+        player: Player? = null,
+    ) {
         animateStatusText(px, py, sx, sy, 32, color, text, player)
     }
 
-    fun animateStatusText(px: Float, py: Float, sx: Float, sy: Float, z: Int, color: ShaderTextColor, text: Component, player: Player? = null) {
+    fun animateStatusText(
+        px: Float,
+        py: Float,
+        sx: Float,
+        sy: Float,
+        z: Int,
+        color: ShaderTextColor,
+        text: Component,
+        player: Player? = null,
+    ) {
         val objName = "status_text_${UUID.randomUUID()}"
         myCanvas.drawText(
             px, py, sx * 3, 0f, z, text, color,
@@ -645,7 +683,12 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                                     myCanvas.move(0.5f + i / 60f, 0f, objName1, bukkitPlayer.uniqueId)
                                     val brightness = 1f - (i + 1) / 40f
                                     val col = TextColor.color(0f, brightness, brightness)
-                                    myCanvas.setSprite(CanvasSprite.SQUARE, ShaderTextColor.pure(col), objName1, bukkitPlayer.uniqueId)
+                                    myCanvas.setSprite(
+                                        CanvasSprite.SQUARE,
+                                        ShaderTextColor.pure(col),
+                                        objName1,
+                                        bukkitPlayer.uniqueId
+                                    )
                                 }
                                 runLater(41) {
                                     myCanvas.remove(objName1, bukkitPlayer.uniqueId)
@@ -668,7 +711,12 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
                                     myCanvas.move(-0.5f - i / 60f, 0f, objName2, bukkitPlayer.uniqueId)
                                     val brightness = 1f - (i + 1) / 40f
                                     val col = TextColor.color(0f, brightness, brightness)
-                                    myCanvas.setSprite(CanvasSprite.SQUARE, ShaderTextColor.pure(col), objName2, bukkitPlayer.uniqueId)
+                                    myCanvas.setSprite(
+                                        CanvasSprite.SQUARE,
+                                        ShaderTextColor.pure(col),
+                                        objName2,
+                                        bukkitPlayer.uniqueId
+                                    )
                                 }
                                 runLater(41) {
                                     myCanvas.remove(objName2, bukkitPlayer.uniqueId)

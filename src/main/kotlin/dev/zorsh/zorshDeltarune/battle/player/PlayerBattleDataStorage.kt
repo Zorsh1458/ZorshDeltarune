@@ -8,5 +8,7 @@ class PlayerBattleDataStorage(
     var optionsSelectorPosition: Pair<Int, Int> = 0 to 0,
 
     var selectedEnemyIndex: Int = 0,
-    var selectedEnemy: DeltaruneEnemy? = null
+    var selectedEnemy: DeltaruneEnemy? = null,
+
+    var optionsShown: Boolean = false
 )
