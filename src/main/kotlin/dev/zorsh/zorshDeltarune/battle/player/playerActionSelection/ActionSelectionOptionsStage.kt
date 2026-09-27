@@ -8,6 +8,10 @@ enum class ActionSelectionOptionsStage : PlayerActionSelector.ActionSelection {
             selector.changeTo(ActionSelectionButtonStage.BUTTON_FIGHT)
         }
 
+        override fun onJumpPressed(selector: PlayerActionSelector) {
+            selector.changeTo(ActionSelectionAttackStage.ATTACK_ENEMY)
+        }
+
         override fun onLeftPressed(selector: PlayerActionSelector) {
             selector.canvas.moveOptionsSelectorLeft(selector.player.uuid)
         }

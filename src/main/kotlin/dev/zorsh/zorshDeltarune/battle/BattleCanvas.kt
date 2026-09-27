@@ -1,14 +1,13 @@
 package dev.zorsh.zorshDeltarune.battle
 
-import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.enemy.SpritedEnemy
+import dev.zorsh.zorshDeltarune.battle.player.PlayerBattleDataStorage
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.ui.PlayerUICanvas
 import dev.zorsh.zorshDeltarune.ui.ShaderTextColor
 import dev.zorsh.zorshDeltarune.utils.runInfinite
 import dev.zorsh.zorshDeltarune.utils.runLater
 import dev.zorsh.zorshDeltarune.utils.runRepeating
-import kr.toxicity.model.api.tracker.TrackerUpdateAction.brightness
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.entity.Player
@@ -135,40 +134,42 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         myCanvas.setScale(scale * 98, 1f, "selection_box_time_scale", playerId)
     }
 
-    val optionsList = hashMapOf<UUID, MutableList<String>>()
-    val optionsListSize = hashMapOf<UUID, Pair<Int, Int>>()
+    lateinit var playerBattleDataStorage: HashMap<UUID, PlayerBattleDataStorage>
+
     fun createEnemiesList(player: Player) {
+        val storage = playerBattleDataStorage[player.uniqueId] ?: return
+
         val px = -128f
         var py = -140f
 
-        optionsList[player.uniqueId] = mutableListOf()
-        optionsListSize[player.uniqueId] = 1 to battle.getBattleEnemies().size
+        storage.optionsObjectNamesList = mutableListOf()
+        storage.optionsListSize = 1 to battle.getBattleEnemies().size
         battle.getBattleEnemies().forEach { enemy ->
             val objName = "enemy_list_entry_${UUID.randomUUID()}"
-            val component = Component.text("                              \n⏵ ${enemy.name} ${ZorshDeltarune.random.nextInt(1000)}")
+            val component = Component.text("                              \n⏵ ${enemy.name}")
             myCanvas.drawText(
                 px, py, 1.5f, 1.5f, 16, component, ShaderTextColor.pure("#ffffff"),
                 alignment = TextDisplay.TextAlignment.LEFT,
                 saveAs = objName,
                 player = player
             ) {
-                optionsList[player.uniqueId]?.add(objName)
+                storage.optionsObjectNamesList.add(objName)
             }
             py -= 20f
         }
     }
 
     fun clearEnemiesList(playerUUID: UUID) {
-        optionsList[playerUUID]?.forEach { objName ->
+        val storage = playerBattleDataStorage[playerUUID] ?: return
+        storage.optionsObjectNamesList.forEach { objName ->
             myCanvas.remove(objName, playerUUID)
         }
-        optionsList[playerUUID]?.clear()
-        optionsList.remove(playerUUID)
+        storage.optionsObjectNamesList.clear()
     }
 
-    val optionsSelectorPosition = hashMapOf<UUID, Pair<Int, Int>>()
     fun createOptionsSelector(player: Player) {
-        optionsSelectorPosition[player.uniqueId] = 1 to 1
+        val storage = playerBattleDataStorage[player.uniqueId] ?: return
+        storage.optionsSelectorPosition = 1 to 1
         myCanvas.drawSprite(
             -232f, -133f, 0.75f, 0.75f, 16,
             CanvasSprite.SOUL,
@@ -179,37 +180,40 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
     }
 
     fun moveOptionsSelectorLeft(playerUUID: UUID) {
-        val pos = optionsSelectorPosition[playerUUID] ?: return
+        val storage = playerBattleDataStorage[playerUUID] ?: return
+        val pos = storage.optionsSelectorPosition
         if (pos.first <= 1) return
-        optionsSelectorPosition[playerUUID] = pos.first - 1 to pos.second
+        storage.optionsSelectorPosition = pos.first - 1 to pos.second
         myCanvas.move(-200f, 0f, "menu_selector", playerUUID)
     }
 
     fun moveOptionsSelectorRight(playerUUID: UUID) {
-        val size = optionsListSize[playerUUID] ?: return
-        val pos = optionsSelectorPosition[playerUUID] ?: return
+        val storage = playerBattleDataStorage[playerUUID] ?: return
+        val pos = storage.optionsSelectorPosition
+        val size = storage.optionsListSize
         if (pos.first >= size.first) return
-        optionsSelectorPosition[playerUUID] = pos.first + 1 to pos.second
+        storage.optionsSelectorPosition = pos.first + 1 to pos.second
         myCanvas.move(200f, 0f, "menu_selector", playerUUID)
     }
 
     fun moveOptionsSelectorUp(playerUUID: UUID) {
-        val pos = optionsSelectorPosition[playerUUID] ?: return
+        val storage = playerBattleDataStorage[playerUUID] ?: return
+        val pos = storage.optionsSelectorPosition
         if (pos.second <= 1) return
-        optionsSelectorPosition[playerUUID] = pos.first to pos.second - 1
+        storage.optionsSelectorPosition = pos.first to pos.second - 1
         myCanvas.move(0f, 20f, "menu_selector", playerUUID)
     }
 
     fun moveOptionsSelectorDown(playerUUID: UUID) {
-        val size = optionsListSize[playerUUID] ?: return
-        val pos = optionsSelectorPosition[playerUUID] ?: return
+        val storage = playerBattleDataStorage[playerUUID] ?: return
+        val pos = storage.optionsSelectorPosition
+        val size = storage.optionsListSize
         if (pos.second >= size.second) return
-        optionsSelectorPosition[playerUUID] = pos.first to pos.second + 1
+        storage.optionsSelectorPosition = pos.first to pos.second + 1
         myCanvas.move(0f, -20f, "menu_selector", playerUUID)
     }
 
     fun removeOptionsSelector(playerUUID: UUID) {
-        optionsSelectorPosition.remove(playerUUID)
         myCanvas.remove("menu_selector", playerUUID)
     }
 
@@ -268,6 +272,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
     val playerOptionsObjectNamesToLift = mutableSetOf<String>()
     fun setupLayout() {
+        playerBattleDataStorage = hashMapOf()
         playerOptionsObjectNamesToLift.clear()
         section("ENEMIES", true) {
             val spritedEnemies = battle.getBattleEnemies().filterIsInstance<SpritedEnemy>()
@@ -440,6 +445,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         section("PLAYER_STUFF", true) {
             val dPlayers = battle.getBattlePlayers()
             dPlayers.forEach { dPlayer ->
+                playerBattleDataStorage[dPlayer.uuid] = PlayerBattleDataStorage()
                 dPlayer.player?.let { bukkitPlayer ->
                     section("DEBUG", true) {
                         myCanvas.drawText(
