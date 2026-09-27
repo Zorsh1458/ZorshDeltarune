@@ -137,11 +137,11 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
     val optionsList = hashMapOf<UUID, MutableList<String>>()
     fun createEnemiesList(player: Player) {
-        val px = -64f
         var py = -132f
 
         optionsList[player.uniqueId] = mutableListOf()
         battle.getBattleEnemies().forEach { enemy ->
+            val px = -64f + ZorshDeltarune.random.nextFloat() * 64f - 32f
             val objName = "enemy_list_entry_${UUID.randomUUID()}"
             val component = Component.text("                              \n")
                 .append(enemy.name)
