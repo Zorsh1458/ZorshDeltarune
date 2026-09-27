@@ -241,7 +241,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
     fun startAttackUI(player: Player) {
         myCanvas.drawSprite(
-            -128f, -128f,
+            -128f, -132f,
             72f, 16f,
             24,
             CanvasSprite.SQUARE,
@@ -250,7 +250,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             player
         )
         myCanvas.drawSprite(
-            -126f, -128f,
+            -126f, -132f,
             72f, 14f,
             23,
             CanvasSprite.SQUARE,
@@ -259,7 +259,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             player
         )
         myCanvas.drawSprite(
-            -195f, -128f,
+            -195f, -132f,
             5f, 16f,
             22,
             CanvasSprite.SQUARE,
@@ -268,7 +268,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             player
         )
         myCanvas.drawSprite(
-            -196f, -128f,
+            -195f, -132f,
             3f, 14f,
             21,
             CanvasSprite.SQUARE,
@@ -276,6 +276,19 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             "attack_box_crit_zone_inner",
             player
         )
+        myCanvas.drawSprite(
+            -100f, -132f,
+            3f, 14f,
+            20,
+            CanvasSprite.SQUARE,
+            ShaderTextColor.pure("#ffffff"),
+            "attack_box_damage_indicator",
+            player
+        ) {
+            runRepeating(40) {
+                myCanvas.move(0f, -10f, "attack_box_damage_indicator", player.uniqueId)
+            }
+        }
     }
 
     fun removeAttackUI(playerUUID: UUID) {
