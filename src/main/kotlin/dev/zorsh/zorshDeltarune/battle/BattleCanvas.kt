@@ -285,7 +285,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             "attack_box_damage_indicator",
             player
         ) {
-            runRepeating(40) { i ->
+            runRepeating(30) { i ->
                 myCanvas.move(-10f, 0f, "attack_box_damage_indicator", player.uniqueId)
 
                 if (i % 2 == 1) {
