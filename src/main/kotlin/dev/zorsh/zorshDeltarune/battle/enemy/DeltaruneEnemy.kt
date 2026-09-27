@@ -5,9 +5,10 @@ import net.kyori.adventure.text.Component
 
 abstract class DeltaruneEnemy(
     val name: String,
-    val hitpoints: Int,
+    val maxHitpoints: Int,
     val encounterMessages: List<Component>
 ) {
+    var hitpoints = maxHitpoints
 
     lateinit var myBattle: INeverlandBattle
 

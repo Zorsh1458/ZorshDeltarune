@@ -15,10 +15,10 @@ import kotlin.math.sin
 
 class TestEnemy(
     name: String,
-    hitpoints: Int,
+    maxHitpoints: Int,
 ) : SpritedEnemy(
     name,
-    hitpoints,
+    maxHitpoints,
     listOf(
         Component.text("Это что еще за балбес"),
         Component.text("Тестовый враг встал у вас на пути!"),

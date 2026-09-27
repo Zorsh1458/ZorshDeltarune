@@ -13,6 +13,7 @@ import net.kyori.adventure.text.format.TextColor
 import org.bukkit.entity.Player
 import org.bukkit.entity.TextDisplay
 import java.util.UUID
+import kotlin.math.max
 
 class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
     val myCanvas = PlayerUICanvas()
@@ -161,12 +162,37 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             val objName = "enemy_list_entry_${UUID.randomUUID()}"
             val component = Component.text("                              \n⏵ ${enemy.name}")
             myCanvas.drawText(
-                px, py, 1.5f, 1.5f, 16, component, ShaderTextColor.pure("#ffffff"),
+                px, py,
+                1.5f, 1.5f,
+                16,
+                component, ShaderTextColor.pure("#ffffff"),
                 alignment = TextDisplay.TextAlignment.LEFT,
                 saveAs = objName,
                 player = player
             ) {
                 storage.optionsObjectNamesList.add(objName)
+            }
+            val objNameHpBg = "enemy_list_entry_hp_bg_${UUID.randomUUID()}"
+            myCanvas.drawSprite(
+                px + 256f, py + 6f,
+                30f, 4f,
+                16,
+                CanvasSprite.SQUARE, ShaderTextColor.pure("#6b0e19"),
+                objNameHpBg,
+                player
+            ) {
+                storage.optionsObjectNamesList.add(objNameHpBg)
+            }
+            val objNameHp = "enemy_list_entry_hp_${UUID.randomUUID()}"
+            myCanvas.drawSprite(
+                px + 256f + 30f * (1f - enemy.hitpoints.toFloat() / enemy.maxHitpoints), py + 6f,
+                30f * enemy.hitpoints / enemy.maxHitpoints, 4f,
+                15,
+                CanvasSprite.SQUARE, ShaderTextColor.pure("#1bf230"),
+                objNameHp,
+                player
+            ) {
+                storage.optionsObjectNamesList.add(objNameHp)
             }
             py -= 20f
         }
@@ -351,6 +377,13 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         hidePlayerOptions(player.uniqueId)
 
         val ind = storage.selectedEnemyIndex
+
+        //// TODO("Remove hp calculation from BattleCanvas as it's not its responsibility")
+        //// For testing purposes
+        val enemy = storage.selectedEnemy
+        enemy?.hitpoints = max(0, enemy.hitpoints - 10)
+        ////
+
         val frames = 10
         var counter = 0
         val pos = myCanvas.getPosition("enemy_$ind")
@@ -359,7 +392,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             2f, 2f,
             14,
             ShaderTextColor.pure("#ff5050"),
-            Component.text(999),
+            Component.text(10),
             player
         )
         runRepeating(frames) { i ->
