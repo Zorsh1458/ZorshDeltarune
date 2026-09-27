@@ -4,11 +4,11 @@ import dev.zorsh.zorshDeltarune.battle.player.PlayerActionSelector
 
 enum class ActionSelectionAttackStage : PlayerActionSelector.ActionSelection {
     ATTACK_ENEMY {
-//        override fun updateExit(selector: PlayerActionSelector) {
-//            selector.canvas.removeAttackUI(selector.player.uuid)
-//        }
-//        override fun updateEnter(selector: PlayerActionSelector) {
-//            selector.canvas.startAttackUI(selector.player.player)
-//        }
+        override fun updateExit(selector: PlayerActionSelector) {
+            selector.canvas.removeAttackUI(selector.player.uuid)
+        }
+        override fun updateEnter(selector: PlayerActionSelector) {
+            selector.player.player?.let { selector.canvas.startAttackUI(it) }
+        }
     }
 }

@@ -239,6 +239,52 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         }
     }
 
+    fun startAttackUI(player: Player) {
+        myCanvas.drawSprite(
+            -128f, -164f,
+            72f, 32f,
+            24,
+            CanvasSprite.SQUARE,
+            ShaderTextColor.pure("#0c1938"),
+            "attack_box_outer",
+            player
+        )
+        myCanvas.drawSprite(
+            -129f, -164f,
+            72f, 31f,
+            23,
+            CanvasSprite.SQUARE,
+            ShaderTextColor.pure("#000000"),
+            "attack_box_inner",
+            player
+        )
+        myCanvas.drawSprite(
+            -196f, -164f,
+            4f, 32f,
+            22,
+            CanvasSprite.SQUARE,
+            ShaderTextColor.pure("#00ffff"),
+            "attack_box_crit_zone_outer",
+            player
+        )
+        myCanvas.drawSprite(
+            -196f, -164f,
+            3f, 31f,
+            21,
+            CanvasSprite.SQUARE,
+            ShaderTextColor.pure("#000000"),
+            "attack_box_crit_zone_inner",
+            player
+        )
+    }
+
+    fun removeAttackUI(playerUUID: UUID) {
+        myCanvas.remove("attack_box_outer", playerUUID)
+        myCanvas.remove("attack_box_inner", playerUUID)
+        myCanvas.remove("attack_box_crit_zone_outer", playerUUID)
+        myCanvas.remove("attack_box_crit_zone_inner", playerUUID)
+    }
+
     fun animateStatusText(px: Float, py: Float, sx: Float, sy: Float, color: ShaderTextColor, text: Component, player: Player? = null) {
         animateStatusText(px, py, sx, sy, 32, color, text, player)
     }
