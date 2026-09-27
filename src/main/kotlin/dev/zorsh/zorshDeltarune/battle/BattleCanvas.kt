@@ -1,5 +1,6 @@
 package dev.zorsh.zorshDeltarune.battle
 
+import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.enemy.SpritedEnemy
 import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import dev.zorsh.zorshDeltarune.ui.PlayerUICanvas
@@ -136,20 +137,24 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
 
     val optionsList = hashMapOf<UUID, MutableList<String>>()
     fun createEnemiesList(player: Player) {
-        val px = -30f
-        var py = -128f
+        val px = -64f
+        var py = -132f
 
         optionsList[player.uniqueId] = mutableListOf()
         battle.getBattleEnemies().forEach { enemy ->
             val objName = "enemy_list_entry_${UUID.randomUUID()}"
+            val component = Component.text("                              \n")
+                .append(enemy.name)
+                .append(Component.text(" ${ZorshDeltarune.random.nextInt(1000)}"))
             myCanvas.drawText(
-                px, py, 1f, 1f, 32, enemy.name, ShaderTextColor.pure("#ffffff"),
+                px, py, 2f, 2f, 32, component, ShaderTextColor.pure("#ffffff"),
+                alignment = TextDisplay.TextAlignment.LEFT,
                 saveAs = objName,
                 player = player
             ) {
                 optionsList[player.uniqueId]?.add(objName)
             }
-            py -= 24f
+            py -= 32f
         }
     }
 
