@@ -172,9 +172,10 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             ) {
                 storage.optionsObjectNamesList.add(objName)
             }
+
             val objNameHpBg = "enemy_list_entry_hp_bg_${UUID.randomUUID()}"
             myCanvas.drawSprite(
-                px + 256f, py + 6f,
+                px + 256f, py + 12f,
                 30f, 4f,
                 16,
                 CanvasSprite.SQUARE, ShaderTextColor.pure("#6b0e19"),
@@ -183,9 +184,10 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             ) {
                 storage.optionsObjectNamesList.add(objNameHpBg)
             }
+
             val objNameHp = "enemy_list_entry_hp_${UUID.randomUUID()}"
             myCanvas.drawSprite(
-                px + 256f + 30f * (1f - enemy.hitpoints.toFloat() / enemy.maxHitpoints), py + 6f,
+                px + 256f + 30f * (1f - enemy.hitpoints.toFloat() / enemy.maxHitpoints), py + 12f,
                 30f * enemy.hitpoints / enemy.maxHitpoints, 4f,
                 15,
                 CanvasSprite.SQUARE, ShaderTextColor.pure("#1bf230"),
@@ -479,7 +481,7 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
             for (enemy in spritedEnemies.reversed().withIndex()) {
                 myCanvas.drawSprite(
                     320f,
-                    20f - (spritedEnemies.size - 1) * 24f + enemy.index * 72f,
+                    20f + (spritedEnemies.size - 1) * 24f - enemy.index * 72f,
                     0f,
                     0f,
                     16,

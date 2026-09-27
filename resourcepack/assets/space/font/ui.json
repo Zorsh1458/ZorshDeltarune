@@ -101,7 +101,7 @@
         },
         {
             "type": "bitmap",
-            "file": "space:font/ui/slime_1.png",
+            "file": "space:font/ui/slime_green_1.png",
             "height": 28,
             "ascent": 11,
             "chars": [
@@ -110,7 +110,7 @@
         },
         {
             "type": "bitmap",
-            "file": "space:font/ui/slime_2.png",
+            "file": "space:font/ui/slime_green_2.png",
             "height": 34,
             "ascent": 17,
             "chars": [
@@ -205,6 +205,60 @@
             "ascent": 27,
             "chars": [
                 "\uF015"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/slime_red_1.png",
+            "height": 28,
+            "ascent": 11,
+            "chars": [
+                "\uF016"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/slime_red_2.png",
+            "height": 34,
+            "ascent": 17,
+            "chars": [
+                "\uF017"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/slime_blue_1.png",
+            "height": 28,
+            "ascent": 11,
+            "chars": [
+                "\uF018"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/slime_blue_2.png",
+            "height": 34,
+            "ascent": 17,
+            "chars": [
+                "\uF019"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/slime_yellow_1.png",
+            "height": 28,
+            "ascent": 11,
+            "chars": [
+                "\uF01A"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "space:font/ui/slime_yellow_2.png",
+            "height": 34,
+            "ascent": 17,
+            "chars": [
+                "\uF01B"
             ]
         }
     ]

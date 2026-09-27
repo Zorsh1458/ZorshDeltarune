@@ -4,6 +4,7 @@ import dev.zorsh.zorshDeltarune.ZorshDeltarune
 import dev.zorsh.zorshDeltarune.battle.*
 import dev.zorsh.zorshDeltarune.battle.enemy.TestEnemy
 import dev.zorsh.zorshDeltarune.battle.player.DeltarunePlayer
+import dev.zorsh.zorshDeltarune.ui.CanvasSprite
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
@@ -26,10 +27,10 @@ class DeltaruneBattleCommand : CommandExecutor, TabCompleter {
                 val battle = NeverlandBattle(
                     dPlayers,
                     listOf(
-                        TestEnemy("Слизнячок", 100),
-                        TestEnemy("Слизнячок", 100),
-                        TestEnemy("Слизнячог", 100),
-                        TestEnemy("Злодей британец", 100)
+                        TestEnemy("Зеленый слизень", 100, listOf(CanvasSprite.SLIME_GREEN_1, CanvasSprite.SLIME_GREEN_2)),
+                        TestEnemy("Синий слизнячок", 100, listOf(CanvasSprite.SLIME_BLUE_1, CanvasSprite.SLIME_BLUE_2)),
+                        TestEnemy("Красный слизенище", 100, listOf(CanvasSprite.SLIME_RED_1, CanvasSprite.SLIME_RED_2)),
+                        TestEnemy("Желтый слизняк", 100, listOf(CanvasSprite.SLIME_YELLOW_1, CanvasSprite.SLIME_YELLOW_2))
                     )
                 )
                 BattleManager.startBattle(battle)

@@ -16,6 +16,7 @@ import kotlin.math.sin
 class TestEnemy(
     name: String,
     maxHitpoints: Int,
+    canvasSprites: List<CanvasSprite>
 ) : SpritedEnemy(
     name,
     maxHitpoints,
@@ -24,10 +25,7 @@ class TestEnemy(
         Component.text("Тестовый враг встал у вас на пути!"),
         Component.text("Полный скебоб..")
     ),
-    listOf(
-        CanvasSprite.SLIME_SPRITE_1,
-        CanvasSprite.SLIME_SPRITE_2
-    ),
+    canvasSprites,
     6
 ) {
 

@@ -40,9 +40,9 @@ class NeverlandTestCommand : CommandExecutor, TabCompleter {
                         dPlayer
                     }
                 val battle = NeverlandBattle(dPlayers, listOf(
-                    TestEnemy("Скебоб 1", 100),
-                    TestEnemy("Скебоб 2", 100),
-                    TestEnemy("Скебоб 3", 100)
+//                    TestEnemy("Скебоб 1", 100),
+//                    TestEnemy("Скебоб 2", 100),
+//                    TestEnemy("Скебоб 3", 100)
                 ))
                 battle.setUUID(UUID.randomUUID())
                 val cv = BattleCanvas(listOf(player), battle)
