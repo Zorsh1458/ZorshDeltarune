@@ -136,11 +136,13 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
     }
 
     val optionsList = hashMapOf<UUID, MutableList<String>>()
+    val optionsListSize = hashMapOf<UUID, Pair<Int, Int>>()
     fun createEnemiesList(player: Player) {
         val px = -128f
         var py = -140f
 
         optionsList[player.uniqueId] = mutableListOf()
+        optionsListSize[player.uniqueId] = 1 to battle.getBattleEnemies().size
         battle.getBattleEnemies().forEach { enemy ->
             val objName = "enemy_list_entry_${UUID.randomUUID()}"
             val component = Component.text("                              \n⏵ ${enemy.name} ${ZorshDeltarune.random.nextInt(1000)}")
@@ -164,7 +166,9 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         optionsList.remove(playerUUID)
     }
 
+    val optionsSelectorPosition = hashMapOf<UUID, Pair<Int, Int>>()
     fun createOptionsSelector(player: Player) {
+        optionsSelectorPosition[player.uniqueId] = 1 to 1
         myCanvas.drawSprite(
             -232f, -133f, 0.75f, 0.75f, 16,
             CanvasSprite.SOUL,
@@ -175,22 +179,37 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
     }
 
     fun moveOptionsSelectorLeft(playerUUID: UUID) {
+        val pos = optionsSelectorPosition[playerUUID] ?: return
+        if (pos.first <= 1) return
+        optionsSelectorPosition[playerUUID] = pos.first - 1 to pos.second
         myCanvas.move(-200f, 0f, "menu_selector", playerUUID)
     }
 
     fun moveOptionsSelectorRight(playerUUID: UUID) {
+        val size = optionsListSize[playerUUID] ?: return
+        val pos = optionsSelectorPosition[playerUUID] ?: return
+        if (pos.first >= size.first) return
+        optionsSelectorPosition[playerUUID] = pos.first + 1 to pos.second
         myCanvas.move(200f, 0f, "menu_selector", playerUUID)
     }
 
     fun moveOptionsSelectorUp(playerUUID: UUID) {
+        val pos = optionsSelectorPosition[playerUUID] ?: return
+        if (pos.second <= 1) return
+        optionsSelectorPosition[playerUUID] = pos.first to pos.second - 1
         myCanvas.move(0f, 20f, "menu_selector", playerUUID)
     }
 
     fun moveOptionsSelectorDown(playerUUID: UUID) {
+        val size = optionsListSize[playerUUID] ?: return
+        val pos = optionsSelectorPosition[playerUUID] ?: return
+        if (pos.second >= size.second) return
+        optionsSelectorPosition[playerUUID] = pos.first to pos.second + 1
         myCanvas.move(0f, -20f, "menu_selector", playerUUID)
     }
 
     fun removeOptionsSelector(playerUUID: UUID) {
+        optionsSelectorPosition.remove(playerUUID)
         myCanvas.remove("menu_selector", playerUUID)
     }
 
