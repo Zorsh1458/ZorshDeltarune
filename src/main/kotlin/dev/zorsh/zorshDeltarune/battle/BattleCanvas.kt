@@ -174,6 +174,22 @@ class BattleCanvas(val players: List<Player>, val battle: INeverlandBattle) {
         )
     }
 
+    fun moveOptionsSelectorLeft(playerUUID: UUID) {
+        myCanvas.move(-200f, 0f, "menu_selector", playerUUID)
+    }
+
+    fun moveOptionsSelectorRight(playerUUID: UUID) {
+        myCanvas.move(200f, 0f, "menu_selector", playerUUID)
+    }
+
+    fun moveOptionsSelectorUp(playerUUID: UUID) {
+        myCanvas.move(0f, 20f, "menu_selector", playerUUID)
+    }
+
+    fun moveOptionsSelectorDown(playerUUID: UUID) {
+        myCanvas.move(0f, -20f, "menu_selector", playerUUID)
+    }
+
     fun removeOptionsSelector(playerUUID: UUID) {
         myCanvas.remove("menu_selector", playerUUID)
     }
