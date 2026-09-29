@@ -1,19 +1,12 @@
 package dev.zorsh.zorshDeltarune.nms
 
-import dev.zorsh.zorshDeltarune.utils.plus
-import dev.zorsh.zorshDeltarune.utils.runRepeating
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.ShadowColor
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
-import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.util.Transformation
-import org.joml.Vector3f
 
 class FakeTextDisplay(
     entityId: Int,
     var text: Component,
-    location: Location,
     transformation: Transformation,
     teleportDuration: Int,
     interpolationDuration: Int,
@@ -22,7 +15,6 @@ class FakeTextDisplay(
     var opacity: Byte,
 ) : FakeDisplay(
     entityId,
-    location,
     transformation,
     teleportDuration,
     interpolationDuration,
@@ -77,34 +69,6 @@ class FakeTextDisplay(
             if (playerOverride == null) {
                 transformation = newTransformation
             }
-        }
-    }
-
-    fun animateBattleText(text: Component) {
-        val content = PlainTextComponentSerializer.plainText().serialize(text)
-        val style = text.style()
-        val updating = Component.text()
-        updating.append(Component.text(" ".repeat(64) + '\n'))
-        runRepeating(content.length) { ind ->
-            if (content[ind] == '\n') {
-                transformation = Transformation(
-                    transformation.translation + Vector3f(0f, 0.02f, 0f),
-                    transformation.leftRotation,
-                    transformation.scale,
-                    transformation.rightRotation
-                )
-            }
-            updating.append(Component.text(content[ind]))
-            this.text = updating.style(style).shadowColor(ShadowColor.shadowColor(0, 0, 64, 255)).build()
-            PacketManager.setTextDisplayMetadata(
-                entityId,
-                this.text,
-                transformation,
-                players,
-                interpolationDuration,
-                teleportDuration,
-                opacity
-            )
         }
     }
 }

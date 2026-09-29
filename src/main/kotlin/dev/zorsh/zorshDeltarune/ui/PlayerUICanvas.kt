@@ -14,7 +14,6 @@ import org.joml.AxisAngle4f
 import org.joml.Vector3f
 import java.util.UUID
 
-@Suppress("UNUSED")
 class PlayerUICanvas {
     var targetPlayers = mutableListOf<Player>()
 

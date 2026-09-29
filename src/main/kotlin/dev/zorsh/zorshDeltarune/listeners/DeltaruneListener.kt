@@ -8,7 +8,6 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.player.PlayerDropItemEvent
-import org.bukkit.event.player.PlayerInputEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 class DeltaruneListener : Listener {
@@ -46,13 +45,6 @@ class DeltaruneListener : Listener {
             e.isCancelled = true
         }
     }
-
-//    @EventHandler
-//    fun onPlayerInputEvent(e: PlayerInputEvent) {
-//        val player = e.player
-//        ZorshDeltarune.instance.logger.info("!!! ${player.name} pressed jump ${ZorshDeltarune.getDPlayer(player.uniqueId)}")
-//        ZorshDeltarune.getDPlayer(player.uniqueId)?.updateInputs(e.input)
-//    }
 
     @EventHandler
     fun onPlayerQuitEvent(e: PlayerQuitEvent) {
