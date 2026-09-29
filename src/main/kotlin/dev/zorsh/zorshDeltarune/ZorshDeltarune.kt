@@ -5,14 +5,11 @@ import com.comphenix.protocol.ProtocolManager
 import dev.zorsh.zorshDeltarune.battle.BattleManager
 import dev.zorsh.zorshDeltarune.battle.player.DeltarunePlayer
 import dev.zorsh.zorshDeltarune.commands.DeltaruneBattleCommand
-import dev.zorsh.zorshDeltarune.commands.NeverlandTestCommand
 import dev.zorsh.zorshDeltarune.listeners.DeltaruneListener
 import dev.zorsh.zorshDeltarune.nms.*
-import dev.zorsh.zorshDeltarune.ui.PlayerUIManager
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.UUID
 import kotlin.random.Random
-
 
 class ZorshDeltarune : JavaPlugin() {
 
@@ -24,8 +21,6 @@ class ZorshDeltarune : JavaPlugin() {
 
         var deltarunePlayer = mutableMapOf<UUID, DeltarunePlayer>()
 
-        val UIManager = PlayerUIManager()
-
         @JvmStatic
         fun getDPlayer(uuid: UUID): DeltarunePlayer? {
             return deltarunePlayer[uuid]
@@ -35,14 +30,11 @@ class ZorshDeltarune : JavaPlugin() {
     override fun onEnable() {
         instance = this
         protocolManager.addPacketListener(PacketListenerEntityDestroy())
-        protocolManager.addPacketListener(PacketListenerEntityMetadata())
         protocolManager.addPacketListener(PacketListenerSpawnEntity())
         protocolManager.addPacketListener(PacketListenerPlayerInput())
         server.pluginManager.registerEvents(DeltaruneListener(), this)
         getCommand("deltarunebattle")?.setExecutor(DeltaruneBattleCommand())
         getCommand("deltarunebattle")?.tabCompleter = DeltaruneBattleCommand()
-        getCommand("neverlandtest")?.setExecutor(NeverlandTestCommand())
-        getCommand("neverlandtest")?.tabCompleter = NeverlandTestCommand()
         logger.info("[ZorshDeltarune] Plugin enabled!")
     }
 
