@@ -24,10 +24,6 @@ class PacketListenerPlayerInput : PacketAdapter(
         val shift = input.booleans.read(5)
         val sprint = input.booleans.read(6)
 
-        if (forward && player.name == "Zorsh") {
-            player.sendMessage("Forward pressed")
-        }
-
         ZorshDeltarune.getDPlayer(player.uniqueId)?.updateInputs(InputHolder(
             left,
             right,
