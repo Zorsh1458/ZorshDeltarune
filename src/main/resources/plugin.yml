@@ -10,5 +10,3 @@ depend: [ ProtocolLib ]
 commands:
   deltarunebattle:
     permission: op
-  neverlandtest:
-    permission: op

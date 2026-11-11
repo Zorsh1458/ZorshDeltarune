@@ -2,14 +2,11 @@ package dev.zorsh.zorshDeltarune.nms
 
 import dev.zorsh.zorshDeltarune.utils.runLater
 import net.kyori.adventure.text.Component
-import net.minecraft.world.phys.Vec3
-import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.util.Transformation
 
 abstract class FakeDisplay(
     val entityId: Int,
-    var location: Location,
     var transformation: Transformation,
     protected val teleportDuration: Int,
     protected val interpolationDuration: Int,
@@ -45,11 +42,6 @@ abstract class FakeDisplay(
         runLater(400L) {
             PacketManager.removeEntity(entityId, listOf(player))
         }
-    }
-
-    open fun teleport(newLocation: Location) {
-        PacketManager.teleportEntity(entityId, newLocation, Vec3(0.0, 0.0, 0.0), players)
-        location = newLocation
     }
 
     open fun changeTransformation(

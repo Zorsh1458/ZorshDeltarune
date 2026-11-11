@@ -215,11 +215,9 @@ class DeltarunePlayer(val uuid: UUID) {
     }
 
     var playerActionSelector: PlayerActionSelector? = null
-    var canv: BattleCanvas? = null
     fun handlePickingOption(battleCanvas: BattleCanvas) {
         playerActionSelector = PlayerActionSelector(battleCanvas, this)
         playerActionSelector?.startUpdate()
-        canv = battleCanvas
     }
 
     fun stopPickingOption() {
